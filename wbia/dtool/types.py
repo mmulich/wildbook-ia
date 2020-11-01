@@ -152,12 +152,19 @@ class UUID(UserDefinedType):
         def process(value):
             if value is None:
                 return value
+            if not isinstance(value, uuid.UUID):
+                value = uuid.UUID(value)
+            if dialect.name == 'sqlite':
+                return value.bytes
+            elif dialect.name == 'postgresql':
+                return value
             else:
                 if not isinstance(value, uuid.UUID):
                     return uuid.UUID(value).bytes_le
                 else:
                     # hexstring
                     return value.bytes_le
+                raise RuntimeError(f'Unknown dialect {dialect.name}')
 
         return process
 
@@ -165,11 +172,15 @@ class UUID(UserDefinedType):
         def process(value):
             if value is None:
                 return value
-            else:
+            if dialect.name == 'sqlite':
                 if not isinstance(value, uuid.UUID):
                     return uuid.UUID(bytes_le=value)
                 else:
                     return value
+            elif dialect.name == 'postgresql':
+                return value
+            else:
+                raise RuntimeError(f'Unknown dialect {dialect.name}')
 
         return process
 
