@@ -55,6 +55,9 @@ class JSONCodeableType(UserDefinedType):
 
     def result_processor(self, dialect, coltype):
         def process(value):
+            if dialect.name == 'postgresql':
+                # postgresql doesn't need the value to be json decoded
+                return value
             return from_json(value)
 
         return process
