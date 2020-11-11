@@ -1,0 +1,160 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wildbook’s Image Analysis (IA) &#8212; Wildbook Image Analysis (IA)  documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="API" href="api.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="wildbook-s-image-analysis-ia">
+<h1>Wildbook’s Image Analysis (IA)<a class="headerlink" href="#wildbook-s-image-analysis-ia" title="Permalink to this headline">¶</a></h1>
+<p>For details about the Wildbook project see the <a class="reference external" href="https://wildme.org">Wild Me</a> website.</p>
+<p>Wildbook’s Image Analysis is colloquially known as Wildbook-IA and by developers as wbia (wib-ee-A). Any references to WBIA in this documentation should be assumed to therefore mean Wildbook-IA.</p>
+<p>The Wildbook-IA application is used for the storage, management and analysis of images and derived data used by computer vision algorithms. It aims to compute who an animal is, what species an animal is, and where an animal is with the ultimate goal being to ask important why biological questions.</p>
+<p>This project is the Machine Learning (ML) / computer vision component of the <a class="reference external" href="https://github.com/WildbookOrg/">WildBook project</a>. This project is an actively maintained fork of the popular IBEIS (Image Based Ecological Information System) software suite for wildlife conservation. The original IBEIS project is maintained by Jon Crall (&#64;Erotemic) at <a class="reference external" href="https://github.com/Erotemic/ibeis">https://github.com/Erotemic/ibeis</a>. The IBEIS toolkit originally was a wrapper around HotSpotter, which original binaries can be downloaded from: <a class="reference external" href="http://cs.rpi.edu/hotspotter/">http://cs.rpi.edu/hotspotter/</a></p>
+<p>Currently the system is build around and SQLite database, a web UI, and matplotlib visualizations. Algorithms employed are: convolutional neural network detection and localization and classification, hessian-affine keypoint detection, SIFT keypoint description, LNBNN identification using approximate nearest neighbors.</p>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="wbia.algo.html">wbia.algo package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wbia.control.html">wbia.control package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wbia.dbio.html">wbia.dbio package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wbia.detecttools.html">wbia.detecttools package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wbia.dtool.html">wbia.dtool package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wbia.expt.html">wbia.expt package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wbia.gui.html">wbia.gui package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wbia.guitool.html">wbia.guitool package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wbia.init.html">wbia.init package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wbia.other.html">wbia.other package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wbia.plottool.html">wbia.plottool package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wbia.scripts.html">wbia.scripts package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wbia.templates.html">wbia.templates package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wbia.viz.html">wbia.viz package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wbia.web.html">wbia.web package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#module-wbia.__main__">wbia.__main__</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#module-wbia._devcmds_wbia">wbia._devcmds_wbia</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#module-wbia._devscript">wbia._devscript</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#module-wbia._wbia_object">wbia._wbia_object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#module-wbia.annotmatch_funcs">wbia.annotmatch_funcs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#module-wbia.annots">wbia.annots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#module-wbia.constants">wbia.constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#module-wbia.core_annots">wbia.core_annots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#module-wbia.core_images">wbia.core_images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#module-wbia.core_parts">wbia.core_parts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#module-wbia.demodata">wbia.demodata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#module-wbia.dev">wbia.dev</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#module-wbia.filter_configs">wbia.filter_configs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#module-wbia.images">wbia.images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#module-wbia.params">wbia.params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#module-wbia.tag_funcs">wbia.tag_funcs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#module-wbia">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="#">Wildbook Image Analysis (IA)</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+      <li>Next: <a href="api.html" title="next chapter">API</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Wild Me.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
