@@ -1,5 +1,13 @@
 FROM wildme/wbia-dependencies:latest as org.wildme.wbia.provision
 
+ARG VERSION="3.3.0"
+
+ARG VCS_URL="https://github.com/WildbookOrg/wildbook-ia"
+
+ARG VCS_REF="develop"
+
+ARG BUILD_DATE="2020"
+
 # Set up xvfb for running gui doctests
 ENV DISPLAY :1
 
@@ -10,7 +18,7 @@ RUN set -ex \
 # Clone WBIA repository
 RUN set -ex \
  && cd /wbia \
- && git clone --branch develop https://github.com/WildbookOrg/wildbook-ia.git
+ && git clone --branch $VCS_REF $VCS_URL
 
 # Clone WBIA toolkit repositories
 RUN set -ex \
