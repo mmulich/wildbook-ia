@@ -67,7 +67,7 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GH_TOKEN }}
 
-      - name: Build and push
+      - name: Build and push wbia-base:nightly
         id: wbia_base_build
         uses: docker/build-push-action@v2
         with:
@@ -76,7 +76,7 @@ jobs:
           push: true
           tags: ghcr.io/mmulich/wbia-base:nightly
 
-      - name: Build and push
+      - name: Build and push wbia-dependencies:nightly
         id: wbia_dependencies_build
         uses: docker/build-push-action@v2
         with:
@@ -85,7 +85,7 @@ jobs:
           push: true
           tags: ghcr.io/mmulich/wbia-dependencies:nightly
 
-      - name: Build and push
+      - name: Build and push wbia-provision:nightly
         id: wbia_provision_build
         uses: docker/build-push-action@v2
         with:
@@ -94,7 +94,7 @@ jobs:
           push: true
           tags: ghcr.io/mmulich/wbia-provision:nightly
 
-      - name: Build and push
+      - name: Build and push wbia:nightly
         id: wbia_build
         uses: docker/build-push-action@v2
         with:
