@@ -43,9 +43,14 @@ jobs:
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
 
+
   wbia-base-image:
     name: Building mmulich/{wbia-base,wbia-dependencies,wbia-provision,wbia}:nightly
     runs-on: ubuntu-latest
+    outputs:
+      digest: ${{ steps.docker_build.outputs.digest }}
+      image-name: ghcr.io/mmulich/wbia-base@${{ steps.docker_build.outputs.digest }}
+      target-image-name: wildme/wbia-base:latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -118,6 +123,13 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GH_TOKEN }}
+      - name: Pull base image
+        env:
+          pulling-image: ${{ needs.wbia-base-image.outputs.image-name }}
+          tag-as: ${{ needs.wbia-base-image.outputs.target-image-name }}
+        run: |
+          docker pull ${{ env.pulling-image }}
+          docker tag ${{ env.pulling-image }} ${{ env.tag-as }}
       - name: Build and push wbia-dependencies:nightly
         id: docker_build
         uses: docker/build-push-action@v2
