@@ -130,6 +130,7 @@ jobs:
           pulling-image: ${{ needs.wbia-base-image.outputs.image-name }}
           tag-as: ${{ needs.wbia-base-image.outputs.target-image-name }}
         run: |
+          set -ex
           docker pull ${{ env.pulling-image }}
           docker tag ${{ env.pulling-image }} ${{ env.tag-as }}
       - name: Build and push wbia-dependencies:nightly
