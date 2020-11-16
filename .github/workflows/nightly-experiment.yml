@@ -166,12 +166,14 @@ jobs:
       - name: Cache Docker layers
         uses: actions/cache@v2
         env:
-          cache-name: cache-provision
+          # Base the cache on the previous image's build
+          # Cache invalidation when the previous image changes, to prevent building up unused layers in the cache
+          # or when any file in the 'devops' directory changes
+          cache-name: cache-provision-${{ needs.wbia-dependencies-image.outputs.digest }}-${{ hashFiles('devops/provision/**') }}
         with:
           path: /tmp/.buildx-cache
-          # Cache invalidated when any file in the 'devops' directory changes
-          key: ${{ runner.os }}-buildx-${{ env.cache-name }}-${{ hashFiles('devops/provision/**') }}
-          restore-keys: ${{ runner.os }}-buildx-${{ env.cache-name }}-${{ hashFiles('devops/provision/**') }}
+          key: ${{ runner.os }}-buildx-${{ env.cache-name }}
+          restore-keys: ${{ runner.os }}-buildx-${{ env.cache-name }}
       # - name: Login to DockerHub
       #   uses: docker/login-action@v1
       #   with:
@@ -215,12 +217,14 @@ jobs:
       - name: Cache Docker layers
         uses: actions/cache@v2
         env:
-          cache-name: cache-provision
+          # Base the cache on the previous image's build
+          # Cache invalidation when the previous image changes, to prevent building up unused layers in the cache
+          # or when any file in the 'devops' directory changes
+          cache-name: cache-wbia-${{ needs.wbia-base-image.outputs.digest }}-${{ needs.wbia-base-image.outputs.digest }}-${{ hashFiles('devops/**') }}
         with:
           path: /tmp/.buildx-cache
-          # Cache invalidated when any file in the 'devops' directory changes
-          key: ${{ runner.os }}-buildx-${{ env.cache-name }}-${{ hashFiles('devops/**') }}
-          restore-keys: ${{ runner.os }}-buildx-${{ env.cache-name }}-${{ hashFiles('devops/**') }}
+          key: ${{ runner.os }}-buildx-${{ env.cache-name }}
+          restore-keys: ${{ runner.os }}-buildx-${{ env.cache-name }}
       # - name: Login to DockerHub
       #   uses: docker/login-action@v1
       #   with:
