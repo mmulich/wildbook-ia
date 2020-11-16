@@ -163,17 +163,17 @@ jobs:
         uses: docker/setup-qemu-action@v1
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
-      - name: Cache Docker layers
-        uses: actions/cache@v2
-        env:
-          # Base the cache on the previous image's build
-          # Cache invalidation when the previous image changes, to prevent building up unused layers in the cache
-          # or when any file in the 'devops' directory changes
-          cache-name: cache-provision-${{ needs.wbia-dependencies-image.outputs.digest }}-${{ hashFiles('devops/provision/**') }}
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ env.cache-name }}
-          restore-keys: ${{ runner.os }}-buildx-${{ env.cache-name }}
+      # - name: Cache Docker layers
+      #   uses: actions/cache@v2
+      #   env:
+      #     # Base the cache on the previous image's build
+      #     # Cache invalidation when the previous image changes, to prevent building up unused layers in the cache
+      #     # or when any file in the 'devops' directory changes
+      #     cache-name: cache-provision-${{ needs.wbia-dependencies-image.outputs.digest }}-${{ hashFiles('devops/provision/**') }}
+      #   with:
+      #     path: /tmp/.buildx-cache
+      #     key: ${{ runner.os }}-buildx-${{ env.cache-name }}
+      #     restore-keys: ${{ runner.os }}-buildx-${{ env.cache-name }}
       # - name: Login to DockerHub
       #   uses: docker/login-action@v1
       #   with:
@@ -197,8 +197,8 @@ jobs:
             FROM_BASE=${{ needs.wbia-dependencies-image.outputs.fq-image-name }}
             VCS_REF=fix-nightly
             VCS_URL=https://github.com/mmulich/wildbook-ia
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache
+          # cache-from: type=local,src=/tmp/.buildx-cache
+          # cache-to: type=local,dest=/tmp/.buildx-cache
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
 
@@ -220,7 +220,7 @@ jobs:
           # Base the cache on the previous image's build
           # Cache invalidation when the previous image changes, to prevent building up unused layers in the cache
           # or when any file in the 'devops' directory changes
-          cache-name: cache-wbia-${{ needs.wbia-base-image.outputs.digest }}-${{ needs.wbia-base-image.outputs.digest }}-${{ hashFiles('devops/**') }}
+          cache-name: cache-wbia-${{ needs.wbia-base-image.outputs.digest }}-${{ needs.wbia-provision-image.outputs.digest }}-${{ hashFiles('devops/**') }}
         with:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-${{ env.cache-name }}
