@@ -10,7 +10,7 @@ RUN set -ex \
  && find /wbia/wbia* -name '.git' -type d -print0 | xargs -0 -i /bin/bash -c \
     'cd {} && cd .. && echo $(pwd) && (git stash && git pull && git stash pop || git reset --hard origin/develop)' \
  && find /wbia/wildbook* -name '.git' -type d -print0 | xargs -0 -i /bin/bash -c \
-    'cd {} && cd .. && echo $(pwd) && (git stash && git pull && git stash pop || git reset --hard origin/develop)' \
+    'cd {} && cd .. && echo $(pwd) && (git stash && git pull && git stash pop || git reset --hard origin/master)' \
  && cd /wbia/wbia-plugin-curvrank/wbia_curvrank \
  && git stash && git pull && git stash pop || git reset --hard origin/develop \
  && cd /wbia/wbia-plugin-kaggle7/wbia_kaggle7 \
