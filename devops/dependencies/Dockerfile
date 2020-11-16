@@ -1,4 +1,6 @@
-FROM wildme/wbia-base:latest as org.wildme.wbia.dependencies
+ARG FROM_BASE=wildme/wbia-base:latest
+
+FROM $FROM_BASE as org.wildme.wbia.dependencies
 
 ARG OPENCV_VERSION=3.4.11
 

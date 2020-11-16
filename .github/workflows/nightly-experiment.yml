@@ -141,6 +141,8 @@ jobs:
           file: ./devops/dependencies/Dockerfile
           push: true
           tags: ghcr.io/mmulich/wbia-dependencies:nightly
+          build-args: |
+            FROM_BASE=${{ needs.wbia-base-image.outputs.image-name }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
       - name: Image digest
