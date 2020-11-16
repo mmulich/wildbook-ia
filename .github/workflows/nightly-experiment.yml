@@ -49,6 +49,8 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       digest: ${{ steps.docker_build.outputs.digest }}
+      # TODO: Shorten the digest so that cach-names that use it aren't as long.
+      # short-digest: ${{ ... }}
       image-name: ghcr.io/mmulich/wbia-base
       # fully qualified image name
       fq-image-name: ghcr.io/mmulich/wbia-base@${{ steps.docker_build.outputs.digest }}
@@ -115,6 +117,7 @@ jobs:
           # Base the cache on the previous image's build
           # Cache invalidation when the previous image changes, to prevent building up unused layers in the cache
           # or when any file in the 'devops' directory changes
+          # TODO: Cache invalidation based on date, where every 7 days (Sunday preferably) the cache becomes stale.
           cache-name: cache-dependencies-${{ needs.wbia-base-image.outputs.digest }}-${{ hashFiles('devops/dependencies/**') }}
         with:
           path: /tmp/.buildx-cache
