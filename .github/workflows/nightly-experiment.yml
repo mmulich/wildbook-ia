@@ -102,6 +102,10 @@ jobs:
           file: ./devops/Dockerfile
           push: true
           tags: ghcr.io/mmulich/wbia:nightly
+          build-args: |
+            VCS_REF=fix-nightly
+            VCS_URL="https://github.com/mmulich/wildbook-ia"
+
 
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
