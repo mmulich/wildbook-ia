@@ -106,12 +106,14 @@ jobs:
       - name: Cache Docker layers
         uses: actions/cache@v2
         env:
-          cache-name: cache-dependencies
+          # Base the cache on the previous image's build
+          # Cache invalidation when the previous image changes, to prevent building up unused layers in the cache
+          # or when any file in the 'devops' directory changes
+          cache-name: cache-dependencies-${{ needs.wbia-base-image.outputs.digest }}-${{ hashFiles('devops/dependencies/**') }}
         with:
           path: /tmp/.buildx-cache
-          # Cache invalidated when any file in the 'devops' directory changes
-          key: ${{ runner.os }}-buildx-${{ env.cache-name }}-${{ hashFiles('devops/dependencies/**') }}
-          restore-keys: ${{ runner.os }}-buildx-${{ env.cache-name }}-${{ hashFiles('devops/dependencies/**') }}
+          key: ${{ runner.os }}-buildx-${{ env.cache-name }}
+          restore-keys: ${{ runner.os }}-buildx-${{ env.cache-name }}
       # - name: Login to DockerHub
       #   uses: docker/login-action@v1
       #   with:
