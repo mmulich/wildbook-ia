@@ -49,8 +49,9 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       digest: ${{ steps.docker_build.outputs.digest }}
-      image-name: ghcr.io/mmulich/wbia-base@${{ steps.docker_build.outputs.digest }}
-      target-image-name: docker.io/wildme/wbia-base:latest
+      image-name: ghcr.io/mmulich/wbia-base
+      # fully qualified image name
+      fq-image-name: ghcr.io/mmulich/wbia-base@${{ steps.docker_build.outputs.digest }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -96,6 +97,11 @@ jobs:
     name: Building mmulich/wbia-dependencies:nightly
     runs-on: ubuntu-latest
     needs: [ wbia-base-image ]
+    outputs:
+      digest: ${{ steps.docker_build.outputs.digest }}
+      image-name: ghcr.io/mmulich/wbia-dependencies
+      # fully qualified image name
+      fq-image-name: ghcr.io/mmulich/wbia-dependencies@${{ steps.docker_build.outputs.digest }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -125,14 +131,6 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GH_TOKEN }}
-      - name: Pull base image
-        env:
-          pulling-image: ${{ needs.wbia-base-image.outputs.image-name }}
-          tag-as: ${{ needs.wbia-base-image.outputs.target-image-name }}
-        run: |
-          set -ex
-          docker pull ${{ env.pulling-image }}
-          docker tag ${{ env.pulling-image }} ${{ env.tag-as }}
       - name: Build and push wbia-dependencies:nightly
         id: docker_build
         uses: docker/build-push-action@v2
@@ -142,7 +140,7 @@ jobs:
           push: true
           tags: ghcr.io/mmulich/wbia-dependencies:nightly
           build-args: |
-            FROM_BASE=${{ needs.wbia-base-image.outputs.image-name }}
+            FROM_BASE=${{ needs.wbia-base-image.outputs.fq-image-name }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
       - name: Image digest
@@ -153,6 +151,11 @@ jobs:
     name: Building mmulich/wbia-provision:nightly
     runs-on: ubuntu-latest
     needs: [ wbia-dependencies-image ]
+    outputs:
+      digest: ${{ steps.docker_build.outputs.digest }}
+      image-name: ghcr.io/mmulich/wbia-provision
+      # fully qualified image name
+      fq-image-name: ghcr.io/mmulich/wbia-provision@${{ steps.docker_build.outputs.digest }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -189,6 +192,7 @@ jobs:
           push: true
           tags: ghcr.io/mmulich/wbia-provision:nightly
           build-args: |
+            FROM_BASE=${{ needs.wbia-dependencies-image.outputs.fq-image-name }}
             VCS_REF=fix-nightly
             VCS_URL=https://github.com/mmulich/wildbook-ia
           cache-from: type=local,src=/tmp/.buildx-cache
@@ -200,7 +204,7 @@ jobs:
   wbia-image:
     name: Building mmulich/wbia:nightly
     runs-on: ubuntu-latest
-    needs: [ wbia-provision-image ]
+    needs: [ wbia-base-image, wbia-provision-image ]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -236,6 +240,9 @@ jobs:
           file: ./devops/Dockerfile
           push: true
           tags: ghcr.io/mmulich/wbia:nightly
+          build-args: |
+            WBIA_BASE=${{ needs.wbia-base-image.outputs.fq-image-name }}
+            WBIA_PROVISION=${{ needs.wbia-provision-image.outputs.fq-image-name }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
       - name: Image digest

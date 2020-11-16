@@ -1,4 +1,6 @@
-FROM wildme/wbia-dependencies:latest as org.wildme.wbia.provision
+ARG FROM_BASE=wildme/wbia-dependencies:latest
+
+FROM $FROM_BASE as org.wildme.wbia.provision
 
 ARG VERSION="3.3.0"
 
