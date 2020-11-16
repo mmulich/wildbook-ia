@@ -45,7 +45,7 @@ jobs:
 
 
   wbia-base-image:
-    name: Building mmulich/{wbia-base,wbia-dependencies,wbia-provision,wbia}:nightly
+    name: Building mmulich/wbia-base
     runs-on: ubuntu-latest
     outputs:
       digest: ${{ steps.docker_build.outputs.digest }}
