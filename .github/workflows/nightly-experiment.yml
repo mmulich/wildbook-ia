@@ -50,7 +50,7 @@ jobs:
     outputs:
       digest: ${{ steps.docker_build.outputs.digest }}
       image-name: ghcr.io/mmulich/wbia-base@${{ steps.docker_build.outputs.digest }}
-      target-image-name: wildme/wbia-base:latest
+      target-image-name: docker.io/wildme/wbia-base:latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
