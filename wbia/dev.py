@@ -49,6 +49,7 @@ else:
     )
     sentry_sdk.init(
         dsn=dsn,
+        traces_sample_rate=1,
         integrations=[FlaskIntegration()],
     )
     del dsn
