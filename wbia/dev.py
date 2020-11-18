@@ -47,9 +47,13 @@ else:
         'WBIA_SENTRY_DSN',
         default='https://30f53fef7e7d44bc8b9446f05cf90dd7@sentry.dyn.wildme.io/2',
     )
+    from wbia import __version__
+
     sentry_sdk.init(
         dsn=dsn,
         traces_sample_rate=1,
+        release=f'wildbook-ia@{__version__}',
+        environment='flukebook-testing',
         integrations=[FlaskIntegration()],
     )
     del dsn
