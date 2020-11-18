@@ -97,6 +97,11 @@ def start_tornado(
         # Get Flask app
         app = controller_inject.get_flask_app()
 
+        @app.route('/debug-sentry')
+        def trigger_error():
+            division_by_zero = 1 / 0
+            return division_by_zero
+
         app.ibs = ibs_
         # Try to ascertain the socket's domain name
         socket.setdefaulttimeout(0.1)
