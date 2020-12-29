@@ -979,7 +979,7 @@ class SQLDatabaseController(object):
         # get_rowid_from_superkey functions take each list separately here
         rowid_list_ = get_rowid_from_superkey(*superkey_lists)
         isnew_list = [rowid is None for rowid in rowid_list_]
-        if VERBOSE_SQL and not all(isunique_list):
+        if not all(isunique_list):
             logger.info('[WARNING]: duplicate inputs to db.add_cleanly')
         # Flag each item that needs to added to the database
         needsadd_list = list(map(all, zip(isvalid_list, isunique_list, isnew_list)))
@@ -988,11 +988,9 @@ class SQLDatabaseController(object):
             return rowid_list_  # There is nothing to add. Return the rowids
         # ADD_CLEANLY_3.2: PERFORM DIRTY ADDITIONS
         dirty_params = ut.compress(params_list, needsadd_list)
-        if ut.VERBOSE:
-            logger.info(
-                '[sql] adding %r/%r new %s'
-                % (len(dirty_params), len(params_list), tblname)
-            )
+        logger.info(
+            '[sql] adding %r/%r new %s' % (len(dirty_params), len(params_list), tblname)
+        )
         # Add any unadded parameters to the database
         try:
             self._add(tblname, colnames, dirty_params, **kwargs)
