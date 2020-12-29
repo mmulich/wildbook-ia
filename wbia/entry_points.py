@@ -317,17 +317,8 @@ def opendb_in_background(*args, **kwargs):
     """
     Starts a web server in the background
     """
-    import utool as ut
-    import time
-
-    sec = kwargs.pop('wait', 0)
-    if sec != 0:
-        raise AssertionError('wait is depricated')
-        logger.info('waiting %s seconds for startup' % (sec,))
-    proc = ut.spawn_background_process(opendb, *args, **kwargs)
-    if sec != 0:
-        raise AssertionError('wait is depricated')
-        time.sleep(sec)  # wait for process to initialize
+    proc = multiprocessing.Process(target=opendb, args=args, kwargs=kwargs)
+    proc.start()
     return proc
 
 
@@ -369,12 +360,6 @@ def opendb_bg_web(*args, managed=False, **kwargs):
     domain = kwargs.pop('domain', ut.get_argval('--domain', type_=str, default=None))
     port = kwargs.pop('port', appfuncs.DEFAULT_WEB_API_PORT)
 
-    if 'wait' in kwargs:
-        logger.info(
-            'NOTE: No need to specify wait param anymore. '
-            'This is automatically taken care of.'
-        )
-
     if domain is None:
         # Requesting a local test server
         _kw = dict(web=True, browser=False)
@@ -383,7 +368,7 @@ def opendb_bg_web(*args, managed=False, **kwargs):
     else:
         # Using a remote controller, no need to spin up anything
         web_ibs = ut.DynStruct()
-        web_ibs.terminate2 = lambda: None
+        web_ibs.terminate = lambda: None
     # Augment web instance with usefull test functions
     if domain is None:
         domain = 'http://127.0.1.1'
@@ -470,24 +455,37 @@ def opendb_bg_web(*args, managed=False, **kwargs):
     def wait_until_started():
         """ waits until the web server responds to a request """
         import requests
+        import time
 
-        for count in ut.delayed_retry_gen([1], timeout=15):
-            if True or ut.VERBOSE:
-                logger.info('Waiting for server to be up. count=%r' % (count,))
+        if not web_ibs.is_alive():
+            raise Exception('background process is dead...')
+        count = 0
+        max_retries = 15
+        while count < max_retries:
+            logger.info('Waiting for server to be up. count=%r' % (count,))
             try:
                 web_ibs.send_wbia_request('/api/test/heartbeat/', type_='get')
                 break
             except requests.ConnectionError:
                 pass
-
-    wait_until_started()
+            time.sleep(1)
+            count += 1
+        if count >= max_retries:
+            logging.error(
+                f"Couldn't connect to http process. Is process alive? ... {web_ibs.is_alive()}"
+            )
+            raise TimeoutError()
 
     @contextmanager
     def managed_server():
         try:
             yield web_ibs
         finally:
-            web_ibs.terminate2()
+            web_ibs.terminate()
+
+    # Block until the process is running
+    with managed_server():
+        wait_until_started()
 
     if managed:
         return managed_server()
