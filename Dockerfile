@@ -115,6 +115,9 @@ RUN set -x \
 
 # Visual install verification of the OpenCV2 Python buildings
 RUN python3 -c "import cv2; print(cv2.getBuildInformation())"
+# Set the workdir for the application
+RUN set -x \
+    && python3 -m wbia.dev --set-workdir /data
 
 # Ports for the frontend web server
 EXPOSE 5000
