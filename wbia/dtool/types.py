@@ -157,8 +157,9 @@ class UUID(UserDefinedType):
                 return value
             if not isinstance(value, uuid.UUID):
                 value = uuid.UUID(value)
+
             if dialect.name == 'sqlite':
-                return value.bytes
+                return value.bytes_le
             elif dialect.name == 'postgresql':
                 return value
             else:
