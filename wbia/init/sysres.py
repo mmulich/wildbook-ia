@@ -62,15 +62,12 @@ def get_default_dbdir():
     return dbdir
 
 
-def get_workdir(allow_gui=True):
+def get_workdir(allow_gui=None):
     """
-    Returns the work directory set for this computer.  If allow_gui is true,
-    a dialog will ask a user to specify the workdir if it does not exist.
-
-    python -c "import wbia; print(wbia.get_workdir())"
+    Returns the work directory set for this computer.
 
     Args:
-        allow_gui (bool): (default = True)
+        allow_gui: deprecated; no-op
 
     Returns:
         str: work_dir
@@ -81,18 +78,14 @@ def get_workdir(allow_gui=True):
     Example:
         >>> # ENABLE_DOCTEST
         >>> from wbia.init.sysres import *  # NOQA
-        >>> allow_gui = True
-        >>> work_dir = get_workdir(allow_gui)
-        >>> result = ('work_dir = %s' % (str(work_dir),))
-        >>> print(result)
+        >>> get_workdir()
+        '.'
+
     """
     work_dir = _wbia_cache_read(WORKDIR_CACHEID, default='.')
     logger.info('[wbia.sysres.get_workdir] work_dir = {!r}'.format(work_dir))
-    if work_dir != '.' and exists(work_dir):
+    if exists(work_dir):
         return work_dir
-    if allow_gui:
-        work_dir = set_workdir()
-        return get_workdir(allow_gui=False)
     return None
 
 
