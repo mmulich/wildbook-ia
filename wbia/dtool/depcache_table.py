@@ -59,6 +59,26 @@ CONFIG_DICT = 'config_dict'
 GRACE_PERIOD = ut.get_argval('--grace', type_=int, default=0)
 
 
+class TableOutOfSyncError(Exception):
+    """Raised when the code's table definition doesn't match the defition in the database"""
+
+    def __init__(self, db, tablename, extended_msg):
+        db_name = db._engine.url.database
+
+        if getattr(db, 'schema', None):
+            under_schema = f"under schema '{db.schema}' "
+        else:
+            # Not a table under a schema
+            under_schema = ''
+        msg = (
+            f"database '{db_name}' "
+            + under_schema
+            + "with table '{tablename}' does not match the code definition; "
+            f"it's likely the database needs upgraded; {extended_msg}"
+        )
+        super().__init__(msg)
+
+
 class ExternType(ub.NiceRepr):
     """
     Type to denote an external resource not saved in an SQL table
@@ -162,11 +182,8 @@ def ensure_config_table(db):
         if not compare_coldef_lists(
             current_state['coldef_list'], new_state['coldef_list']
         ):
-            if predrop_grace_period(CONFIG_TABLE):
-                db.drop_all_tables()
-                db.add_table(**new_state)
-            else:
-                raise NotImplementedError('Need to be able to modify tables')
+            # TODO Say what the difference is...
+            raise TableOutOfSyncError(db, CONFIG_TABLE)
 
 
 @ut.reloadable_class
@@ -2001,11 +2018,8 @@ class DependencyCacheTable(
             if not compare_coldef_lists(
                 current_state['coldef_list'], new_state['coldef_list']
             ):
-                logger.info('WARNING TABLE IS MODIFIED')
-                if predrop_grace_period(self.tablename):
-                    self.clear_table()
-                else:
-                    raise NotImplementedError('Need to be able to modify tables')
+                # TODO Say what the difference is...
+                raise TableOutOfSyncError(self.db, self.tablename)
 
     def _get_addtable_kw(self):
         """
