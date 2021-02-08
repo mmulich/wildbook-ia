@@ -12,7 +12,6 @@
     <script src="../../../../_static/jquery.js"></script>
     <script src="../../../../_static/underscore.js"></script>
     <script src="../../../../_static/doctools.js"></script>
-    <script src="../../../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
    
@@ -277,10 +276,8 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">aug_edges</span><span class="p">):</span>
                 <span class="k">yield</span> <span class="n">edge</span>
-        <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
-            <span class="k">pass</span>
         <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">:</span>
-            <span class="k">pass</span>
+            <span class="k">return</span>
     <span class="k">except</span> <span class="n">nx</span><span class="o">.</span><span class="n">NetworkXUnfeasible</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">partial</span><span class="p">:</span>
             <span class="c1"># Return all available edges</span>
@@ -295,10 +292,8 @@
             <span class="k">try</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">aug_edges</span><span class="p">:</span>
                     <span class="k">yield</span> <span class="n">edge</span>
-            <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
-                <span class="k">pass</span>
             <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">:</span>
-                <span class="k">pass</span>
+                <span class="k">return</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span></div>
 
@@ -1193,7 +1188,7 @@
       &copy;2020, Wild Me.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.3</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

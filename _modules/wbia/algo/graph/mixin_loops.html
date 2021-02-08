@@ -12,7 +12,6 @@
     <script src="../../../../_static/jquery.js"></script>
     <script src="../../../../_static/underscore.js"></script>
     <script src="../../../../_static/doctools.js"></script>
-    <script src="../../../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
    
@@ -120,31 +119,22 @@
             <span class="c1"># quick startup. Yield a bunch of random edges</span>
             <span class="n">num</span> <span class="o">=</span> <span class="n">infr</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;manual.n_peek&#39;</span><span class="p">]</span>
             <span class="n">user_request</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">ut</span><span class="o">.</span><span class="n">random_combinations</span><span class="p">(</span><span class="n">infr</span><span class="o">.</span><span class="n">aids</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="n">num</span><span class="p">):</span>
-                    <span class="n">user_request</span> <span class="o">+=</span> <span class="p">[</span><span class="n">infr</span><span class="o">.</span><span class="n">_make_review_tuple</span><span class="p">(</span><span class="n">edge</span><span class="p">,</span> <span class="kc">None</span><span class="p">)]</span>
-                    <span class="k">yield</span> <span class="n">user_request</span>
-            <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
-                <span class="k">pass</span>
+            <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">ut</span><span class="o">.</span><span class="n">random_combinations</span><span class="p">(</span><span class="n">infr</span><span class="o">.</span><span class="n">aids</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="n">num</span><span class="p">):</span>
+                <span class="n">user_request</span> <span class="o">+=</span> <span class="p">[</span><span class="n">infr</span><span class="o">.</span><span class="n">_make_review_tuple</span><span class="p">(</span><span class="n">edge</span><span class="p">,</span> <span class="kc">None</span><span class="p">)]</span>
+                <span class="k">yield</span> <span class="n">user_request</span>
 
         <span class="k">if</span> <span class="n">infr</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;algo.hardcase&#39;</span><span class="p">]:</span>
             <span class="n">infr</span><span class="o">.</span><span class="n">loop_phase</span> <span class="o">=</span> <span class="s1">&#39;hardcase_init&#39;</span>
             <span class="c1"># Check previously labeled edges that where the groundtruth and the</span>
             <span class="c1"># verifier disagree.</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">infr</span><span class="o">.</span><span class="n">hardcase_review_gen</span><span class="p">():</span>
-                    <span class="k">yield</span> <span class="n">_</span>
-            <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
-                <span class="k">pass</span>
+            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">infr</span><span class="o">.</span><span class="n">hardcase_review_gen</span><span class="p">():</span>
+                <span class="k">yield</span> <span class="n">_</span>
 
         <span class="k">if</span> <span class="n">infr</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;inference.enabled&#39;</span><span class="p">]:</span>
             <span class="n">infr</span><span class="o">.</span><span class="n">loop_phase</span> <span class="o">=</span> <span class="s1">&#39;incon_recover_init&#39;</span>
             <span class="c1"># First, fix any inconsistencies</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">infr</span><span class="o">.</span><span class="n">incon_recovery_gen</span><span class="p">():</span>
-                    <span class="k">yield</span> <span class="n">_</span>
-            <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
-                <span class="k">pass</span>
+            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">infr</span><span class="o">.</span><span class="n">incon_recovery_gen</span><span class="p">():</span>
+                <span class="k">yield</span> <span class="n">_</span>
 
         <span class="c1"># Phase 0.2: Ensure positive redundancy (this is generally quick)</span>
         <span class="c1"># so the user starts seeing real work after one random review is made</span>
@@ -161,16 +151,12 @@
         <span class="n">infr</span><span class="o">.</span><span class="n">phase</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="k">if</span> <span class="n">infr</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;ranking.enabled&#39;</span><span class="p">]:</span>
             <span class="k">for</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">it</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="mi">0</span><span class="p">):</span>
-
                 <span class="n">infr</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="s1">&#39;Outer loop iter </span><span class="si">%d</span><span class="s1"> &#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">count</span><span class="p">,))</span>
 
                 <span class="c1"># Phase 1: Try to merge PCCs by searching for LNBNN candidates</span>
                 <span class="n">infr</span><span class="o">.</span><span class="n">loop_phase</span> <span class="o">=</span> <span class="s1">&#39;ranking_</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">count</span><span class="p">)</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">infr</span><span class="o">.</span><span class="n">ranked_list_gen</span><span class="p">(</span><span class="n">use_refresh</span><span class="p">):</span>
-                        <span class="k">yield</span> <span class="n">_</span>
-                <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
-                    <span class="k">pass</span>
+                <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">infr</span><span class="o">.</span><span class="n">ranked_list_gen</span><span class="p">(</span><span class="n">use_refresh</span><span class="p">):</span>
+                    <span class="k">yield</span> <span class="n">_</span>
 
                 <span class="n">terminate</span> <span class="o">=</span> <span class="n">infr</span><span class="o">.</span><span class="n">refresh</span><span class="o">.</span><span class="n">num_meaningful</span> <span class="o">==</span> <span class="mi">0</span>
                 <span class="k">if</span> <span class="n">terminate</span><span class="p">:</span>
@@ -181,11 +167,8 @@
                 <span class="n">infr</span><span class="o">.</span><span class="n">loop_phase</span> <span class="o">=</span> <span class="s1">&#39;posredun_</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">count</span><span class="p">)</span>
                 <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">ut</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">infr</span><span class="o">.</span><span class="n">params</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;redun.enabled&#39;</span><span class="p">,</span> <span class="s1">&#39;redun.enforce_pos&#39;</span><span class="p">])):</span>
                     <span class="c1"># Fix positive redundancy of anything within the loop</span>
-                    <span class="k">try</span><span class="p">:</span>
-                        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">infr</span><span class="o">.</span><span class="n">pos_redun_gen</span><span class="p">():</span>
-                            <span class="k">yield</span> <span class="n">_</span>
-                    <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
-                        <span class="k">pass</span>
+                    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">infr</span><span class="o">.</span><span class="n">pos_redun_gen</span><span class="p">():</span>
+                        <span class="k">yield</span> <span class="n">_</span>
 
                 <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;prob_any_remain = </span><span class="si">%r</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">infr</span><span class="o">.</span><span class="n">refresh</span><span class="o">.</span><span class="n">prob_any_remain</span><span class="p">(),))</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
@@ -209,18 +192,17 @@
             <span class="c1"># asking the user to do anything but resolve inconsistency.</span>
             <span class="n">infr</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="s1">&#39;Entering phase 3&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
             <span class="n">infr</span><span class="o">.</span><span class="n">loop_phase</span> <span class="o">=</span> <span class="s1">&#39;negredun&#39;</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">infr</span><span class="o">.</span><span class="n">neg_redun_gen</span><span class="p">():</span>
-                    <span class="k">yield</span> <span class="n">_</span>
-            <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
-                <span class="k">pass</span>
+            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">infr</span><span class="o">.</span><span class="n">neg_redun_gen</span><span class="p">():</span>
+                <span class="k">yield</span> <span class="n">_</span>
 
         <span class="n">infr</span><span class="o">.</span><span class="n">phase</span> <span class="o">=</span> <span class="mi">4</span>
         <span class="n">infr</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="s1">&#39;Terminate&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
         <span class="n">infr</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="s1">&#39;Exiting main loop&#39;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">infr</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;inference.enabled&#39;</span><span class="p">]:</span>
-            <span class="n">infr</span><span class="o">.</span><span class="n">assert_consistency_invariant</span><span class="p">()</span></div>
+            <span class="n">infr</span><span class="o">.</span><span class="n">assert_consistency_invariant</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="s1">&#39;finished&#39;</span></div>
 
 <div class="viewcode-block" id="InfrLoops.hardcase_review_gen"><a class="viewcode-back" href="../../../../wbia.algo.graph.html#wbia.algo.graph.mixin_loops.InfrLoops.hardcase_review_gen">[docs]</a>    <span class="k">def</span> <span class="nf">hardcase_review_gen</span><span class="p">(</span><span class="n">infr</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -536,13 +518,11 @@
 <span class="sd">        or assert not any(infr.main_gen())</span>
 <span class="sd">        maybe this is fine.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">()</span>
         <span class="n">infr</span><span class="o">.</span><span class="n">start_id_review</span><span class="p">(</span><span class="n">max_loops</span><span class="o">=</span><span class="n">max_loops</span><span class="p">,</span> <span class="n">use_refresh</span><span class="o">=</span><span class="n">use_refresh</span><span class="p">)</span>
         <span class="c1"># To automatically run through the loop just exhaust the generator</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">result</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">infr</span><span class="o">.</span><span class="n">_gen</span><span class="p">)</span>
-            <span class="k">assert</span> <span class="n">result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;need user interaction. cannot auto loop&#39;</span>
-        <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
-            <span class="k">pass</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">infr</span><span class="o">.</span><span class="n">_gen</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;need user interaction. cannot auto loop&#39;</span>
         <span class="n">infr</span><span class="o">.</span><span class="n">_gen</span> <span class="o">=</span> <span class="kc">None</span></div></div>
 
 
@@ -691,14 +671,30 @@
         <span class="n">infr</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="s1">&#39;continue_review&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">infr</span><span class="o">.</span><span class="n">_gen</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">user_request</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">infr</span><span class="o">.</span><span class="n">_gen</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+
+        <span class="n">hungry</span><span class="p">,</span> <span class="n">finished</span><span class="p">,</span> <span class="n">attempt</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="n">hungry</span><span class="p">:</span>
+            <span class="n">user_request</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">attempt</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">with</span> <span class="n">infr</span><span class="o">.</span><span class="n">_gen_lock</span><span class="p">:</span>
+                    <span class="n">user_request</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">infr</span><span class="o">.</span><span class="n">_gen</span><span class="p">)</span>
+                <span class="n">hungry</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="nb">isinstance</span><span class="p">(</span><span class="n">user_request</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">user_request</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;finished&#39;</span><span class="p">]</span>
+            <span class="p">)</span> <span class="ow">or</span> <span class="n">attempt</span> <span class="o">&gt;=</span> <span class="mi">100</span><span class="p">:</span>
+                <span class="n">hungry</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="n">finished</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">if</span> <span class="n">finished</span><span class="p">:</span>
             <span class="n">review_finished</span> <span class="o">=</span> <span class="n">infr</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;review_finished&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">review_finished</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">review_finished</span><span class="p">()</span>
             <span class="n">infr</span><span class="o">.</span><span class="n">_gen</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="n">user_request</span> <span class="o">=</span> <span class="kc">None</span>
+
         <span class="k">return</span> <span class="n">user_request</span></div>
 
 <div class="viewcode-block" id="InfrReviewers.qt_edge_reviewer"><a class="viewcode-back" href="../../../../wbia.algo.graph.html#wbia.algo.graph.mixin_loops.InfrReviewers.qt_edge_reviewer">[docs]</a>    <span class="k">def</span> <span class="nf">qt_edge_reviewer</span><span class="p">(</span><span class="n">infr</span><span class="p">,</span> <span class="n">edge</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -897,7 +893,7 @@
       &copy;2020, Wild Me.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.3</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

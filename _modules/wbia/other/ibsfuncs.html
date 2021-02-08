@@ -12,7 +12,6 @@
     <script src="../../../_static/jquery.js"></script>
     <script src="../../../_static/underscore.js"></script>
     <script src="../../../_static/doctools.js"></script>
-    <script src="../../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
    
@@ -51,6 +50,7 @@
 <span class="kn">import</span> <span class="nn">types</span>
 <span class="kn">import</span> <span class="nn">functools</span>
 <span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
 <span class="kn">from</span> <span class="nn">six.moves</span> <span class="kn">import</span> <span class="nb">zip</span><span class="p">,</span> <span class="nb">range</span><span class="p">,</span> <span class="nb">map</span><span class="p">,</span> <span class="n">reduce</span>
 <span class="kn">from</span> <span class="nn">os.path</span> <span class="kn">import</span> <span class="n">split</span><span class="p">,</span> <span class="n">join</span><span class="p">,</span> <span class="n">exists</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -80,6 +80,9 @@
 <span class="c1"># Inject utool function</span>
 <span class="p">(</span><span class="nb">print</span><span class="p">,</span> <span class="n">rrr</span><span class="p">,</span> <span class="n">profile</span><span class="p">)</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">inject2</span><span class="p">(</span><span class="vm">__name__</span><span class="p">,</span> <span class="s1">&#39;[ibsfuncs]&#39;</span><span class="p">)</span>
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;wbia&#39;</span><span class="p">)</span>
+
+<span class="c1"># logging.getLogger().setLevel(logging.DEBUG)</span>
+<span class="c1"># logger.setLevel(logging.DEBUG)</span>
 
 
 <span class="c1"># Must import class before injection</span>
@@ -183,6 +186,8 @@
 <span class="sd">        &gt;&gt;&gt; result = str(filtered_aid_list)</span>
 <span class="sd">        &gt;&gt;&gt; print(result)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">aid_list</span><span class="p">:</span>  <span class="c1"># no need to filter if empty</span>
+        <span class="k">return</span> <span class="n">aid_list</span>
     <span class="n">isjunk_list</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_isjunk</span><span class="p">(</span><span class="n">aid_list</span><span class="p">)</span>
     <span class="n">filtered_aid_list</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">filterfalse_items</span><span class="p">(</span><span class="n">aid_list</span><span class="p">,</span> <span class="n">isjunk_list</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">filtered_aid_list</span></div>
@@ -973,9 +978,7 @@
     <span class="sd">&quot;&quot;&quot; checks that all the aids grouped in a name ahave the same name &quot;&quot;&quot;</span>
     <span class="c1"># DEBUGGING CODE</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="kn">from</span> <span class="nn">wbia</span> <span class="kn">import</span> <span class="n">ibsfuncs</span>
-
-        <span class="n">_nids_list</span> <span class="o">=</span> <span class="n">ibsfuncs</span><span class="o">.</span><span class="n">unflat_map</span><span class="p">(</span><span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_name_rowids</span><span class="p">,</span> <span class="n">nx2_aids</span><span class="p">)</span>
+        <span class="n">_nids_list</span> <span class="o">=</span> <span class="n">unflat_map</span><span class="p">(</span><span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_name_rowids</span><span class="p">,</span> <span class="n">nx2_aids</span><span class="p">)</span>
         <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">ut</span><span class="o">.</span><span class="n">allsame</span><span class="p">,</span> <span class="n">_nids_list</span><span class="p">))</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
         <span class="c1"># THESE SHOULD BE CONSISTENT BUT THEY ARE NOT!!?</span>
@@ -1338,6 +1341,7 @@
         <span class="s1">&#39;./_ibsdb/_ibeis_cache/match_thumbs&#39;</span><span class="p">,</span>
         <span class="s1">&#39;./_ibsdb/_ibeis_cache/qres_new&#39;</span><span class="p">,</span>
         <span class="s1">&#39;./_ibsdb/_ibeis_cache/curvrank&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;./_ibsdb/_ibeis_cache/curvrank_v2&#39;</span><span class="p">,</span>
         <span class="s1">&#39;./_ibsdb/_ibeis_cache/pie_neighbors&#39;</span><span class="p">,</span>
     <span class="p">]</span>
 
@@ -3100,10 +3104,10 @@
 <span class="sd">        &gt;&gt;&gt; result = ut.repr4(names)</span>
 <span class="sd">        &gt;&gt;&gt; print(result)</span>
 <span class="sd">        (</span>
-<span class="sd">            [&#39;IBEIS_UNKNOWN_0008&#39;, &#39;IBEIS_PZ_0042&#39;, &#39;IBEIS_UNKNOWN_0004&#39;, &#39;IBEIS_GZ_0008&#39;],</span>
-<span class="sd">            [&#39;IBEIS_PZ_0042&#39;, &#39;IBEIS_PZ_0043&#39;, &#39;IBEIS_PZ_0044&#39;, &#39;IBEIS_PZ_0045&#39;, &#39;IBEIS_PZ_0046&#39;],</span>
-<span class="sd">            [&#39;IBEIS_PZ_0044&#39;, &#39;IBEIS_PZ_0045&#39;, &#39;IBEIS_PZ_0046&#39;, &#39;IBEIS_PZ_0047&#39;, &#39;IBEIS_PZ_0048&#39;],</span>
-<span class="sd">            [&#39;IBEIS_PZ_0042&#39;, &#39;IBEIS_PZ_0043&#39;, &#39;IBEIS_PZ_0044&#39;, &#39;IBEIS_PZ_0045&#39;, &#39;IBEIS_PZ_0046&#39;],</span>
+<span class="sd">            [&#39;IBEIS_UNKNOWN_0008&#39;, &#39;IBEIS_UNKNOWN_0042&#39;, &#39;IBEIS_UNKNOWN_0004&#39;, &#39;IBEIS_GZ_0008&#39;],</span>
+<span class="sd">            [&#39;IBEIS_UNKNOWN_0042&#39;, &#39;IBEIS_UNKNOWN_0043&#39;, &#39;IBEIS_UNKNOWN_0044&#39;, &#39;IBEIS_UNKNOWN_0045&#39;, &#39;IBEIS_UNKNOWN_0046&#39;],</span>
+<span class="sd">            [&#39;IBEIS_UNKNOWN_0044&#39;, &#39;IBEIS_UNKNOWN_0045&#39;, &#39;IBEIS_UNKNOWN_0046&#39;, &#39;IBEIS_UNKNOWN_0047&#39;, &#39;IBEIS_UNKNOWN_0048&#39;],</span>
+<span class="sd">            [&#39;IBEIS_UNKNOWN_0042&#39;, &#39;IBEIS_UNKNOWN_0043&#39;, &#39;IBEIS_UNKNOWN_0044&#39;, &#39;IBEIS_UNKNOWN_0045&#39;, &#39;IBEIS_UNKNOWN_0046&#39;],</span>
 <span class="sd">        )</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -3645,15 +3649,12 @@
             <span class="k">return</span> <span class="s1">&#39;zebra_grevys&#39;</span>
     <span class="k">if</span> <span class="n">aid_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">aid_list</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_valid_aids</span><span class="p">(</span><span class="n">is_staged</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
-    <span class="n">species_list</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_species_texts</span><span class="p">(</span><span class="n">aid_list</span><span class="p">)</span>
-    <span class="n">species_hist</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">dict_hist</span><span class="p">(</span><span class="n">species_list</span><span class="p">)</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">species_hist</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+
+    <span class="n">species_count</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_database_species_count</span><span class="p">(</span><span class="n">aid_list</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">species_count</span><span class="p">:</span>
         <span class="n">primary_species</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">UNKNOWN</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">frequent_species</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
-            <span class="n">species_hist</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">item</span><span class="p">:</span> <span class="n">item</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span>
-        <span class="p">)</span>
-        <span class="n">primary_species</span> <span class="o">=</span> <span class="n">frequent_species</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">primary_species</span> <span class="o">=</span> <span class="n">species_count</span><span class="o">.</span><span class="n">popitem</span><span class="p">(</span><span class="n">last</span><span class="o">=</span><span class="kc">False</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># FIFO</span>
     <span class="k">return</span> <span class="n">primary_species</span></div>
 
 
@@ -3684,7 +3685,7 @@
 
 
 <div class="viewcode-block" id="get_database_species_count"><a class="viewcode-back" href="../../../wbia.other.html#wbia.other.ibsfuncs.get_database_species_count">[docs]</a><span class="nd">@register_ibs_method</span>
-<span class="k">def</span> <span class="nf">get_database_species_count</span><span class="p">(</span><span class="n">ibs</span><span class="p">,</span> <span class="n">aid_list</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">get_database_species_count</span><span class="p">(</span><span class="n">ibs</span><span class="p">,</span> <span class="n">aid_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">BATCH_SIZE</span><span class="o">=</span><span class="mi">25000</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">    CommandLine:</span>
@@ -3696,16 +3697,49 @@
 <span class="sd">        &gt;&gt;&gt; import wbia  # NOQA</span>
 <span class="sd">        &gt;&gt;&gt; #print(ut.repr2(wbia.opendb(&#39;PZ_Master0&#39;).get_database_species_count()))</span>
 <span class="sd">        &gt;&gt;&gt; ibs = wbia.opendb(&#39;testdb1&#39;)</span>
-<span class="sd">        &gt;&gt;&gt; result = ut.repr2(ibs.get_database_species_count(), nl=False)</span>
+<span class="sd">        &gt;&gt;&gt; result = ut.repr2(ibs.get_database_species_count(BATCH_SIZE=2), nl=False)</span>
 <span class="sd">        &gt;&gt;&gt; print(result)</span>
-<span class="sd">        {&#39;____&#39;: 3, &#39;bear_polar&#39;: 2, &#39;zebra_grevys&#39;: 2, &#39;zebra_plains&#39;: 6}</span>
+<span class="sd">        {&#39;zebra_plains&#39;: 6, &#39;____&#39;: 3, &#39;zebra_grevys&#39;: 2, &#39;bear_polar&#39;: 2}</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">aid_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">aid_list</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_valid_aids</span><span class="p">()</span>
-    <span class="n">species_list</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_species_texts</span><span class="p">(</span><span class="n">aid_list</span><span class="p">)</span>
-    <span class="n">species_count_dict</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">item_hist</span><span class="p">(</span><span class="n">species_list</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">species_count_dict</span></div>
+
+    <span class="n">annotations</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">_reflect_table</span><span class="p">(</span><span class="s1">&#39;annotations&#39;</span><span class="p">)</span>
+    <span class="n">species</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">_reflect_table</span><span class="p">(</span><span class="s1">&#39;species&#39;</span><span class="p">)</span>
+
+    <span class="kn">from</span> <span class="nn">sqlalchemy.sql</span> <span class="kn">import</span> <span class="n">select</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">desc</span><span class="p">,</span> <span class="n">bindparam</span>
+
+    <span class="n">species_count</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+    <span class="n">stmt</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">select</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">species</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">species_text</span><span class="p">,</span>
+                <span class="n">func</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">annotations</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">annot_rowid</span><span class="p">)</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="s1">&#39;num_annots&#39;</span><span class="p">),</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+        <span class="o">.</span><span class="n">select_from</span><span class="p">(</span>
+            <span class="n">annotations</span><span class="o">.</span><span class="n">outerjoin</span><span class="p">(</span>
+                <span class="n">species</span><span class="p">,</span> <span class="n">annotations</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">species_rowid</span> <span class="o">==</span> <span class="n">species</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">species_rowid</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">annotations</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">annot_rowid</span><span class="o">.</span><span class="n">in_</span><span class="p">(</span><span class="n">bindparam</span><span class="p">(</span><span class="s1">&#39;aids&#39;</span><span class="p">,</span> <span class="n">expanding</span><span class="o">=</span><span class="kc">True</span><span class="p">)))</span>
+        <span class="o">.</span><span class="n">group_by</span><span class="p">(</span><span class="s1">&#39;species_text&#39;</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">desc</span><span class="p">(</span><span class="s1">&#39;num_annots&#39;</span><span class="p">))</span>
+    <span class="p">)</span>
+    <span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">aid_list</span><span class="p">)</span> <span class="o">/</span> <span class="n">BATCH_SIZE</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">aids</span> <span class="o">=</span> <span class="n">aid_list</span><span class="p">[</span><span class="n">batch</span> <span class="o">*</span> <span class="n">BATCH_SIZE</span> <span class="p">:</span> <span class="p">(</span><span class="n">batch</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">BATCH_SIZE</span><span class="p">]</span>
+        <span class="k">with</span> <span class="n">ibs</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+            <span class="n">results</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">stmt</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;aids&#39;</span><span class="p">:</span> <span class="n">aids</span><span class="p">})</span>
+
+            <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+                <span class="n">species_text</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">species_text</span>
+                <span class="k">if</span> <span class="n">species_text</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">species_text</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">UNKNOWN</span>
+                <span class="n">species_count</span><span class="p">[</span><span class="n">species_text</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">species_count</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">species_text</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">row</span><span class="o">.</span><span class="n">num_annots</span>
+                <span class="p">)</span>
+    <span class="k">return</span> <span class="n">species_count</span></div>
 
 
 <div class="viewcode-block" id="get_dbinfo_str"><a class="viewcode-back" href="../../../wbia.other.html#wbia.other.ibsfuncs.get_dbinfo_str">[docs]</a><span class="nd">@register_ibs_method</span>
@@ -4901,15 +4935,18 @@
 <span class="sd">        &gt;&gt;&gt; x1 = filter_aids_to_quality(ibs, aid_list, &#39;good&#39;, True, speedhack=True)</span>
 <span class="sd">        &gt;&gt;&gt; x2 = filter_aids_to_quality(ibs, aid_list, &#39;good&#39;, True, speedhack=False)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">aid_list</span><span class="p">:</span>  <span class="c1"># no need to filter if empty</span>
+        <span class="k">return</span> <span class="n">aid_list</span>
     <span class="k">if</span> <span class="n">speedhack</span><span class="p">:</span>
         <span class="n">list_repr</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">aid_list</span><span class="p">))</span>
         <span class="n">minqual_int</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">QUALITY_TEXT_TO_INT</span><span class="p">[</span><span class="n">minqual</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">unknown_ok</span><span class="p">:</span>
-            <span class="n">operation</span> <span class="o">=</span> <span class="s1">&#39;SELECT rowid from annotations WHERE (annot_quality ISNULL OR annot_quality==-1 OR annot_quality&gt;=</span><span class="si">{minqual_int}</span><span class="s1">) AND rowid IN (</span><span class="si">{aids}</span><span class="s1">)&#39;</span>
+            <span class="n">operation</span> <span class="o">=</span> <span class="s1">&#39;SELECT rowid from annotations WHERE (annot_quality ISNULL OR annot_quality=-1 OR annot_quality&gt;=</span><span class="si">{minqual_int}</span><span class="s1">) AND rowid IN (</span><span class="si">{aids}</span><span class="s1">)&#39;</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">operation</span> <span class="o">=</span> <span class="s1">&#39;SELECT rowid from annotations WHERE annot_quality NOTNULL AND annot_quality&gt;=</span><span class="si">{minqual_int}</span><span class="s1"> AND rowid IN (</span><span class="si">{aids}</span><span class="s1">)&#39;</span>
         <span class="n">operation</span> <span class="o">=</span> <span class="n">operation</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">aids</span><span class="o">=</span><span class="n">list_repr</span><span class="p">,</span> <span class="n">minqual_int</span><span class="o">=</span><span class="n">minqual_int</span><span class="p">)</span>
-        <span class="n">aid_list_</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">take_column</span><span class="p">(</span><span class="n">ibs</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">operation</span><span class="p">)</span><span class="o">.</span><span class="n">fetchall</span><span class="p">(),</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">ibs</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+            <span class="n">aid_list_</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">take_column</span><span class="p">(</span><span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">operation</span><span class="p">)</span><span class="o">.</span><span class="n">fetchall</span><span class="p">(),</span> <span class="mi">0</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">qual_flags</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
             <span class="n">ibs</span><span class="o">.</span><span class="n">get_quality_filterflags</span><span class="p">(</span><span class="n">aid_list</span><span class="p">,</span> <span class="n">minqual</span><span class="p">,</span> <span class="n">unknown_ok</span><span class="o">=</span><span class="n">unknown_ok</span><span class="p">)</span>
@@ -4927,6 +4964,8 @@
 
 <span class="sd">    valid_yaws = [&#39;primary&#39;, &#39;primary1&#39;, &#39;primary-1&#39;]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">aid_list</span><span class="p">:</span>  <span class="c1"># no need to filter if empty</span>
+        <span class="k">return</span> <span class="n">aid_list</span>
 
     <span class="k">def</span> <span class="nf">rectify_view_category</span><span class="p">(</span><span class="n">view</span><span class="p">):</span>
         <span class="nd">@ut</span><span class="o">.</span><span class="n">memoize</span>
@@ -4987,6 +5026,8 @@
 <span class="sd">        &gt;&gt;&gt; assert np.all(np.array(annots2_.nids) &lt; 0)</span>
 <span class="sd">        &gt;&gt;&gt; assert len(annots2_) == 4</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">aid_list</span><span class="p">:</span>  <span class="c1"># no need to filter if empty</span>
+        <span class="k">return</span> <span class="n">aid_list</span>
     <span class="k">if</span> <span class="n">speedhack</span><span class="p">:</span>
         <span class="n">list_repr</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">aid_list</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">invert</span><span class="p">:</span>
@@ -4999,7 +5040,8 @@
                 <span class="s1">&#39;SELECT rowid from annotations WHERE name_rowid&gt;0 AND rowid IN (</span><span class="si">%s</span><span class="s1">)&#39;</span>
                 <span class="o">%</span> <span class="p">(</span><span class="n">list_repr</span><span class="p">,)</span>
             <span class="p">)</span>
-        <span class="n">aid_list_</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">take_column</span><span class="p">(</span><span class="n">ibs</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">operation</span><span class="p">)</span><span class="o">.</span><span class="n">fetchall</span><span class="p">(),</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">ibs</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+            <span class="n">aid_list_</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">take_column</span><span class="p">(</span><span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">operation</span><span class="p">)</span><span class="o">.</span><span class="n">fetchall</span><span class="p">(),</span> <span class="mi">0</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">flag_list</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">is_aid_unknown</span><span class="p">(</span><span class="n">aid_list</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">invert</span><span class="p">:</span>
@@ -5041,6 +5083,8 @@
 <span class="sd">        &gt;&gt;&gt; wbia.other.dbinfo.hackshow_names(ibs, filtered_aids)</span>
 <span class="sd">        &gt;&gt;&gt; ut.show_if_requested()</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">aid_list</span><span class="p">:</span>  <span class="c1"># no need to filter if empty</span>
+        <span class="k">return</span> <span class="n">aid_list</span>
     <span class="kn">import</span> <span class="nn">vtool</span> <span class="k">as</span> <span class="nn">vt</span>
 
     <span class="c1"># min_timedelta = 60 * 60 * 24</span>
@@ -5096,6 +5140,8 @@
 <span class="sd">    Removes aids without timestamps</span>
 <span class="sd">    aid_list = ibs.get_valid_aids()</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">aid_list</span><span class="p">:</span>  <span class="c1"># no need to filter if empty</span>
+        <span class="k">return</span> <span class="n">aid_list</span>
     <span class="n">unixtime_list</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_image_unixtimes</span><span class="p">(</span><span class="n">aid_list</span><span class="p">)</span>
     <span class="n">flag_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">unixtime</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span> <span class="k">for</span> <span class="n">unixtime</span> <span class="ow">in</span> <span class="n">unixtime_list</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">invert</span><span class="p">:</span>
@@ -5130,12 +5176,15 @@
 <span class="sd">        &gt;&gt;&gt; print(result)</span>
 <span class="sd">        aid_list_ = [9, 10]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">aid_list</span><span class="p">:</span>  <span class="c1"># no need to filter if empty</span>
+        <span class="k">return</span> <span class="n">aid_list</span>
     <span class="n">species_rowid</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_species_rowids_from_text</span><span class="p">(</span><span class="n">species</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">speedhack</span><span class="p">:</span>
         <span class="n">list_repr</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">aid_list</span><span class="p">))</span>
-        <span class="n">operation</span> <span class="o">=</span> <span class="s1">&#39;SELECT rowid from annotations WHERE (species_rowid == </span><span class="si">{species_rowid}</span><span class="s1">) AND rowid IN (</span><span class="si">{aids}</span><span class="s1">)&#39;</span>
+        <span class="n">operation</span> <span class="o">=</span> <span class="s1">&#39;SELECT rowid from annotations WHERE (species_rowid = </span><span class="si">{species_rowid}</span><span class="s1">) AND rowid IN (</span><span class="si">{aids}</span><span class="s1">)&#39;</span>
         <span class="n">operation</span> <span class="o">=</span> <span class="n">operation</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">aids</span><span class="o">=</span><span class="n">list_repr</span><span class="p">,</span> <span class="n">species_rowid</span><span class="o">=</span><span class="n">species_rowid</span><span class="p">)</span>
-        <span class="n">aid_list_</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">take_column</span><span class="p">(</span><span class="n">ibs</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">operation</span><span class="p">)</span><span class="o">.</span><span class="n">fetchall</span><span class="p">(),</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">ibs</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+            <span class="n">aid_list_</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">take_column</span><span class="p">(</span><span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">operation</span><span class="p">)</span><span class="o">.</span><span class="n">fetchall</span><span class="p">(),</span> <span class="mi">0</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">species_rowid_list</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_species_rowids</span><span class="p">(</span><span class="n">aid_list</span><span class="p">)</span>
         <span class="n">is_valid_species</span> <span class="o">=</span> <span class="p">[</span><span class="n">sid</span> <span class="o">==</span> <span class="n">species_rowid</span> <span class="k">for</span> <span class="n">sid</span> <span class="ow">in</span> <span class="n">species_rowid_list</span><span class="p">]</span>
@@ -9894,7 +9943,7 @@
       &copy;2020, Wild Me.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.3</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

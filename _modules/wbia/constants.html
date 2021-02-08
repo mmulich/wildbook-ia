@@ -12,7 +12,6 @@
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
     <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
    
@@ -388,6 +387,7 @@
     <span class="n">ORIENTATION</span> <span class="o">=</span> <span class="p">(</span>
         <span class="s1">&#39;https://wildbookiarepository.azureedge.net/databases/testdb_orientation.zip&#39;</span>
     <span class="p">)</span>
+    <span class="n">ASSIGNER</span> <span class="o">=</span> <span class="s1">&#39;https://wildbookiarepository.azureedge.net/databases/testdb_assigner.zip&#39;</span>
     <span class="n">K7_EXAMPLE</span> <span class="o">=</span> <span class="s1">&#39;https://wildbookiarepository.azureedge.net/databases/testdb_kaggle7.zip&#39;</span></div>
 
 
@@ -457,11 +457,22 @@
     <span class="s1">&#39;wild_dog_puppy&#39;</span><span class="p">,</span>
     <span class="s1">&#39;wild_dog_standard&#39;</span><span class="p">,</span>
     <span class="s1">&#39;wild_dog_tan&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;dolphin_bottlenose+fin_dorsal&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;dolphin_spotted+fin_dorsal&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;shark_sand_tiger+fin_dorsal_back&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;shark_sand_tiger+fin_dorsal_front&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;whale_fin+fin_dorsal&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;whale_humpback+fin_dorsal&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;whale_humpback+fin_dorsal_back&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;whale_humpback+fin_dorsal_front&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;whale_pilot+fin_dorsal&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;whale_beluga&#39;</span><span class="p">,</span>
     <span class="c1"># Latin (Flukebook)</span>
     <span class="s1">&#39;chelonioidea&#39;</span><span class="p">,</span>
     <span class="s1">&#39;chelonioidea+head&#39;</span><span class="p">,</span>
     <span class="s1">&#39;chelonia_mydas&#39;</span><span class="p">,</span>
     <span class="s1">&#39;chelonia_mydas+head&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;delphinapterus_leucas&#39;</span><span class="p">,</span>
     <span class="s1">&#39;eretmochelys_imbricata&#39;</span><span class="p">,</span>
     <span class="s1">&#39;eretmochelys_imbricata+head&#39;</span><span class="p">,</span>
     <span class="s1">&#39;lepidochelys_olivacea&#39;</span><span class="p">,</span>
@@ -597,6 +608,7 @@
     <span class="s1">&#39;wild_dog+tail_standard&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;WD+STD&#39;</span><span class="p">,</span> <span class="s1">&#39;Wild Dog Tail Standard&#39;</span><span class="p">),</span>
     <span class="s1">&#39;wild_dog&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;WD&#39;</span><span class="p">,</span> <span class="s1">&#39;Wild Dog&#39;</span><span class="p">),</span>
     <span class="s1">&#39;whale_fluke&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;WF&#39;</span><span class="p">,</span> <span class="s1">&#39;Whale Fluke&#39;</span><span class="p">),</span>
+    <span class="s1">&#39;whale_beluga&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;BW&#39;</span><span class="p">,</span> <span class="s1">&#39;Beluga Whale&#39;</span><span class="p">),</span>
     <span class="s1">&#39;whale_humpback&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;HW&#39;</span><span class="p">,</span> <span class="s1">&#39;Humpback Whale&#39;</span><span class="p">),</span>
     <span class="s1">&#39;whale_shark&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;WS&#39;</span><span class="p">,</span> <span class="s1">&#39;Whale Shark&#39;</span><span class="p">),</span>
     <span class="s1">&#39;zebra_grevys&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;GZ&#39;</span><span class="p">,</span> <span class="s2">&quot;Zebra (Grevy&#39;s)&quot;</span><span class="p">),</span>
@@ -1387,7 +1399,7 @@
       &copy;2020, Wild Me.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.3</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

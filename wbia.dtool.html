@@ -12,7 +12,6 @@
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="wbia.expt package" href="wbia.expt.html" />
@@ -704,19 +703,41 @@ This function is often injected as rrr of classes</p>
 <p>implicit version of dependency cache from wbia/templates/template_generator</p>
 <dl class="py class">
 <dt id="wbia.dtool.depcache_control.DependencyCache">
-<em class="property">class </em><code class="sig-prename descclassname">wbia.dtool.depcache_control.</code><code class="sig-name descname">DependencyCache</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">root_tablename</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">cache_dpath</span><span class="o">=</span><span class="default_value">'./DEPCACHE'</span></em>, <em class="sig-param"><span class="n">controller</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">default_fname</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">get_root_uuid</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">root_getters</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">use_globals</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/depcache_control.html#DependencyCache"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.depcache_control.DependencyCache" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">wbia.dtool.depcache_control._CoreDependencyCache</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">utool.util_dev.NiceRepr</span></code></p>
-<dl class="simple">
-<dt>Currently, to use this class a user must:</dt><dd><ul class="simple">
-<li><p>on root modification, call depc.on_root_modified</p></li>
-<li><p>use decorators to register relevant functions</p></li>
-</ul>
-</dd>
-</dl>
+<em class="property">class </em><code class="sig-prename descclassname">wbia.dtool.depcache_control.</code><code class="sig-name descname">DependencyCache</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">controller</span></em>, <em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">get_root_uuid</span></em>, <em class="sig-param"><span class="n">table_name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">root_getters</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">use_globals</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/depcache_control.html#DependencyCache"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.depcache_control.DependencyCache" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="wbia.dtool.depcache_control.DependencyCache.check_rowids">
+<code class="sig-name descname">check_rowids</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tablename</span></em>, <em class="sig-param"><span class="n">input_tuple</span></em>, <em class="sig-param"><span class="n">config</span><span class="o">=</span><span class="default_value">{}</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/depcache_control.html#DependencyCache.check_rowids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.depcache_control.DependencyCache.check_rowids" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of flags where True means the row has been computed and
+False means that it needs to be computed.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt id="wbia.dtool.depcache_control.DependencyCache.clear_all">
 <code class="sig-name descname">clear_all</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/depcache_control.html#DependencyCache.clear_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.depcache_control.DependencyCache.clear_all" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt id="wbia.dtool.depcache_control.DependencyCache.close">
+<code class="sig-name descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/depcache_control.html#DependencyCache.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.depcache_control.DependencyCache.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close all managed SQL databases</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wbia.dtool.depcache_control.DependencyCache.delete_property">
+<code class="sig-name descname">delete_property</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tablename</span></em>, <em class="sig-param"><span class="n">root_rowids</span></em>, <em class="sig-param"><span class="n">config</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">_debug</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/depcache_control.html#DependencyCache.delete_property"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.depcache_control.DependencyCache.delete_property" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes the rowids of <cite>tablename</cite> that correspond to <cite>root_rowids</cite>
+using <cite>config</cite>.</p>
+<p>FIXME: make this work for all configs</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wbia.dtool.depcache_control.DependencyCache.delete_property_all">
+<code class="sig-name descname">delete_property_all</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tablename</span></em>, <em class="sig-param"><span class="n">root_rowids</span></em>, <em class="sig-param"><span class="n">_debug</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/depcache_control.html#DependencyCache.delete_property_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.depcache_control.DependencyCache.delete_property_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes the rowids of <cite>tablename</cite> that correspond to <cite>root_rowids</cite>
+using <cite>config</cite>.</p>
+<p>FIXME: make this work for all configs</p>
+</dd></dl>
 
 <dl class="py method">
 <dt id="wbia.dtool.depcache_control.DependencyCache.delete_root">
@@ -738,9 +759,9 @@ This function is often injected as rrr of classes</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">depc</span> <span class="o">=</span> <span class="n">testdata_depc</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">exec</span><span class="p">(</span><span class="n">ut</span><span class="o">.</span><span class="n">execstr_funckw</span><span class="p">(</span><span class="n">depc</span><span class="o">.</span><span class="n">delete_root</span><span class="p">),</span> <span class="nb">globals</span><span class="p">())</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">root_rowids</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">depc</span><span class="o">.</span><span class="n">delete_root</span><span class="p">(</span><span class="n">root_rowids</span><span class="p">,</span> <span class="n">_debug</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">depc</span><span class="o">.</span><span class="n">delete_root</span><span class="p">(</span><span class="n">root_rowids</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">depc</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fgweight&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">depc</span><span class="o">.</span><span class="n">delete_root</span><span class="p">(</span><span class="n">root_rowids</span><span class="p">,</span> <span class="n">_debug</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">depc</span><span class="o">.</span><span class="n">delete_root</span><span class="p">(</span><span class="n">root_rowids</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -751,9 +772,152 @@ This function is often injected as rrr of classes</p>
 <dd></dd></dl>
 
 <dl class="py method">
+<dt id="wbia.dtool.depcache_control.DependencyCache.get">
+<code class="sig-name descname">get</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tablename</span></em>, <em class="sig-param"><span class="n">root_rowids</span></em>, <em class="sig-param"><span class="n">colnames</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">config</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ensure</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">_debug</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">recompute</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">recompute_all</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">eager</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">nInput</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">read_extern</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">onthefly</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">num_retries</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">hack_paths</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/depcache_control.html#DependencyCache.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.depcache_control.DependencyCache.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Access dependant properties the primary objects using primary ids.</p>
+<p>Gets the data in <cite>colnames</cite> of <cite>tablename</cite> that correspond to
+<cite>root_rowids</cite> using <cite>config</cite>.  if colnames is None, all columns are
+returned.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tablename</strong> (<em>str</em>) – table name containing desired property</p></li>
+<li><p><strong>root_rowids</strong> (<em>List</em><em>[</em><em>int</em><em>]</em>) – ids of the root object</p></li>
+<li><p><strong>colnames</strong> (<em>None</em>) – desired property (default = None)</p></li>
+<li><p><strong>config</strong> (<em>None</em>) – (default = None)</p></li>
+<li><p><strong>read_extern</strong> – if False then only returns extern URI</p></li>
+<li><p><strong>hack_paths</strong> – if False then does not compute extern info just returns
+path that it will be located at</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>prop_list</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>CommandLine:</dt><dd><p>python -m dtool.depcache_control –exec-get</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># ENABLE_DOCTEST</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">wbia.dtool.depcache_control</span> <span class="kn">import</span> <span class="o">*</span>  <span class="c1"># NOQA</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">wbia.dtool.example_depcache2</span> <span class="kn">import</span> <span class="o">*</span>  <span class="c1"># NOQA</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">wbia.dtool.example_depcache</span> <span class="kn">import</span> <span class="o">*</span>  <span class="c1"># NOQA</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">depc</span> <span class="o">=</span> <span class="n">testdata_depc3</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">exec</span><span class="p">(</span><span class="n">ut</span><span class="o">.</span><span class="n">execstr_funckw</span><span class="p">(</span><span class="n">depc</span><span class="o">.</span><span class="n">get</span><span class="p">),</span> <span class="nb">globals</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">aids</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tablename</span> <span class="o">=</span> <span class="s1">&#39;labeler&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">root_rowids</span> <span class="o">=</span> <span class="n">aids</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">prop_list</span> <span class="o">=</span> <span class="n">depc</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">tablename</span><span class="p">,</span> <span class="n">root_rowids</span><span class="p">,</span> <span class="n">colnames</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;prop_list = </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ut</span><span class="o">.</span><span class="n">repr2</span><span class="p">(</span><span class="n">prop_list</span><span class="p">),))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+<span class="go">prop_list = [(&#39;labeler([root(1)]:42)&#39;,), (&#39;labeler([root(2)]:42)&#39;,), (&#39;labeler([root(3)]:42)&#39;,)]</span>
+</pre></div>
+</div>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># ENABLE_DOCTEST</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">wbia.dtool.depcache_control</span> <span class="kn">import</span> <span class="o">*</span>  <span class="c1"># NOQA</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">wbia.dtool.example_depcache2</span> <span class="kn">import</span> <span class="o">*</span>  <span class="c1"># NOQA</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">wbia.dtool.example_depcache</span> <span class="kn">import</span> <span class="o">*</span>  <span class="c1"># NOQA</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">depc</span> <span class="o">=</span> <span class="n">testdata_depc3</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">exec</span><span class="p">(</span><span class="n">ut</span><span class="o">.</span><span class="n">execstr_funckw</span><span class="p">(</span><span class="n">depc</span><span class="o">.</span><span class="n">get</span><span class="p">),</span> <span class="nb">globals</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">aids</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tablename</span> <span class="o">=</span> <span class="s1">&#39;smk_match&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tablename</span> <span class="o">=</span> <span class="s1">&#39;vocab&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">table</span> <span class="o">=</span> <span class="n">depc</span><span class="p">[</span><span class="n">tablename</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">root_rowids</span> <span class="o">=</span> <span class="p">[</span><span class="n">aids</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">prop_list</span> <span class="o">=</span> <span class="n">depc</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">tablename</span><span class="p">,</span> <span class="n">root_rowids</span><span class="p">,</span> <span class="n">colnames</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;prop_list = </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ut</span><span class="o">.</span><span class="n">repr2</span><span class="p">(</span><span class="n">prop_list</span><span class="p">),))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+<span class="go">prop_list = [(&#39;vocab([root(1;2;3)]:42)&#39;,)]</span>
+</pre></div>
+</div>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># ENABLE_DOCTEST</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">wbia.dtool.depcache_control</span> <span class="kn">import</span> <span class="o">*</span>  <span class="c1"># NOQA</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">wbia.dtool.example_depcache2</span> <span class="kn">import</span> <span class="o">*</span>  <span class="c1"># NOQA</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">wbia.dtool.example_depcache</span> <span class="kn">import</span> <span class="o">*</span>  <span class="c1"># NOQA</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">depc</span> <span class="o">=</span> <span class="n">testdata_depc3</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">exec</span><span class="p">(</span><span class="n">ut</span><span class="o">.</span><span class="n">execstr_funckw</span><span class="p">(</span><span class="n">depc</span><span class="o">.</span><span class="n">get</span><span class="p">),</span> <span class="nb">globals</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">aids</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">depc</span> <span class="o">=</span> <span class="n">testdata_depc</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tablename</span> <span class="o">=</span> <span class="s1">&#39;chip&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">table</span> <span class="o">=</span> <span class="n">depc</span><span class="p">[</span><span class="n">tablename</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">root_rowids</span> <span class="o">=</span> <span class="n">aids</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Ensure chips are computed</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">prop_list1</span> <span class="o">=</span> <span class="n">depc</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">tablename</span><span class="p">,</span> <span class="n">root_rowids</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Get file paths and delete them</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">prop_list2</span> <span class="o">=</span> <span class="n">depc</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">tablename</span><span class="p">,</span> <span class="n">root_rowids</span><span class="p">,</span> <span class="n">read_extern</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">n</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">remove_file_list</span><span class="p">(</span><span class="n">ut</span><span class="o">.</span><span class="n">take_column</span><span class="p">(</span><span class="n">prop_list2</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="n">n</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">prop_list2</span><span class="p">),</span> <span class="s1">&#39;files were not computed&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">prop_list3</span> <span class="o">=</span> <span class="n">depc</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">tablename</span><span class="p">,</span> <span class="n">root_rowids</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">prop_list1</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">prop_list3</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]),</span> <span class="s1">&#39;computed same info&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
 <dt id="wbia.dtool.depcache_control.DependencyCache.get_allconfig_descendant_rowids">
 <code class="sig-name descname">get_allconfig_descendant_rowids</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">root_rowids</span></em>, <em class="sig-param"><span class="n">table_config_filter</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/depcache_control.html#DependencyCache.get_allconfig_descendant_rowids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.depcache_control.DependencyCache.get_allconfig_descendant_rowids" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt id="wbia.dtool.depcache_control.DependencyCache.get_ancestor_rowids">
+<code class="sig-name descname">get_ancestor_rowids</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tablename</span></em>, <em class="sig-param"><span class="n">native_rowids</span></em>, <em class="sig-param"><span class="n">ancestor_tablename</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/depcache_control.html#DependencyCache.get_ancestor_rowids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.depcache_control.DependencyCache.get_ancestor_rowids" title="Permalink to this definition">¶</a></dt>
+<dd><p>ancestor_tablename = depc.root; native_rowids = cid_list; tablename = const.CHIP_TABLE</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wbia.dtool.depcache_control.DependencyCache.get_config_history">
+<code class="sig-name descname">get_config_history</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tablename</span></em>, <em class="sig-param"><span class="n">root_rowids</span></em>, <em class="sig-param"><span class="n">config</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/depcache_control.html#DependencyCache.get_config_history"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.depcache_control.DependencyCache.get_config_history" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="wbia.dtool.depcache_control.DependencyCache.get_config_trail">
+<code class="sig-name descname">get_config_trail</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tablename</span></em>, <em class="sig-param"><span class="n">config</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/depcache_control.html#DependencyCache.get_config_trail"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.depcache_control.DependencyCache.get_config_trail" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="wbia.dtool.depcache_control.DependencyCache.get_config_trail_str">
+<code class="sig-name descname">get_config_trail_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tablename</span></em>, <em class="sig-param"><span class="n">config</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/depcache_control.html#DependencyCache.get_config_trail_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.depcache_control.DependencyCache.get_config_trail_str" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="wbia.dtool.depcache_control.DependencyCache.get_db_by_name">
+<code class="sig-name descname">get_db_by_name</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/depcache_control.html#DependencyCache.get_db_by_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.depcache_control.DependencyCache.get_db_by_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the database (i.e. SQLController) for the given database name</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wbia.dtool.depcache_control.DependencyCache.get_dependencies">
+<code class="sig-name descname">get_dependencies</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tablename</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/depcache_control.html#DependencyCache.get_dependencies"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.depcache_control.DependencyCache.get_dependencies" title="Permalink to this definition">¶</a></dt>
+<dd><p>gets level dependences from root to tablename</p>
+<dl class="simple">
+<dt>CommandLine:</dt><dd><p>python -m dtool.depcache_control –exec-get_dependencies</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># ENABLE_DOCTEST</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">wbia.dtool.depcache_control</span> <span class="kn">import</span> <span class="o">*</span>  <span class="c1"># NOQA</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">wbia.dtool.example_depcache</span> <span class="kn">import</span> <span class="n">testdata_depc</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">depc</span> <span class="o">=</span> <span class="n">testdata_depc</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tablename</span> <span class="o">=</span> <span class="s1">&#39;fgweight&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">repr3</span><span class="p">(</span><span class="n">depc</span><span class="o">.</span><span class="n">get_dependencies</span><span class="p">(</span><span class="n">tablename</span><span class="p">),</span> <span class="n">nl</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+<span class="go">[</span>
+<span class="go">    [&#39;dummy_annot&#39;],</span>
+<span class="go">    [&#39;chip&#39;, &#39;probchip&#39;],</span>
+<span class="go">    [&#39;keypoint&#39;],</span>
+<span class="go">    [&#39;fgweight&#39;],</span>
+<span class="go">]</span>
+</pre></div>
+</div>
+</dd></dl>
 
 <dl class="py method">
 <dt id="wbia.dtool.depcache_control.DependencyCache.get_edges">
@@ -765,6 +929,47 @@ This function is often injected as rrr of classes</p>
 <dt id="wbia.dtool.depcache_control.DependencyCache.get_implicit_edges">
 <code class="sig-name descname">get_implicit_edges</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/depcache_control.html#DependencyCache.get_implicit_edges"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.depcache_control.DependencyCache.get_implicit_edges" title="Permalink to this definition">¶</a></dt>
 <dd><p>Edges defined by subconfigurations</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wbia.dtool.depcache_control.DependencyCache.get_native">
+<code class="sig-name descname">get_native</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tablename</span></em>, <em class="sig-param"><span class="n">tbl_rowids</span></em>, <em class="sig-param"><span class="n">colnames</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">_debug</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">read_extern</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/depcache_control.html#DependencyCache.get_native"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.depcache_control.DependencyCache.get_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets data using internal ids, which is faster if you have them.</p>
+<dl class="simple">
+<dt>CommandLine:</dt><dd><p>python -m dtool.depcache_control get_native:0
+python -m dtool.depcache_control get_native:1</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># ENABLE_DOCTEST</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Simple test of get native</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">wbia.dtool.example_depcache</span> <span class="kn">import</span> <span class="o">*</span>  <span class="c1"># NOQA</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">config</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">depc</span> <span class="o">=</span> <span class="n">testdata_depc</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tablename</span> <span class="o">=</span> <span class="s1">&#39;keypoint&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">aids</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tbl_rowids</span> <span class="o">=</span> <span class="n">depc</span><span class="o">.</span><span class="n">get_rowids</span><span class="p">(</span><span class="n">tablename</span><span class="p">,</span> <span class="n">aids</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">depc</span><span class="o">.</span><span class="n">get_native</span><span class="p">(</span><span class="n">tablename</span><span class="p">,</span> <span class="n">tbl_rowids</span><span class="p">)</span>
+</pre></div>
+</div>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># ENABLE_DOCTEST</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">wbia.dtool.example_depcache</span> <span class="kn">import</span> <span class="o">*</span>  <span class="c1"># NOQA</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">depc</span> <span class="o">=</span> <span class="n">testdata_depc</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">config</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tablename</span> <span class="o">=</span> <span class="s1">&#39;chip&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">colnames</span> <span class="o">=</span> <span class="n">extern_colname</span> <span class="o">=</span> <span class="s1">&#39;chip&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">aids</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">depc</span><span class="o">.</span><span class="n">delete_property</span><span class="p">(</span><span class="n">tablename</span><span class="p">,</span> <span class="n">aids</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Ensure chip rowids exist then delete external data without</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># notifying the depcache. This forces the depcache to recover</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tbl_rowids</span> <span class="o">=</span> <span class="n">chip_rowids</span> <span class="o">=</span> <span class="n">depc</span><span class="o">.</span><span class="n">get_rowids</span><span class="p">(</span><span class="n">tablename</span><span class="p">,</span> <span class="n">aids</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data_fpaths</span> <span class="o">=</span> <span class="n">depc</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">tablename</span><span class="p">,</span> <span class="n">aids</span><span class="p">,</span> <span class="n">extern_colname</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span> <span class="n">read_extern</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ut</span><span class="o">.</span><span class="n">remove_file_list</span><span class="p">(</span><span class="n">data_fpaths</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">chips</span> <span class="o">=</span> <span class="n">depc</span><span class="o">.</span><span class="n">get_native</span><span class="p">(</span><span class="n">tablename</span><span class="p">,</span> <span class="n">tbl_rowids</span><span class="p">,</span> <span class="n">extern_colname</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;chips = </span><span class="si">%r</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">chips</span><span class="p">,))</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -809,6 +1014,43 @@ python -m dtool.depcache_control get_native:1</p>
 </dd></dl>
 
 <dl class="py method">
+<dt id="wbia.dtool.depcache_control.DependencyCache.get_parent_rowids">
+<code class="sig-name descname">get_parent_rowids</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target_tablename</span></em>, <em class="sig-param"><span class="n">input_tuple</span></em>, <em class="sig-param"><span class="n">config</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/depcache_control.html#DependencyCache.get_parent_rowids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.depcache_control.DependencyCache.get_parent_rowids" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the parent rowids needed to get / compute a property of
+tablename</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>input_tuple</strong> – <p>to be explicit send in as a tuple of lists.  Each list
+corresponds to parent information needed by expanded rmis (root
+most input).</p>
+<p>Each item in the tuple correponds a root most node, and should
+be specified as a list of inputs. For single items this is a
+scalar, for multi-items it is a list.</p>
+<p>For example if you have a property like a chip that depends on
+only one parent, then to get the chips for the first N
+annotations your list input tuple is:</p>
+<blockquote>
+<div><p>input_tuple = ([1, 2, 3, …, N],)</p>
+</div></blockquote>
+<p>For a single multi inputs:
+If you want to get two vocabs for even and odd annots then you
+have:</p>
+<blockquote>
+<div><p>([[0, 2, 4, …], [1, 3, 5, …]],)</p>
+</div></blockquote>
+<p>For a single comparasion version multi inputs:
+If you want to query the first N annotats against two
+vocabs then you have:</p>
+<blockquote>
+<div><p>([1, 2, 3, …, N], [[0, 2, 4, …], [1, 3, 5, …]],)</p>
+</div></blockquote>
+<p>(Note this only works if broadcasting is on)</p>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="wbia.dtool.depcache_control.DependencyCache.get_property">
 <code class="sig-name descname">get_property</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tablename</span></em>, <em class="sig-param"><span class="n">root_rowids</span></em>, <em class="sig-param"><span class="n">colnames</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">config</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ensure</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">_debug</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">recompute</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">recompute_all</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">eager</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">nInput</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">read_extern</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">onthefly</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">num_retries</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">hack_paths</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#wbia.dtool.depcache_control.DependencyCache.get_property" title="Permalink to this definition">¶</a></dt>
 <dd><p>Access dependant properties the primary objects using primary ids.</p>
@@ -846,7 +1088,6 @@ path that it will be located at</p></li>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">depc</span> <span class="o">=</span> <span class="n">testdata_depc3</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">exec</span><span class="p">(</span><span class="n">ut</span><span class="o">.</span><span class="n">execstr_funckw</span><span class="p">(</span><span class="n">depc</span><span class="o">.</span><span class="n">get</span><span class="p">),</span> <span class="nb">globals</span><span class="p">())</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">aids</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">_debug</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">tablename</span> <span class="o">=</span> <span class="s1">&#39;labeler&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">root_rowids</span> <span class="o">=</span> <span class="n">aids</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">prop_list</span> <span class="o">=</span> <span class="n">depc</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
@@ -864,7 +1105,6 @@ path that it will be located at</p></li>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">depc</span> <span class="o">=</span> <span class="n">testdata_depc3</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">exec</span><span class="p">(</span><span class="n">ut</span><span class="o">.</span><span class="n">execstr_funckw</span><span class="p">(</span><span class="n">depc</span><span class="o">.</span><span class="n">get</span><span class="p">),</span> <span class="nb">globals</span><span class="p">())</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">aids</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">_debug</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">tablename</span> <span class="o">=</span> <span class="s1">&#39;smk_match&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">tablename</span> <span class="o">=</span> <span class="s1">&#39;vocab&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">table</span> <span class="o">=</span> <span class="n">depc</span><span class="p">[</span><span class="n">tablename</span><span class="p">]</span>
@@ -884,7 +1124,6 @@ path that it will be located at</p></li>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">depc</span> <span class="o">=</span> <span class="n">testdata_depc3</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">exec</span><span class="p">(</span><span class="n">ut</span><span class="o">.</span><span class="n">execstr_funckw</span><span class="p">(</span><span class="n">depc</span><span class="o">.</span><span class="n">get</span><span class="p">),</span> <span class="nb">globals</span><span class="p">())</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">aids</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">_debug</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">depc</span> <span class="o">=</span> <span class="n">testdata_depc</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">tablename</span> <span class="o">=</span> <span class="s1">&#39;chip&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">table</span> <span class="o">=</span> <span class="n">depc</span><span class="p">[</span><span class="n">tablename</span><span class="p">]</span>
@@ -897,6 +1136,104 @@ path that it will be located at</p></li>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="n">n</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">prop_list2</span><span class="p">),</span> <span class="s1">&#39;files were not computed&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">prop_list3</span> <span class="o">=</span> <span class="n">depc</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">tablename</span><span class="p">,</span> <span class="n">root_rowids</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">prop_list1</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">prop_list3</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]),</span> <span class="s1">&#39;computed same info&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wbia.dtool.depcache_control.DependencyCache.get_root_rowids">
+<code class="sig-name descname">get_root_rowids</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tablename</span></em>, <em class="sig-param"><span class="n">native_rowids</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/depcache_control.html#DependencyCache.get_root_rowids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.depcache_control.DependencyCache.get_root_rowids" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tablename</strong> (<em>str</em>) – </p></li>
+<li><p><strong>native_rowids</strong> (<em>list</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>CommandLine:</dt><dd><p>python -m dtool.depcache_control get_root_rowids –show</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># ENABLE_DOCTEST</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">wbia.dtool.example_depcache</span> <span class="kn">import</span> <span class="o">*</span>  <span class="c1"># NOQA</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">depc</span> <span class="o">=</span> <span class="n">testdata_depc</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">config1</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;adapt_shape&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">config2</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;adapt_shape&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">root_rowids</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">native_rowids1</span> <span class="o">=</span> <span class="n">depc</span><span class="o">.</span><span class="n">get_rowids</span><span class="p">(</span><span class="s1">&#39;keypoint&#39;</span><span class="p">,</span> <span class="n">root_rowids</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">native_rowids2</span> <span class="o">=</span> <span class="n">depc</span><span class="o">.</span><span class="n">get_rowids</span><span class="p">(</span><span class="s1">&#39;keypoint&#39;</span><span class="p">,</span> <span class="n">root_rowids</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ancestor_rowids1</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">depc</span><span class="o">.</span><span class="n">get_root_rowids</span><span class="p">(</span><span class="s1">&#39;keypoint&#39;</span><span class="p">,</span> <span class="n">native_rowids1</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ancestor_rowids2</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">depc</span><span class="o">.</span><span class="n">get_root_rowids</span><span class="p">(</span><span class="s1">&#39;keypoint&#39;</span><span class="p">,</span> <span class="n">native_rowids2</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="n">native_rowids1</span> <span class="o">!=</span> <span class="n">native_rowids2</span><span class="p">,</span> <span class="s1">&#39;should have different native rowids&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="n">ancestor_rowids1</span> <span class="o">==</span> <span class="n">root_rowids</span><span class="p">,</span> <span class="s1">&#39;should have same root&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="n">ancestor_rowids2</span> <span class="o">==</span> <span class="n">root_rowids</span><span class="p">,</span> <span class="s1">&#39;should have same root&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wbia.dtool.depcache_control.DependencyCache.get_rowids">
+<code class="sig-name descname">get_rowids</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tablename</span></em>, <em class="sig-param"><span class="n">input_tuple</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">rowid_kw</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/depcache_control.html#DependencyCache.get_rowids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.depcache_control.DependencyCache.get_rowids" title="Permalink to this definition">¶</a></dt>
+<dd><p>Used to get tablename rowids. Ensures rows exist unless ensure=False.
+rowids uniquely specify parent inputs and a configuration.</p>
+<dl class="simple">
+<dt>CommandLine:</dt><dd><p>python -m dtool.depcache_control get_rowids –show
+python -m dtool.depcache_control get_rowids:1</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># ENABLE_DOCTEST</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">wbia.dtool.depcache_control</span> <span class="kn">import</span> <span class="o">*</span>  <span class="c1"># NOQA</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">wbia.dtool.example_depcache2</span> <span class="kn">import</span> <span class="o">*</span>  <span class="c1"># NOQA</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">depc</span> <span class="o">=</span> <span class="n">testdata_depc3</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">exec</span><span class="p">(</span><span class="n">ut</span><span class="o">.</span><span class="n">execstr_funckw</span><span class="p">(</span><span class="n">depc</span><span class="o">.</span><span class="n">get</span><span class="p">),</span> <span class="nb">globals</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">kwargs</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">root_rowids</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">root_rowids2</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">root_rowids3</span> <span class="o">=</span> <span class="n">root_rowids2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tablename</span> <span class="o">=</span> <span class="s1">&#39;smk_match&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">input_tuple</span> <span class="o">=</span> <span class="p">(</span><span class="n">root_rowids</span><span class="p">,</span> <span class="n">root_rowids2</span><span class="p">,</span> <span class="n">root_rowids3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">target_table</span> <span class="o">=</span> <span class="n">depc</span><span class="p">[</span><span class="n">tablename</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">inputs</span> <span class="o">=</span> <span class="n">target_table</span><span class="o">.</span><span class="n">rootmost_inputs</span><span class="o">.</span><span class="n">total_expand</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">depc</span><span class="o">.</span><span class="n">get_rowids</span><span class="p">(</span><span class="n">tablename</span><span class="p">,</span> <span class="n">input_tuple</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">depc</span><span class="o">.</span><span class="n">print_all_tables</span><span class="p">()</span>
+</pre></div>
+</div>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># ENABLE_DOCTEST</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Test external / ensure getters</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">wbia.dtool.example_depcache</span> <span class="kn">import</span> <span class="o">*</span>  <span class="c1"># NOQA</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">config</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">depc</span> <span class="o">=</span> <span class="n">testdata_depc</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">aids</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">depc</span><span class="o">.</span><span class="n">delete_property</span><span class="p">(</span><span class="s1">&#39;keypoint&#39;</span><span class="p">,</span> <span class="n">aids</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">chip_fpaths</span> <span class="o">=</span> <span class="n">depc</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;chip&#39;</span><span class="p">,</span> <span class="n">aids</span><span class="p">,</span> <span class="s1">&#39;chip&#39;</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span> <span class="n">read_extern</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ut</span><span class="o">.</span><span class="n">remove_file_list</span><span class="p">(</span><span class="n">chip_fpaths</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rowids</span> <span class="o">=</span> <span class="n">depc</span><span class="o">.</span><span class="n">get_rowids</span><span class="p">(</span><span class="s1">&#39;keypoint&#39;</span><span class="p">,</span> <span class="n">aids</span><span class="p">,</span> <span class="n">ensure</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;rowids = </span><span class="si">%r</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">rowids</span><span class="p">,))</span>
+</pre></div>
+</div>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># ENABLE_DOCTEST</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">wbia.dtool.example_depcache</span> <span class="kn">import</span> <span class="o">*</span>  <span class="c1"># NOQA</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">depc</span> <span class="o">=</span> <span class="n">testdata_depc</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">depc</span><span class="o">.</span><span class="n">clear_all</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">root_rowids</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">config</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Recompute the first few, make sure the rowids do not change</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">depc</span><span class="o">.</span><span class="n">get_rowids</span><span class="p">(</span><span class="s1">&#39;chip&#39;</span><span class="p">,</span> <span class="n">root_rowids</span> <span class="o">+</span> <span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="n">_</span> <span class="o">==</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">initial_rowids</span> <span class="o">=</span> <span class="n">depc</span><span class="o">.</span><span class="n">get_rowids</span><span class="p">(</span><span class="s1">&#39;chip&#39;</span><span class="p">,</span> <span class="n">root_rowids</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">recomp_rowids</span> <span class="o">=</span> <span class="n">depc</span><span class="o">.</span><span class="n">get_rowids</span><span class="p">(</span><span class="s1">&#39;chip&#39;</span><span class="p">,</span> <span class="n">root_rowids</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span> <span class="n">recompute</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="n">recomp_rowids</span> <span class="o">==</span> <span class="n">initial_rowids</span><span class="p">,</span> <span class="s1">&#39;rowids should not change due to recompute&#39;</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -917,6 +1254,12 @@ path that it will be located at</p></li>
 <dt id="wbia.dtool.depcache_control.DependencyCache.graph">
 <em class="property">property </em><code class="sig-name descname">graph</code><a class="headerlink" href="#wbia.dtool.depcache_control.DependencyCache.graph" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt id="wbia.dtool.depcache_control.DependencyCache.initialize">
+<code class="sig-name descname">initialize</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">_debug</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/depcache_control.html#DependencyCache.initialize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.depcache_control.DependencyCache.initialize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates all registered tables</p>
+</dd></dl>
 
 <dl class="py method">
 <dt id="wbia.dtool.depcache_control.DependencyCache.make_graph">
@@ -989,6 +1332,12 @@ objects in order to correctly compute their hashes.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt id="wbia.dtool.depcache_control.DependencyCache.new_request">
+<code class="sig-name descname">new_request</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tablename</span></em>, <em class="sig-param"><span class="n">qaids</span></em>, <em class="sig-param"><span class="n">daids</span></em>, <em class="sig-param"><span class="n">cfgdict</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/depcache_control.html#DependencyCache.new_request"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.depcache_control.DependencyCache.new_request" title="Permalink to this definition">¶</a></dt>
+<dd><p>creates a request for data that can be executed later</p>
+</dd></dl>
+
+<dl class="py method">
 <dt id="wbia.dtool.depcache_control.DependencyCache.notify_root_changed">
 <code class="sig-name descname">notify_root_changed</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">root_rowids</span></em>, <em class="sig-param"><span class="n">prop</span></em>, <em class="sig-param"><span class="n">force_delete</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/depcache_control.html#DependencyCache.notify_root_changed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.depcache_control.DependencyCache.notify_root_changed" title="Permalink to this definition">¶</a></dt>
 <dd><p>this is where we are notified that a “registered” root property has
@@ -1016,6 +1365,13 @@ changed.</p>
 <dd></dd></dl>
 
 <dl class="py method">
+<dt id="wbia.dtool.depcache_control.DependencyCache.rectify_input_tuple">
+<code class="sig-name descname">rectify_input_tuple</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">exi_inputs</span></em>, <em class="sig-param"><span class="n">input_tuple</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/depcache_control.html#DependencyCache.rectify_input_tuple"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.depcache_control.DependencyCache.rectify_input_tuple" title="Permalink to this definition">¶</a></dt>
+<dd><p>Standardizes inputs allowed for convinience into the expected input for
+get_parent_rowids.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt id="wbia.dtool.depcache_control.DependencyCache.reduced_graph">
 <em class="property">property </em><code class="sig-name descname">reduced_graph</code><a class="headerlink" href="#wbia.dtool.depcache_control.DependencyCache.reduced_graph" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -1026,16 +1382,37 @@ changed.</p>
 <dd></dd></dl>
 
 <dl class="py method">
+<dt id="wbia.dtool.depcache_control.DependencyCache.register_preproc">
+<code class="sig-name descname">register_preproc</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/depcache_control.html#DependencyCache.register_preproc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.depcache_control.DependencyCache.register_preproc" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>Decorator for registration of cachables</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tablename</strong> (<em>str</em>) – name of the node (corrsponds to SQL table)</p></li>
+<li><p><strong>parents</strong> (<em>list</em>) – tables this node depends on</p></li>
+<li><p><strong>colnames</strong> (<em>list</em>) – data returned by this table</p></li>
+<li><p><strong>coltypes</strong> (<em>list</em>) – types of data returned by this table</p></li>
+<li><p><strong>chunksize</strong> (<em>int</em>) – (default = None)</p></li>
+<li><p><strong>configclass</strong> (<em>dtool.TableConfig</em>) – derivative of dtool.TableConfig.
+if None, a default class will be constructed for you. (default = None)</p></li>
+<li><p><strong>docstr</strong> (<em>str</em>) – (default = None)</p></li>
+<li><p><strong>fname</strong> (<em>str</em>) – file name(default = None)</p></li>
+<li><p><strong>asobject</strong> (<em>bool</em>) – hacky dont use (default = False)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>SeeAlso:</dt><dd><p>depcache_table.DependencyCacheTable</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="wbia.dtool.depcache_control.DependencyCache.root">
 <em class="property">property </em><code class="sig-name descname">root</code><a class="headerlink" href="#wbia.dtool.depcache_control.DependencyCache.root" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
-
-<dl class="py method">
-<dt id="wbia.dtool.depcache_control.DependencyCache.rrr">
-<code class="sig-name descname">rrr</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">reload_module</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#wbia.dtool.depcache_control.DependencyCache.rrr" title="Permalink to this definition">¶</a></dt>
-<dd><p>special class reloading function
-This function is often injected as rrr of classes</p>
-</dd></dl>
 
 <dl class="py method">
 <dt id="wbia.dtool.depcache_control.DependencyCache.show_graph">
@@ -1307,13 +1684,12 @@ its ancestors and accessed via a tag.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">table</span> <span class="o">=</span> <span class="n">depc</span><span class="p">[</span><span class="s1">&#39;vsone&#39;</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">exec</span><span class="p">(</span><span class="n">ut</span><span class="o">.</span><span class="n">execstr_funckw</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">get_rowid</span><span class="p">),</span> <span class="nb">globals</span><span class="p">())</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">config</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">configclass</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">_debug</span> <span class="o">=</span> <span class="mi">5</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">verbose</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># test duplicate inputs are detected and accounted for</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">parent_rowids</span> <span class="o">=</span> <span class="p">[(</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">))]</span> <span class="o">*</span> <span class="mi">100</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">rectify_tup</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">_rectify_ids</span><span class="p">(</span><span class="n">parent_rowids</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">parent_ids_</span><span class="p">,</span> <span class="n">preproc_args</span><span class="p">,</span> <span class="n">idxs1</span><span class="p">,</span> <span class="n">idxs2</span><span class="p">)</span> <span class="o">=</span> <span class="n">rectify_tup</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">rowids</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">ensure_rows</span><span class="p">(</span><span class="n">parent_ids_</span><span class="p">,</span> <span class="n">preproc_args</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span> <span class="n">_debug</span><span class="o">=</span><span class="n">_debug</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rowids</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">ensure_rows</span><span class="p">(</span><span class="n">parent_ids_</span><span class="p">,</span> <span class="n">preproc_args</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;rowids = </span><span class="si">%r</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">rowids</span><span class="p">,))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
 </pre></div>
@@ -1365,6 +1741,18 @@ allowed.</p>
 </dd>
 </dl>
 <p>rowid = 1</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wbia.dtool.depcache_table.DependencyCacheTable.fname">
+<em class="property">property </em><code class="sig-name descname">fname</code><a class="headerlink" href="#wbia.dtool.depcache_table.DependencyCacheTable.fname" title="Permalink to this definition">¶</a></dt>
+<dd><p>Backwards compatible name of the database this Table belongs to</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wbia.dtool.depcache_table.DependencyCacheTable.from_name">
+<em class="property">classmethod </em><code class="sig-name descname">from_name</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">db_name</span></em>, <em class="sig-param"><span class="n">table_name</span></em>, <em class="sig-param"><span class="n">depcache_controller</span></em>, <em class="sig-param"><span class="n">parent_tablenames</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">data_colnames</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">data_coltypes</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">preproc_func</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">docstr</span><span class="o">=</span><span class="default_value">'no docstr'</span></em>, <em class="sig-param"><span class="n">asobject</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">chunksize</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">default_to_unpack</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">rm_extern_on_delete</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">vectorized</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">taggable</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/depcache_table.html#DependencyCacheTable.from_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.depcache_table.DependencyCacheTable.from_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build the instance based on a database and table name.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1450,7 +1838,7 @@ value of each tuple</p></li>
 <li><p><strong>eager</strong> (<em>bool</em>) – (default = True)</p></li>
 <li><p><strong>nInput</strong> (<em>int</em>) – (default = None)</p></li>
 <li><p><strong>recompute</strong> (<em>bool</em>) – (default = False)</p></li>
-<li><p><strong>_debug</strong> (<em>None</em>) – (default = None)</p></li>
+<li><p><strong>_debug</strong> (<em>None</em>) – (default = None) deprecated; no-op</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -1472,9 +1860,8 @@ value of each tuple</p></li>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">table</span> <span class="o">=</span> <span class="n">depc</span><span class="p">[</span><span class="s1">&#39;labeler&#39;</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">exec</span><span class="p">(</span><span class="n">ut</span><span class="o">.</span><span class="n">execstr_funckw</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">get_rowid</span><span class="p">),</span> <span class="nb">globals</span><span class="p">())</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">config</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">configclass</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">_debug</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">parent_rowids</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">2</span><span class="p">]))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">rowids</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">get_rowid</span><span class="p">(</span><span class="n">parent_rowids</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span> <span class="n">_debug</span><span class="o">=</span><span class="n">_debug</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rowids</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">get_rowid</span><span class="p">(</span><span class="n">parent_rowids</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;rowids = </span><span class="si">%r</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">rowids</span><span class="p">,))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
 <span class="go">rowids = [1, None, None, 2]</span>
@@ -1514,6 +1901,13 @@ This function is often injected as rrr of classes</p>
 <em class="property">exception </em><code class="sig-prename descclassname">wbia.dtool.depcache_table.</code><code class="sig-name descname">ExternalStorageException</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/depcache_table.html#ExternalStorageException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.depcache_table.ExternalStorageException" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
 <p>Indicates a missing external file</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="wbia.dtool.depcache_table.TableOutOfSyncError">
+<em class="property">exception </em><code class="sig-prename descclassname">wbia.dtool.depcache_table.</code><code class="sig-name descname">TableOutOfSyncError</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">db</span></em>, <em class="sig-param"><span class="n">tablename</span></em>, <em class="sig-param"><span class="n">extended_msg</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/depcache_table.html#TableOutOfSyncError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.depcache_table.TableOutOfSyncError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Raised when the code’s table definition doesn’t match the defition in the database</p>
 </dd></dl>
 
 <dl class="py function">
@@ -1563,6 +1957,23 @@ python -m dtool.depcache_control –exec-make_graph –show</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">cfg</span><span class="p">)</span>
 </pre></div>
 </div>
+</dd></dl>
+
+<dl class="py class">
+<dt id="wbia.dtool.example_depcache.DummyController">
+<em class="property">class </em><code class="sig-prename descclassname">wbia.dtool.example_depcache.</code><code class="sig-name descname">DummyController</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cache_dpath</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/example_depcache.html#DummyController"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.example_depcache.DummyController" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Just enough (IBEIS) controller to make the dependency cache examples work</p>
+<dl class="py method">
+<dt id="wbia.dtool.example_depcache.DummyController.get_cachedir">
+<code class="sig-name descname">get_cachedir</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/example_depcache.html#DummyController.get_cachedir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.example_depcache.DummyController.get_cachedir" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="wbia.dtool.example_depcache.DummyController.make_cache_db_uri">
+<code class="sig-name descname">make_cache_db_uri</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/example_depcache.html#DummyController.make_cache_db_uri"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.example_depcache.DummyController.make_cache_db_uri" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
@@ -2255,7 +2666,7 @@ sql files are created with reasonable permissions.</p>
 
 <dl class="py class">
 <dt id="wbia.dtool.sql_control.SQLDatabaseController">
-<em class="property">class </em><code class="sig-prename descclassname">wbia.dtool.sql_control.</code><code class="sig-name descname">SQLDatabaseController</code><a class="reference internal" href="_modules/wbia/dtool/sql_control.html#SQLDatabaseController"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.sql_control.SQLDatabaseController" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">wbia.dtool.sql_control.</code><code class="sig-name descname">SQLDatabaseController</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">uri</span></em>, <em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">readonly</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">timeout</span><span class="o">=</span><span class="default_value">600</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/sql_control.html#SQLDatabaseController"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.sql_control.SQLDatabaseController" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Interface to an SQL database</p>
 <dl class="py class">
@@ -2339,7 +2750,7 @@ correspond to superkeys. defaults to (0,)</p></li>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># ENABLE_DOCTEST</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">wbia.dtool.sql_control</span> <span class="kn">import</span> <span class="o">*</span>  <span class="c1"># NOQA</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span> <span class="o">=</span> <span class="n">SQLDatabaseController</span><span class="o">.</span><span class="n">from_uri</span><span class="p">(</span><span class="s1">&#39;:memory:&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span> <span class="o">=</span> <span class="n">SQLDatabaseController</span><span class="p">(</span><span class="s1">&#39;sqlite:///&#39;</span><span class="p">,</span> <span class="s1">&#39;testing&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">add_table</span><span class="p">(</span><span class="s1">&#39;dummy_table&#39;</span><span class="p">,</span> <span class="p">(</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="p">(</span><span class="s1">&#39;rowid&#39;</span><span class="p">,</span>               <span class="s1">&#39;INTEGER PRIMARY KEY&#39;</span><span class="p">),</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="p">(</span><span class="s1">&#39;key&#39;</span><span class="p">,</span>                 <span class="s1">&#39;TEXT&#39;</span><span class="p">),</span>
@@ -2401,29 +2812,24 @@ uniquely identifies a rowid</p></li>
 <dl class="py method">
 <dt id="wbia.dtool.sql_control.SQLDatabaseController.check_rowid_exists">
 <code class="sig-name descname">check_rowid_exists</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tablename</span></em>, <em class="sig-param"><span class="n">rowid_iter</span></em>, <em class="sig-param"><span class="n">eager</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/sql_control.html#SQLDatabaseController.check_rowid_exists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.sql_control.SQLDatabaseController.check_rowid_exists" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="wbia.dtool.sql_control.SQLDatabaseController.close">
-<code class="sig-name descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/sql_control.html#SQLDatabaseController.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.sql_control.SQLDatabaseController.close" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Check for the existence of rows (<code class="docutils literal notranslate"><span class="pre">rowid_iter</span></code>) in a table (<code class="docutils literal notranslate"><span class="pre">tablename</span></code>).
+Returns as sequence of rowids that exist in the given sequence.</p>
+<p>The ‘rowid’ term is an alias for the primary key. When calling this method,
+you should know that the primary key may be more than one column.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt id="wbia.dtool.sql_control.SQLDatabaseController.connect">
 <code class="sig-name descname">connect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/sql_control.html#SQLDatabaseController.connect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.sql_control.SQLDatabaseController.connect" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a connection for the instance or use the existing connection</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="wbia.dtool.sql_control.SQLDatabaseController.connection">
-<em class="property">property </em><code class="sig-name descname">connection</code><a class="headerlink" href="#wbia.dtool.sql_control.SQLDatabaseController.connection" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a connection or reuse the existing connection</p>
+<dd><p>Create a connection instance to wrap a SQL execution block as a context manager</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="wbia.dtool.sql_control.SQLDatabaseController.delete">
 <code class="sig-name descname">delete</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tblname</span></em>, <em class="sig-param"><span class="n">id_list</span></em>, <em class="sig-param"><span class="n">id_colname</span><span class="o">=</span><span class="default_value">'rowid'</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/sql_control.html#SQLDatabaseController.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.sql_control.SQLDatabaseController.delete" title="Permalink to this definition">¶</a></dt>
-<dd><p>deleter. USE delete_rowids instead</p>
+<dd><p>Deletes rows from a SQL table (<code class="docutils literal notranslate"><span class="pre">tblname</span></code>) by ID,
+given a sequence of IDs (<code class="docutils literal notranslate"><span class="pre">id_list</span></code>).
+Optionally a different ID column can be specified via <code class="docutils literal notranslate"><span class="pre">id_colname</span></code>.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -2440,7 +2846,7 @@ uniquely identifies a rowid</p></li>
 
 <dl class="py method">
 <dt id="wbia.dtool.sql_control.SQLDatabaseController.drop_table">
-<code class="sig-name descname">drop_table</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tablename</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/sql_control.html#SQLDatabaseController.drop_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.sql_control.SQLDatabaseController.drop_table" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">drop_table</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tablename</span></em>, <em class="sig-param"><span class="n">invalidate_cache</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/sql_control.html#SQLDatabaseController.drop_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.sql_control.SQLDatabaseController.drop_table" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -2461,14 +2867,38 @@ representation.</p>
 
 <dl class="py method">
 <dt id="wbia.dtool.sql_control.SQLDatabaseController.executemany">
-<code class="sig-name descname">executemany</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">operation</span></em>, <em class="sig-param"><span class="n">params_iter</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">unpack_scalars</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">nInput</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">eager</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">keepwrap</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">showprog</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/sql_control.html#SQLDatabaseController.executemany"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.sql_control.SQLDatabaseController.executemany" title="Permalink to this definition">¶</a></dt>
-<dd><p>if unpack_scalars is True only a single result must be returned for each query.</p>
+<code class="sig-name descname">executemany</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">operation</span></em>, <em class="sig-param"><span class="n">params_iter</span></em>, <em class="sig-param"><span class="n">unpack_scalars</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">keepwrap</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/sql_control.html#SQLDatabaseController.executemany"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.sql_control.SQLDatabaseController.executemany" title="Permalink to this definition">¶</a></dt>
+<dd><p>Executes the given <code class="docutils literal notranslate"><span class="pre">operation</span></code> once for each item in <code class="docutils literal notranslate"><span class="pre">params_iter</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>operation</strong> (<em>str</em>) – SQL operation</p></li>
+<li><p><strong>params_iter</strong> (<em>sequence</em>) – a sequence of sequences
+containing parameters in the sql operation</p></li>
+<li><p><strong>unpack_scalars</strong> (<em>bool</em>) – [deprecated] use to unpack a single result from each query
+only use with operations that return a single result for each query
+(default: True)</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt id="wbia.dtool.sql_control.SQLDatabaseController.executeone">
-<code class="sig-name descname">executeone</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">operation</span></em>, <em class="sig-param"><span class="n">params</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">eager</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/sql_control.html#SQLDatabaseController.executeone"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.sql_control.SQLDatabaseController.executeone" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="sig-name descname">executeone</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">operation</span></em>, <em class="sig-param"><span class="n">params</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">eager</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">use_fetchone_behavior</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">keepwrap</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/sql_control.html#SQLDatabaseController.executeone"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.sql_control.SQLDatabaseController.executeone" title="Permalink to this definition">¶</a></dt>
+<dd><p>Executes the given <code class="docutils literal notranslate"><span class="pre">operation</span></code> once with the given set of <code class="docutils literal notranslate"><span class="pre">params</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>operation</strong> (<em>str|TextClause</em>) – SQL statement</p></li>
+<li><p><strong>params</strong> (<em>sequence|dict</em>) – parameters to pass in with SQL execution</p></li>
+<li><p><strong>eager</strong> – [deprecated] no-op</p></li>
+<li><p><strong>verbose</strong> – [deprecated] no-op</p></li>
+<li><p><strong>use_fetchone_behavior</strong> (<em>bool</em>) – Use DBAPI <code class="docutils literal notranslate"><span class="pre">fetchone</span></code> behavior when outputing no rows (i.e. None)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt id="wbia.dtool.sql_control.SQLDatabaseController.exists_where_eq">
@@ -2477,71 +2907,20 @@ representation.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="wbia.dtool.sql_control.SQLDatabaseController.from_uri">
-<em class="property">classmethod </em><code class="sig-name descname">from_uri</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">uri</span></em>, <em class="sig-param"><span class="n">readonly</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">timeout</span><span class="o">=</span><span class="default_value">600</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/sql_control.html#SQLDatabaseController.from_uri"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.sql_control.SQLDatabaseController.from_uri" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates a controller instance from a connection URI</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>uri</strong> (<em>str</em>) – connection string or uri</p></li>
-<li><p><strong>timeout</strong> (<em>int</em>) – connection timeout in seconds</p></li>
-</ul>
-</dd>
-</dl>
-<p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># ENABLE_DOCTEST</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">wbia.dtool.sql_control</span> <span class="kn">import</span> <span class="o">*</span>  <span class="c1"># NOQA</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">sqldb_dpath</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">ensure_app_resource_dir</span><span class="p">(</span><span class="s1">&#39;dtool&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">sqldb_fname</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;test_database.sqlite3&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sqldb_dpath</span><span class="p">,</span> <span class="n">sqldb_fname</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">db_uri</span> <span class="o">=</span> <span class="s1">&#39;file://</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span> <span class="o">=</span> <span class="n">SQLDatabaseController</span><span class="o">.</span><span class="n">from_uri</span><span class="p">(</span><span class="n">db_uri</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">print_schema</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">db2</span> <span class="o">=</span> <span class="n">SQLDatabaseController</span><span class="o">.</span><span class="n">from_uri</span><span class="p">(</span><span class="n">db_uri</span><span class="p">,</span> <span class="n">readonly</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">add_table</span><span class="p">(</span><span class="s1">&#39;temptable&#39;</span><span class="p">,</span> <span class="p">(</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="p">(</span><span class="s1">&#39;rowid&#39;</span><span class="p">,</span>               <span class="s1">&#39;INTEGER PRIMARY KEY&#39;</span><span class="p">),</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="p">(</span><span class="s1">&#39;key&#39;</span><span class="p">,</span>                 <span class="s1">&#39;TEXT&#39;</span><span class="p">),</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="p">(</span><span class="s1">&#39;val&#39;</span><span class="p">,</span>                 <span class="s1">&#39;TEXT&#39;</span><span class="p">),</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="p">),</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="n">superkeys</span><span class="o">=</span><span class="p">[(</span><span class="s1">&#39;key&#39;</span><span class="p">,)])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">db2</span><span class="o">.</span><span class="n">print_schema</span><span class="p">()</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py method">
 <dt id="wbia.dtool.sql_control.SQLDatabaseController.get">
-<code class="sig-name descname">get</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tblname</span></em>, <em class="sig-param"><span class="n">colnames</span></em>, <em class="sig-param"><span class="n">id_iter</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">id_colname</span><span class="o">=</span><span class="default_value">'rowid'</span></em>, <em class="sig-param"><span class="n">eager</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">assume_unique</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/sql_control.html#SQLDatabaseController.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.sql_control.SQLDatabaseController.get" title="Permalink to this definition">¶</a></dt>
-<dd><p>getter</p>
+<code class="sig-name descname">get</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tblname</span></em>, <em class="sig-param"><span class="n">colnames</span></em>, <em class="sig-param"><span class="n">id_iter</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">id_colname</span><span class="o">=</span><span class="default_value">'rowid'</span></em>, <em class="sig-param"><span class="n">eager</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">assume_unique</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">batch_size</span><span class="o">=</span><span class="default_value">10000</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/sql_control.html#SQLDatabaseController.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.sql_control.SQLDatabaseController.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get rows of data by ID</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>tblname</strong> (<em>str</em>) – table name to get from</p></li>
 <li><p><strong>colnames</strong> (<em>tuple of str</em>) – column names to grab from</p></li>
 <li><p><strong>id_iter</strong> (<em>iterable</em>) – iterable of search keys</p></li>
-<li><p><strong>id_colname</strong> (<em>bool</em>) – column to be used as the search key (default: rowid)</p></li>
+<li><p><strong>id_colname</strong> (<em>str</em>) – column to be used as the search key (default: rowid)</p></li>
 <li><p><strong>eager</strong> (<em>bool</em>) – use eager evaluation</p></li>
+<li><p><strong>assume_unique</strong> (<em>bool</em>) – default False. Experimental feature that could result in a 10x speedup</p></li>
 <li><p><strong>unpack_scalars</strong> (<em>bool</em>) – default True</p></li>
-<li><p><strong>id_colname</strong> – default False. Experimental feature that could result in a 10x speedup</p></li>
 </ul>
-</dd>
-</dl>
-<dl>
-<dt>CommandLine:</dt><dd><p>python -m dtool.sql_control get</p>
-</dd>
-<dt>Ignore:</dt><dd><p>tblname = ‘annotations’
-colnames = (‘name_rowid’,)
-id_iter = aid_list
-#id_iter = id_iter[0:20]
-id_colname = ‘rowid’
-eager = True
-db = ibs.db</p>
-<p>x1 = db.get(tblname, colnames, id_iter, assume_unique=True)
-x2 = db.get(tblname, colnames, id_iter, assume_unique=False)
-x1 == x2
-%timeit  db.get(tblname, colnames, id_iter, assume_unique=True)
-%timeit  db.get(tblname, colnames, id_iter, assume_unique=False)</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
@@ -2596,7 +2975,7 @@ condition</p>
 <dl class="py method">
 <dt id="wbia.dtool.sql_control.SQLDatabaseController.get_column">
 <code class="sig-name descname">get_column</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tablename</span></em>, <em class="sig-param"><span class="n">name</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/sql_control.html#SQLDatabaseController.get_column"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.sql_control.SQLDatabaseController.get_column" title="Permalink to this definition">¶</a></dt>
-<dd><p>Conveinience:</p>
+<dd><p>Get all the values for the specified column (<code class="docutils literal notranslate"><span class="pre">name</span></code>) of the table (<code class="docutils literal notranslate"><span class="pre">tablename</span></code>)</p>
 </dd></dl>
 
 <dl class="py method">
@@ -2676,7 +3055,7 @@ python -m dtool.sql_control –exec-get_columns –tablename=nonexist</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">os</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">wbia.dtool.sql_control</span> <span class="kn">import</span> <span class="o">*</span>  <span class="c1"># NOQA</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Check random database gets new UUID on init</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span> <span class="o">=</span> <span class="n">SQLDatabaseController</span><span class="o">.</span><span class="n">from_uri</span><span class="p">(</span><span class="s1">&#39;:memory:&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span> <span class="o">=</span> <span class="n">SQLDatabaseController</span><span class="p">(</span><span class="s1">&#39;sqlite:///&#39;</span><span class="p">,</span> <span class="s1">&#39;testing&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">uuid_</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">get_db_init_uuid</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;New Database: </span><span class="si">%r</span><span class="s1"> is valid&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">uuid_</span><span class="p">,</span> <span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">uuid_</span><span class="p">,</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span>
@@ -2684,10 +3063,10 @@ python -m dtool.sql_control –exec-get_columns –tablename=nonexist</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sqldb_dpath</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">ensure_app_resource_dir</span><span class="p">(</span><span class="s1">&#39;dtool&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sqldb_fname</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;test_database.sqlite3&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sqldb_dpath</span><span class="p">,</span> <span class="n">sqldb_fname</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">db_uri</span> <span class="o">=</span> <span class="s1">&#39;file://</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">db1</span> <span class="o">=</span> <span class="n">SQLDatabaseController</span><span class="o">.</span><span class="n">from_uri</span><span class="p">(</span><span class="n">db_uri</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db_uri</span> <span class="o">=</span> <span class="s1">&#39;sqlite:///</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db1</span> <span class="o">=</span> <span class="n">SQLDatabaseController</span><span class="p">(</span><span class="n">db_uri</span><span class="p">,</span> <span class="s1">&#39;db1&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">uuid_1</span> <span class="o">=</span> <span class="n">db1</span><span class="o">.</span><span class="n">get_db_init_uuid</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">db2</span> <span class="o">=</span> <span class="n">SQLDatabaseController</span><span class="o">.</span><span class="n">from_uri</span><span class="p">(</span><span class="n">db_uri</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db2</span> <span class="o">=</span> <span class="n">SQLDatabaseController</span><span class="p">(</span><span class="n">db_uri</span><span class="p">,</span> <span class="s1">&#39;db2&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">uuid_2</span> <span class="o">=</span> <span class="n">db2</span><span class="o">.</span><span class="n">get_db_init_uuid</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Existing Database: </span><span class="si">%r</span><span class="s1"> == </span><span class="si">%r</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">uuid_1</span><span class="p">,</span> <span class="n">uuid_2</span><span class="p">,</span> <span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="n">uuid_1</span> <span class="o">==</span> <span class="n">uuid_2</span>
@@ -2808,7 +3187,7 @@ logger.info(db.get_table_as_pandas(tablename, rowids, exclude_columns=exclude_co
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># ENABLE_DOCTEST</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">wbia.dtool.sql_control</span> <span class="kn">import</span> <span class="o">*</span>  <span class="c1"># NOQA</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span> <span class="o">=</span> <span class="n">SQLDatabaseController</span><span class="o">.</span><span class="n">from_uri</span><span class="p">(</span><span class="s1">&#39;:memory:&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span> <span class="o">=</span> <span class="n">SQLDatabaseController</span><span class="p">(</span><span class="s1">&#39;sqlite:///&#39;</span><span class="p">,</span> <span class="s1">&#39;testing&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">tablename</span> <span class="o">=</span> <span class="s1">&#39;dummy_table&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">add_table</span><span class="p">(</span><span class="n">tablename</span><span class="p">,</span> <span class="p">(</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="p">(</span><span class="s1">&#39;rowid&#39;</span><span class="p">,</span> <span class="s1">&#39;INTEGER PRIMARY KEY&#39;</span><span class="p">),</span>
@@ -2845,7 +3224,7 @@ logger.info(db.get_table_as_pandas(tablename, rowids, exclude_columns=exclude_co
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># ENABLE_DOCTEST</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">wbia.dtool.sql_control</span> <span class="kn">import</span> <span class="o">*</span>  <span class="c1"># NOQA</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span> <span class="o">=</span> <span class="n">SQLDatabaseController</span><span class="o">.</span><span class="n">from_uri</span><span class="p">(</span><span class="s1">&#39;:memory:&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span> <span class="o">=</span> <span class="n">SQLDatabaseController</span><span class="p">(</span><span class="s1">&#39;sqlite:///&#39;</span><span class="p">,</span> <span class="s1">&#39;testing&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">tablename</span> <span class="o">=</span> <span class="s1">&#39;dummy_table&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">add_table</span><span class="p">(</span><span class="n">tablename</span><span class="p">,</span> <span class="p">(</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="p">(</span><span class="s1">&#39;rowid&#39;</span><span class="p">,</span> <span class="s1">&#39;INTEGER PRIMARY KEY&#39;</span><span class="p">),</span>
@@ -2862,10 +3241,6 @@ logger.info(db.get_table_as_pandas(tablename, rowids, exclude_columns=exclude_co
 <dt id="wbia.dtool.sql_control.SQLDatabaseController.get_table_column_data">
 <code class="sig-name descname">get_table_column_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tablename</span></em>, <em class="sig-param"><span class="n">columns</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">exclude_columns</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">rowids</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/sql_control.html#SQLDatabaseController.get_table_column_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.sql_control.SQLDatabaseController.get_table_column_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Grabs a table of information</p>
-<dl class="simple">
-<dt>CommandLine:</dt><dd><p>python -m dtool.sql_control –test-get_table_column_data</p>
-</dd>
-</dl>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># ENABLE_DOCTEST</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">wbia.dtool.sql_control</span> <span class="kn">import</span> <span class="o">*</span>  <span class="c1"># NOQA</span>
@@ -2874,6 +3249,10 @@ logger.info(db.get_table_as_pandas(tablename, rowids, exclude_columns=exclude_co
 <span class="gp">&gt;&gt;&gt; </span><span class="n">tablename</span> <span class="o">=</span> <span class="s1">&#39;keypoint&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">db</span> <span class="o">=</span> <span class="n">depc</span><span class="p">[</span><span class="n">tablename</span><span class="p">]</span><span class="o">.</span><span class="n">db</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">column_list</span><span class="p">,</span> <span class="n">column_names</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">get_table_column_data</span><span class="p">(</span><span class="n">tablename</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">column_list</span>
+<span class="go">[[], [], [], [], []]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">column_names</span>
+<span class="go">[&#39;keypoint_rowid&#39;, &#39;chip_rowid&#39;, &#39;config_rowid&#39;, &#39;kpts&#39;, &#39;num&#39;]</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -3080,16 +3459,42 @@ python -m wbia –tf get_table_superkey_colnames –db PZ_Master0 –tablename=c
 <dl class="py method">
 <dt id="wbia.dtool.sql_control.SQLDatabaseController.get_where">
 <code class="sig-name descname">get_where</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tblname</span></em>, <em class="sig-param"><span class="n">colnames</span></em>, <em class="sig-param"><span class="n">params_iter</span></em>, <em class="sig-param"><span class="n">where_clause</span></em>, <em class="sig-param"><span class="n">unpack_scalars</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">eager</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/sql_control.html#SQLDatabaseController.get_where"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.sql_control.SQLDatabaseController.get_where" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Interface to do a SQL select with a where clause</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tblname</strong> (<em>str</em>) – table name</p></li>
+<li><p><strong>colnames</strong> (<em>tuple</em><em>[</em><em>str</em><em>]</em>) – sequence of column names</p></li>
+<li><p><strong>params_iter</strong> (<em>list</em><em>[</em><em>dict</em><em>]</em>) – a sequence of dicts with parameters,
+where each item in the sequence is used in a SQL execution</p></li>
+<li><p><strong>where_clause</strong> (<em>str|Operation</em>) – conditional statement used in the where clause</p></li>
+<li><p><strong>unpack_scalars</strong> (<em>bool</em>) – [deprecated] use to unpack a single result from each query
+only use with operations that return a single result for each query
+(default: True)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt id="wbia.dtool.sql_control.SQLDatabaseController.get_where_eq">
-<code class="sig-name descname">get_where_eq</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tblname</span></em>, <em class="sig-param"><span class="n">colnames</span></em>, <em class="sig-param"><span class="n">params_iter</span></em>, <em class="sig-param"><span class="n">where_colnames</span></em>, <em class="sig-param"><span class="n">unpack_scalars</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">eager</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">op</span><span class="o">=</span><span class="default_value">'AND'</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/sql_control.html#SQLDatabaseController.get_where_eq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.sql_control.SQLDatabaseController.get_where_eq" title="Permalink to this definition">¶</a></dt>
-<dd><p>hacked in function for nicer templates</p>
-<p>unpack_scalars = True
-kwargs = {}</p>
-<dl class="simple">
-<dt>Kwargs:</dt><dd><p>verbose:</p>
+<code class="sig-name descname">get_where_eq</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tblname</span></em>, <em class="sig-param"><span class="n">colnames</span></em>, <em class="sig-param"><span class="n">params_iter</span></em>, <em class="sig-param"><span class="n">where_colnames</span></em>, <em class="sig-param"><span class="n">unpack_scalars</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">op</span><span class="o">=</span><span class="default_value">'AND'</span></em>, <em class="sig-param"><span class="n">batch_size</span><span class="o">=</span><span class="default_value">10000</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/sql_control.html#SQLDatabaseController.get_where_eq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.sql_control.SQLDatabaseController.get_where_eq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Executes a SQL select where the given parameters match/equal
+the specified where columns.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tblname</strong> (<em>str</em>) – table name</p></li>
+<li><p><strong>colnames</strong> (<em>tuple</em><em>[</em><em>str</em><em>]</em>) – sequence of column names</p></li>
+<li><p><strong>params_iter</strong> (<em>list</em><em>[</em><em>list</em><em>]</em>) – a sequence of a sequence with parameters,
+where each item in the sequence is used in a SQL execution</p></li>
+<li><p><strong>where_colnames</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – column names to match for equality against the same index
+of the param_iter values</p></li>
+<li><p><strong>op</strong> (<em>str</em>) – SQL boolean operator (e.g. AND, OR)</p></li>
+<li><p><strong>unpack_scalars</strong> (<em>bool</em>) – [deprecated] use to unpack a single result from each query
+only use with operations that return a single result for each query
+(default: True)</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -3108,6 +3513,23 @@ kwargs = {}</p>
 <dl class="py method">
 <dt id="wbia.dtool.sql_control.SQLDatabaseController.integrity">
 <code class="sig-name descname">integrity</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/sql_control.html#SQLDatabaseController.integrity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.sql_control.SQLDatabaseController.integrity" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="wbia.dtool.sql_control.SQLDatabaseController.invalidate_tables_cache">
+<code class="sig-name descname">invalidate_tables_cache</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/sql_control.html#SQLDatabaseController.invalidate_tables_cache"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.sql_control.SQLDatabaseController.invalidate_tables_cache" title="Permalink to this definition">¶</a></dt>
+<dd><p>Invalidates the controller’s cache of table names and objects
+Resets the caches and/or repopulates them.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wbia.dtool.sql_control.SQLDatabaseController.is_using_postgres">
+<em class="property">property </em><code class="sig-name descname">is_using_postgres</code><a class="headerlink" href="#wbia.dtool.sql_control.SQLDatabaseController.is_using_postgres" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="wbia.dtool.sql_control.SQLDatabaseController.is_using_sqlite">
+<em class="property">property </em><code class="sig-name descname">is_using_sqlite</code><a class="headerlink" href="#wbia.dtool.sql_control.SQLDatabaseController.is_using_sqlite" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -3312,7 +3734,7 @@ convert_func - Function to convert data from old to new</p></li>
 
 <dl class="py method">
 <dt id="wbia.dtool.sql_control.SQLDatabaseController.rename_table">
-<code class="sig-name descname">rename_table</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tablename_old</span></em>, <em class="sig-param"><span class="n">tablename_new</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/sql_control.html#SQLDatabaseController.rename_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.sql_control.SQLDatabaseController.rename_table" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">rename_table</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tablename_old</span></em>, <em class="sig-param"><span class="n">tablename_new</span></em>, <em class="sig-param"><span class="n">invalidate_cache</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/sql_control.html#SQLDatabaseController.rename_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.sql_control.SQLDatabaseController.rename_table" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -3326,6 +3748,12 @@ convert_func - Function to convert data from old to new</p></li>
 <code class="sig-name descname">rrr</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">reload_module</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#wbia.dtool.sql_control.SQLDatabaseController.rrr" title="Permalink to this definition">¶</a></dt>
 <dd><p>special class reloading function
 This function is often injected as rrr of classes</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wbia.dtool.sql_control.SQLDatabaseController.schema_name">
+<em class="property">property </em><code class="sig-name descname">schema_name</code><a class="headerlink" href="#wbia.dtool.sql_control.SQLDatabaseController.schema_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>The name of the namespace schema (using with Postgres).</p>
 </dd></dl>
 
 <dl class="py method">
@@ -3347,11 +3775,11 @@ This function is often injected as rrr of classes</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="o">.</span><span class="n">print_csv</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Break things to test set</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">colnames</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;dummy_annot_rowid&#39;</span><span class="p">,)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">val_iter</span> <span class="o">=</span> <span class="p">[</span><span class="mi">9003</span><span class="p">,</span> <span class="mi">9001</span><span class="p">,</span> <span class="mi">9002</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">val_iter</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">9003</span><span class="p">,),</span> <span class="p">(</span><span class="mi">9001</span><span class="p">,),</span> <span class="p">(</span><span class="mi">9002</span><span class="p">,)]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">orig_data</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;notch&#39;</span><span class="p">,</span> <span class="n">colnames</span><span class="p">,</span> <span class="n">id_iter</span><span class="o">=</span><span class="n">rowids</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;notch&#39;</span><span class="p">,</span> <span class="n">colnames</span><span class="p">,</span> <span class="n">val_iter</span><span class="p">,</span> <span class="n">id_iter</span><span class="o">=</span><span class="n">rowids</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">new_data</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;notch&#39;</span><span class="p">,</span> <span class="n">colnames</span><span class="p">,</span> <span class="n">id_iter</span><span class="o">=</span><span class="n">rowids</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="n">new_data</span> <span class="o">==</span> <span class="n">val_iter</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="n">new_data</span> <span class="o">==</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">val_iter</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="n">new_data</span> <span class="o">!=</span> <span class="n">orig_data</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="o">.</span><span class="n">print_csv</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">depc</span><span class="o">.</span><span class="n">clear_all</span><span class="p">()</span>
@@ -3386,11 +3814,6 @@ This function is often injected as rrr of classes</p>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="wbia.dtool.sql_control.SQLDatabaseController.thread_connection">
-<code class="sig-name descname">thread_connection</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/sql_control.html#SQLDatabaseController.thread_connection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.sql_control.SQLDatabaseController.thread_connection" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
 <dt id="wbia.dtool.sql_control.SQLDatabaseController.vacuum">
 <code class="sig-name descname">vacuum</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/sql_control.html#SQLDatabaseController.vacuum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.sql_control.SQLDatabaseController.vacuum" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -3399,25 +3822,6 @@ This function is often injected as rrr of classes</p>
 <dt id="wbia.dtool.sql_control.SQLDatabaseController.view_db_in_external_reader">
 <code class="sig-name descname">view_db_in_external_reader</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/sql_control.html#SQLDatabaseController.view_db_in_external_reader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.sql_control.SQLDatabaseController.view_db_in_external_reader" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt id="wbia.dtool.sql_control.SQLExecutionContext">
-<em class="property">class </em><code class="sig-prename descclassname">wbia.dtool.sql_control.</code><code class="sig-name descname">SQLExecutionContext</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">db</span></em>, <em class="sig-param"><span class="n">operation</span></em>, <em class="sig-param"><span class="n">nInput</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">auto_commit</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">start_transaction</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">keepwrap</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">tablename</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/sql_control.html#SQLExecutionContext"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.sql_control.SQLExecutionContext" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Context manager for transactional database calls</p>
-<p>FIXME: hash out details. I don’t think anybody who programmed this
-knows what is going on here. So much for fine grained control.</p>
-<dl class="simple">
-<dt>Referencs:</dt><dd><p><a class="reference external" href="http://stackoverflow.com/questions/9573768/understand-sqlite-multi-module-envs">http://stackoverflow.com/questions/9573768/understand-sqlite-multi-module-envs</a></p>
-</dd>
-</dl>
-<dl class="py method">
-<dt id="wbia.dtool.sql_control.SQLExecutionContext.execute_and_generate_results">
-<code class="sig-name descname">execute_and_generate_results</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">params</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/sql_control.html#SQLExecutionContext.execute_and_generate_results"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.sql_control.SQLExecutionContext.execute_and_generate_results" title="Permalink to this definition">¶</a></dt>
-<dd><p>helper for context statment</p>
-</dd></dl>
 
 </dd></dl>
 
@@ -3468,54 +3872,14 @@ This function is often injected as rrr of classes</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="wbia.dtool.sql_control.dev_test_new_schema_version">
-<code class="sig-prename descclassname">wbia.dtool.sql_control.</code><code class="sig-name descname">dev_test_new_schema_version</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dbname</span></em>, <em class="sig-param"><span class="n">sqldb_dpath</span></em>, <em class="sig-param"><span class="n">sqldb_fname</span></em>, <em class="sig-param"><span class="n">version_current</span></em>, <em class="sig-param"><span class="n">version_next</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/sql_control.html#dev_test_new_schema_version"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.sql_control.dev_test_new_schema_version" title="Permalink to this definition">¶</a></dt>
-<dd><p>HACK</p>
-<p>hacky function to ensure that only developer sees the development schema
-and only on test databases</p>
-</dd></dl>
+<dt id="wbia.dtool.sql_control.compare_coldef_lists">
+<code class="sig-prename descclassname">wbia.dtool.sql_control.</code><code class="sig-name descname">compare_coldef_lists</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">coldef_list1</span></em>, <em class="sig-param"><span class="n">coldef_list2</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/sql_control.html#compare_coldef_lists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.sql_control.compare_coldef_lists" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="py function">
-<dt id="wbia.dtool.sql_control.flattenize">
-<code class="sig-prename descclassname">wbia.dtool.sql_control.</code><code class="sig-name descname">flattenize</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">list_</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/sql_control.html#flattenize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.sql_control.flattenize" title="Permalink to this definition">¶</a></dt>
-<dd><p>maps flatten to a tuplized list</p>
-<p>Weird function. DEPRICATE</p>
-<p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># DISABLE_DOCTEST</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">list_</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]]]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">utool</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="nb">zip</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">val_list1</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">)]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">id_list1</span>  <span class="o">=</span> <span class="p">[(</span><span class="mi">1</span><span class="p">,),</span>     <span class="p">(</span><span class="mi">2</span><span class="p">,),</span>   <span class="p">(</span><span class="mi">3</span><span class="p">,)]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">out_list1</span> <span class="o">=</span> <span class="n">utool</span><span class="o">.</span><span class="n">flattenize</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">val_list1</span><span class="p">,</span> <span class="n">id_list1</span><span class="p">))</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">val_list2</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">id_list2</span>  <span class="o">=</span> <span class="p">[(</span><span class="mi">1</span><span class="p">,),</span>     <span class="p">(</span><span class="mi">2</span><span class="p">,),</span>   <span class="p">(</span><span class="mi">3</span><span class="p">,)]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">out_list2</span> <span class="o">=</span> <span class="n">utool</span><span class="o">.</span><span class="n">flattenize</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">val_list2</span><span class="p">,</span> <span class="n">id_list2</span><span class="p">))</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">val_list3</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">id_list3</span>  <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">out_list3</span> <span class="o">=</span> <span class="n">utool</span><span class="o">.</span><span class="n">flattenize</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">val_list3</span><span class="p">,</span> <span class="n">id_list3</span><span class="p">))</span>
-</pre></div>
-</div>
-<p>out_list4 = list(zip(val_list3, id_list3))
-%timeit utool.flattenize(zip(val_list1, id_list1))
-%timeit utool.flattenize(zip(val_list2, id_list2))
-%timeit utool.flattenize(zip(val_list3, id_list3))
-%timeit list(zip(val_list3, id_list3))</p>
-<p>100000 loops, best of 3: 14 us per loop
-100000 loops, best of 3: 16.5 us per loop
-100000 loops, best of 3: 18 us per loop
-1000000 loops, best of 3: 1.18 us per loop</p>
-</dd></dl>
-
-<dl class="py function">
-<dt id="wbia.dtool.sql_control.get_operation_type">
-<code class="sig-prename descclassname">wbia.dtool.sql_control.</code><code class="sig-name descname">get_operation_type</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">operation</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/sql_control.html#get_operation_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.sql_control.get_operation_type" title="Permalink to this definition">¶</a></dt>
-<dd><p>Parses the operation_type from an SQL operation</p>
-</dd></dl>
+<dt id="wbia.dtool.sql_control.create_engine">
+<code class="sig-prename descclassname">wbia.dtool.sql_control.</code><code class="sig-name descname">create_engine</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">uri</span></em>, <em class="sig-param"><span class="n">POSTGRESQL_POOL_SIZE</span><span class="o">=</span><span class="default_value">20</span></em>, <em class="sig-param"><span class="n">ENGINES</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">timeout</span><span class="o">=</span><span class="default_value">600</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/dtool/sql_control.html#create_engine"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.dtool.sql_control.create_engine" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="py function">
 <dt id="wbia.dtool.sql_control.sanitize_sql">
@@ -3628,7 +3992,7 @@ and only on test databases</p>
       &copy;2020, Wild Me.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.3</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

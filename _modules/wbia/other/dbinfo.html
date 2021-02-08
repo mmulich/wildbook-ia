@@ -12,7 +12,6 @@
     <script src="../../../_static/jquery.js"></script>
     <script src="../../../_static/underscore.js"></script>
     <script src="../../../_static/doctools.js"></script>
-    <script src="../../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
    
@@ -45,6 +44,8 @@
 <span class="kn">import</span> <span class="nn">six</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">utool</span> <span class="k">as</span> <span class="nn">ut</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
 
 <span class="nb">print</span><span class="p">,</span> <span class="n">rrr</span><span class="p">,</span> <span class="n">profile</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">inject2</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;wbia&#39;</span><span class="p">)</span>
@@ -85,15 +86,19 @@
 <div class="viewcode-block" id="get_dbinfo"><a class="viewcode-back" href="../../../wbia.other.html#wbia.other.dbinfo.get_dbinfo">[docs]</a><span class="k">def</span> <span class="nf">get_dbinfo</span><span class="p">(</span>
     <span class="n">ibs</span><span class="p">,</span>
     <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">with_imgsize</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="n">with_bytes</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="n">with_contrib</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="n">with_agesex</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">with_imgsize</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">with_bytes</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">with_contrib</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">with_agesex</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">with_header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">with_reviews</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">with_ggr</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">with_map</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">short</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">tag</span><span class="o">=</span><span class="s1">&#39;dbinfo&#39;</span><span class="p">,</span>
     <span class="n">aid_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">aids</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">gmt_offset</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span>
 <span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 
@@ -201,10 +206,9 @@
     <span class="c1"># Basic variables</span>
     <span class="n">request_annot_subset</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">_input_aid_list</span> <span class="o">=</span> <span class="n">aid_list</span>  <span class="c1"># NOQA</span>
+
     <span class="k">if</span> <span class="n">aid_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">valid_aids</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_valid_aids</span><span class="p">()</span>
-        <span class="n">valid_nids</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_valid_nids</span><span class="p">()</span>
-        <span class="n">valid_gids</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_valid_gids</span><span class="p">()</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">aid_list</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="c1"># Hack to get experiment stats on aids</span>
@@ -216,16 +220,55 @@
                 <span class="n">ibs</span><span class="p">,</span> <span class="n">acfg_name_list</span>
             <span class="p">)</span>
             <span class="n">aid_list</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">ut</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">ut</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">expanded_aids_list</span><span class="p">)))))</span>
-            <span class="c1"># aid_list =</span>
         <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Specified </span><span class="si">%d</span><span class="s1"> custom aids&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">aid_list</span><span class="p">)))</span>
         <span class="n">request_annot_subset</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="n">valid_aids</span> <span class="o">=</span> <span class="n">aid_list</span>
-        <span class="n">valid_nids</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
-            <span class="nb">set</span><span class="p">(</span><span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_nids</span><span class="p">(</span><span class="n">aid_list</span><span class="p">,</span> <span class="n">distinguish_unknowns</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
-            <span class="o">-</span> <span class="p">{</span><span class="n">const</span><span class="o">.</span><span class="n">UNKNOWN_NAME_ROWID</span><span class="p">}</span>
-        <span class="p">)</span>
-        <span class="n">valid_gids</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_gids</span><span class="p">(</span><span class="n">aid_list</span><span class="p">)))</span>
+
+    <span class="k">def</span> <span class="nf">get_dates</span><span class="p">(</span><span class="n">ibs</span><span class="p">,</span> <span class="n">gid_list</span><span class="p">):</span>
+        <span class="n">unixtime_list</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_image_unixtime2</span><span class="p">(</span><span class="n">gid_list</span><span class="p">)</span>
+        <span class="n">unixtime_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">unixtime</span> <span class="o">+</span> <span class="p">(</span><span class="n">gmt_offset</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span> <span class="k">for</span> <span class="n">unixtime</span> <span class="ow">in</span> <span class="n">unixtime_list</span><span class="p">]</span>
+        <span class="n">datetime_list</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">ut</span><span class="o">.</span><span class="n">unixtime_to_datetimestr</span><span class="p">(</span><span class="n">unixtime</span><span class="p">)</span> <span class="k">if</span> <span class="n">unixtime</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s1">&#39;UNKNOWN&#39;</span>
+            <span class="k">for</span> <span class="n">unixtime</span> <span class="ow">in</span> <span class="n">unixtime_list</span>
+        <span class="p">]</span>
+        <span class="n">date_str_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">value</span><span class="p">[:</span><span class="mi">10</span><span class="p">]</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">datetime_list</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">date_str_list</span>
+
+    <span class="k">if</span> <span class="n">with_ggr</span><span class="p">:</span>
+        <span class="n">request_annot_subset</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">valid_gids</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_gids</span><span class="p">(</span><span class="n">valid_aids</span><span class="p">)))</span>
+        <span class="n">date_str_list</span> <span class="o">=</span> <span class="n">get_dates</span><span class="p">(</span><span class="n">ibs</span><span class="p">,</span> <span class="n">valid_gids</span><span class="p">)</span>
+        <span class="n">flag_list</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">value</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;2016/01/30&#39;</span><span class="p">,</span> <span class="s1">&#39;2016/01/31&#39;</span><span class="p">,</span> <span class="s1">&#39;2018/01/27&#39;</span><span class="p">,</span> <span class="s1">&#39;2018/01/28&#39;</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">date_str_list</span>
+        <span class="p">]</span>
+        <span class="n">valid_gids</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">compress</span><span class="p">(</span><span class="n">valid_gids</span><span class="p">,</span> <span class="n">flag_list</span><span class="p">)</span>
+        <span class="n">ggr_aids</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">ut</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">ibs</span><span class="o">.</span><span class="n">get_image_aids</span><span class="p">(</span><span class="n">valid_gids</span><span class="p">)))</span>
+        <span class="n">valid_aids</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">valid_aids</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">ggr_aids</span><span class="p">))</span>
+
+    <span class="n">valid_nids</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+        <span class="nb">set</span><span class="p">(</span><span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_nids</span><span class="p">(</span><span class="n">valid_aids</span><span class="p">,</span> <span class="n">distinguish_unknowns</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+        <span class="o">-</span> <span class="p">{</span><span class="n">const</span><span class="o">.</span><span class="n">UNKNOWN_NAME_ROWID</span><span class="p">}</span>
+    <span class="p">)</span>
+    <span class="n">valid_gids</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_gids</span><span class="p">(</span><span class="n">valid_aids</span><span class="p">)))</span>
+    <span class="c1"># valid_rids = ibs._get_all_review_rowids()</span>
+    <span class="n">valid_rids</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">valid_rids</span> <span class="o">+=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_review_rowids_from_aid1</span><span class="p">(</span><span class="n">valid_aids</span><span class="p">)</span>
+    <span class="n">valid_rids</span> <span class="o">+=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_review_rowids_from_aid2</span><span class="p">(</span><span class="n">valid_aids</span><span class="p">)</span>
+    <span class="n">valid_rids</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">valid_rids</span><span class="p">)</span>
+    <span class="n">valid_rids</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">valid_rids</span><span class="p">))</span>
+
+    <span class="n">num_all_total_reviews</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">valid_rids</span><span class="p">)</span>
+
+    <span class="n">aids_tuple</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_review_aid_tuple</span><span class="p">(</span><span class="n">valid_rids</span><span class="p">)</span>
+    <span class="n">flag_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">aid_tuple</span> <span class="ow">in</span> <span class="n">aids_tuple</span><span class="p">:</span>
+        <span class="n">aid1</span><span class="p">,</span> <span class="n">aid2</span> <span class="o">=</span> <span class="n">aid_tuple</span>
+        <span class="n">flag</span> <span class="o">=</span> <span class="n">aid1</span> <span class="ow">in</span> <span class="n">valid_aids</span> <span class="ow">and</span> <span class="n">aid2</span> <span class="ow">in</span> <span class="n">valid_aids</span>
+        <span class="n">flag_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">flag</span><span class="p">)</span>
+    <span class="n">valid_rids</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">compress</span><span class="p">(</span><span class="n">valid_rids</span><span class="p">,</span> <span class="n">flag_list</span><span class="p">)</span>
+
     <span class="c1"># associated_nids = ibs.get_valid_nids(filter_empty=True)  # nids with at least one annotation</span>
     <span class="n">valid_images</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">images</span><span class="p">(</span><span class="n">valid_gids</span><span class="p">)</span>
     <span class="n">valid_annots</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">annots</span><span class="p">(</span><span class="n">valid_aids</span><span class="p">)</span>
@@ -258,92 +301,66 @@
 
     <span class="n">ibs</span><span class="o">.</span><span class="n">check_name_mapping_consistency</span><span class="p">(</span><span class="n">nx2_aids</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="kc">False</span><span class="p">:</span>
-        <span class="c1"># Occurrence Info</span>
-        <span class="k">def</span> <span class="nf">compute_annot_occurrence_ids</span><span class="p">(</span><span class="n">ibs</span><span class="p">,</span> <span class="n">aid_list</span><span class="p">):</span>
-            <span class="kn">from</span> <span class="nn">wbia.algo.preproc</span> <span class="kn">import</span> <span class="n">preproc_occurrence</span>
+    <span class="c1"># Occurrence Info</span>
+    <span class="k">def</span> <span class="nf">compute_annot_occurrence_ids</span><span class="p">(</span><span class="n">ibs</span><span class="p">,</span> <span class="n">aid_list</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">wbia.algo.preproc</span> <span class="kn">import</span> <span class="n">preproc_occurrence</span>
+        <span class="kn">import</span> <span class="nn">utool</span> <span class="k">as</span> <span class="nn">ut</span>
 
-            <span class="n">gid_list</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_gids</span><span class="p">(</span><span class="n">aid_list</span><span class="p">)</span>
-            <span class="n">gid2_aids</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">group_items</span><span class="p">(</span><span class="n">aid_list</span><span class="p">,</span> <span class="n">gid_list</span><span class="p">)</span>
-            <span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;seconds_thresh&#39;</span><span class="p">:</span> <span class="mi">4</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span><span class="p">}</span>
-            <span class="n">flat_imgsetids</span><span class="p">,</span> <span class="n">flat_gids</span> <span class="o">=</span> <span class="n">preproc_occurrence</span><span class="o">.</span><span class="n">wbia_compute_occurrences</span><span class="p">(</span>
-                <span class="n">ibs</span><span class="p">,</span> <span class="n">gid_list</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span>
-            <span class="p">)</span>
-            <span class="n">occurid2_gids</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">group_items</span><span class="p">(</span><span class="n">flat_gids</span><span class="p">,</span> <span class="n">flat_imgsetids</span><span class="p">)</span>
-            <span class="n">occurid2_aids</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="n">oid</span><span class="p">:</span> <span class="n">ut</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">ut</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">gid2_aids</span><span class="p">,</span> <span class="n">gids</span><span class="p">))</span>
-                <span class="k">for</span> <span class="n">oid</span><span class="p">,</span> <span class="n">gids</span> <span class="ow">in</span> <span class="n">occurid2_gids</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-            <span class="p">}</span>
-            <span class="k">return</span> <span class="n">occurid2_aids</span>
-
-        <span class="kn">import</span> <span class="nn">utool</span>
-
-        <span class="k">with</span> <span class="n">utool</span><span class="o">.</span><span class="n">embed_on_exception_context</span><span class="p">:</span>
-            <span class="n">occurid2_aids</span> <span class="o">=</span> <span class="n">compute_annot_occurrence_ids</span><span class="p">(</span><span class="n">ibs</span><span class="p">,</span> <span class="n">valid_aids</span><span class="p">)</span>
-            <span class="n">occur_nids</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">unflat_map</span><span class="p">(</span><span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_nids</span><span class="p">,</span> <span class="n">occurid2_aids</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
-            <span class="n">occur_unique_nids</span> <span class="o">=</span> <span class="p">[</span><span class="n">ut</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">nids</span><span class="p">)</span> <span class="k">for</span> <span class="n">nids</span> <span class="ow">in</span> <span class="n">occur_nids</span><span class="p">]</span>
-            <span class="n">nid2_occurxs</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">ddict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">occurx</span><span class="p">,</span> <span class="n">nids</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">occur_unique_nids</span><span class="p">):</span>
-                <span class="k">for</span> <span class="n">nid</span> <span class="ow">in</span> <span class="n">nids</span><span class="p">:</span>
-                    <span class="n">nid2_occurxs</span><span class="p">[</span><span class="n">nid</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">occurx</span><span class="p">)</span>
-
-        <span class="n">nid2_occurx_single</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="n">nid</span><span class="p">:</span> <span class="n">occurxs</span> <span class="k">for</span> <span class="n">nid</span><span class="p">,</span> <span class="n">occurxs</span> <span class="ow">in</span> <span class="n">nid2_occurxs</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">occurxs</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span>
+        <span class="n">gid_list</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_gids</span><span class="p">(</span><span class="n">aid_list</span><span class="p">)</span>
+        <span class="n">gid2_aids</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">group_items</span><span class="p">(</span><span class="n">aid_list</span><span class="p">,</span> <span class="n">gid_list</span><span class="p">)</span>
+        <span class="n">flat_imgsetids</span><span class="p">,</span> <span class="n">flat_gids</span> <span class="o">=</span> <span class="n">preproc_occurrence</span><span class="o">.</span><span class="n">wbia_compute_occurrences</span><span class="p">(</span>
+            <span class="n">ibs</span><span class="p">,</span> <span class="n">gid_list</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span>
+        <span class="n">occurid2_gids</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">group_items</span><span class="p">(</span><span class="n">flat_gids</span><span class="p">,</span> <span class="n">flat_imgsetids</span><span class="p">)</span>
+        <span class="n">occurid2_aids</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">oid</span><span class="p">:</span> <span class="n">ut</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">ut</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">gid2_aids</span><span class="p">,</span> <span class="n">gids</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">oid</span><span class="p">,</span> <span class="n">gids</span> <span class="ow">in</span> <span class="n">occurid2_gids</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
         <span class="p">}</span>
-        <span class="n">nid2_occurx_resight</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="n">nid</span><span class="p">:</span> <span class="n">occurxs</span> <span class="k">for</span> <span class="n">nid</span><span class="p">,</span> <span class="n">occurxs</span> <span class="ow">in</span> <span class="n">nid2_occurxs</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">occurxs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span>
-        <span class="p">}</span>
-        <span class="n">singlesight_encounters</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_name_aids</span><span class="p">(</span><span class="n">nid2_occurx_single</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">occurid2_aids</span>
 
-        <span class="n">singlesight_annot_stats</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">get_stats</span><span class="p">(</span>
-            <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">len</span><span class="p">,</span> <span class="n">singlesight_encounters</span><span class="p">)),</span> <span class="n">use_median</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">use_sum</span><span class="o">=</span><span class="kc">True</span>
-        <span class="p">)</span>
-        <span class="n">resight_name_stats</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">get_stats</span><span class="p">(</span>
-            <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">len</span><span class="p">,</span> <span class="n">nid2_occurx_resight</span><span class="o">.</span><span class="n">values</span><span class="p">())),</span> <span class="n">use_median</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">use_sum</span><span class="o">=</span><span class="kc">True</span>
-        <span class="p">)</span>
+    <span class="n">nids</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_nids</span><span class="p">(</span><span class="n">valid_aids</span><span class="p">)</span>
+    <span class="n">nid2_annotxs</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">ddict</span><span class="p">(</span><span class="nb">set</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">aid</span><span class="p">,</span> <span class="n">nid</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">valid_aids</span><span class="p">,</span> <span class="n">nids</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">nid</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">nid2_annotxs</span><span class="p">[</span><span class="n">nid</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">aid</span><span class="p">)</span>
 
-    <span class="c1"># Encounter Info</span>
-    <span class="k">def</span> <span class="nf">break_annots_into_encounters</span><span class="p">(</span><span class="n">aids</span><span class="p">):</span>
-        <span class="kn">from</span> <span class="nn">wbia.algo.preproc</span> <span class="kn">import</span> <span class="n">occurrence_blackbox</span>
-        <span class="kn">import</span> <span class="nn">datetime</span>
+    <span class="n">occurence_config</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;use_gps&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;seconds_thresh&#39;</span><span class="p">:</span> <span class="mi">10</span> <span class="o">*</span> <span class="mi">60</span><span class="p">}</span>
+    <span class="n">occurid2_aids</span> <span class="o">=</span> <span class="n">compute_annot_occurrence_ids</span><span class="p">(</span><span class="n">ibs</span><span class="p">,</span> <span class="n">valid_aids</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">occurence_config</span><span class="p">)</span>
 
-        <span class="n">thresh_sec</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span><span class="o">.</span><span class="n">seconds</span>
-        <span class="n">posixtimes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_image_unixtimes_asfloat</span><span class="p">(</span><span class="n">aids</span><span class="p">))</span>
-        <span class="c1"># latlons = ibs.get_annot_image_gps(aids)</span>
-        <span class="n">labels</span> <span class="o">=</span> <span class="n">occurrence_blackbox</span><span class="o">.</span><span class="n">cluster_timespace2</span><span class="p">(</span>
-            <span class="n">posixtimes</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">thresh_sec</span><span class="o">=</span><span class="n">thresh_sec</span>
-        <span class="p">)</span>
-        <span class="k">return</span> <span class="n">labels</span>
-        <span class="c1"># ave_enc_time = [np.mean(times) for lbl, times in ut.group_items(posixtimes, labels).items()]</span>
-        <span class="c1"># ut.square_pdist(ave_enc_time)</span>
+    <span class="n">aid2_occurxs</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">ddict</span><span class="p">(</span><span class="nb">set</span><span class="p">)</span>
+    <span class="n">occurid2_aids_named</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">ddict</span><span class="p">(</span><span class="nb">set</span><span class="p">)</span>
+    <span class="n">occurid2_nids</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">ddict</span><span class="p">(</span><span class="nb">set</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">occurx</span><span class="p">,</span> <span class="n">aids</span> <span class="ow">in</span> <span class="n">occurid2_aids</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">nids</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_nids</span><span class="p">(</span><span class="n">aids</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">aid</span><span class="p">,</span> <span class="n">nid</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">aids</span><span class="p">,</span> <span class="n">nids</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">nid</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">aid2_occurxs</span><span class="p">[</span><span class="n">aid</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">occurx</span><span class="p">)</span>
+                <span class="n">occurid2_aids_named</span><span class="p">[</span><span class="n">occurx</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">aid</span><span class="p">)</span>
+                <span class="n">occurid2_nids</span><span class="p">[</span><span class="n">occurx</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">nid</span><span class="p">)</span>
 
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">am_rowids</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_annotmatch_rowids_between_groups</span><span class="p">([</span><span class="n">valid_aids</span><span class="p">],</span> <span class="p">[</span><span class="n">valid_aids</span><span class="p">])[</span>
-            <span class="mi">0</span>
-        <span class="p">]</span>
-        <span class="n">aid_pairs</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">filter_aidpairs_by_tags</span><span class="p">(</span><span class="n">min_num</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">am_rowids</span><span class="o">=</span><span class="n">am_rowids</span><span class="p">)</span>
-        <span class="n">undirected_tags</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_aidpair_tags</span><span class="p">(</span>
-            <span class="n">aid_pairs</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">aid_pairs</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span>
-        <span class="p">)</span>
-        <span class="n">tagged_pairs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">aid_pairs</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="n">undirected_tags</span><span class="p">))</span>
-        <span class="n">tag_dict</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">groupby_tags</span><span class="p">(</span><span class="n">tagged_pairs</span><span class="p">,</span> <span class="n">undirected_tags</span><span class="p">)</span>
-        <span class="n">pair_tag_info</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">map_dict_vals</span><span class="p">(</span><span class="nb">len</span><span class="p">,</span> <span class="n">tag_dict</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-        <span class="n">pair_tag_info</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">assert</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">len</span><span class="p">,</span> <span class="n">aid2_occurxs</span><span class="o">.</span><span class="n">values</span><span class="p">()))))</span> <span class="o">==</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 
-    <span class="c1"># logger.info(ut.repr2(pair_tag_info))</span>
+    <span class="n">occur_nids</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">unflat_map</span><span class="p">(</span><span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_nids</span><span class="p">,</span> <span class="n">occurid2_aids</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+    <span class="n">occur_unique_nids</span> <span class="o">=</span> <span class="p">[</span><span class="n">ut</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">nids</span><span class="p">)</span> <span class="k">for</span> <span class="n">nids</span> <span class="ow">in</span> <span class="n">occur_nids</span><span class="p">]</span>
+    <span class="n">nid2_occurxs</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">ddict</span><span class="p">(</span><span class="nb">set</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">occurx</span><span class="p">,</span> <span class="n">nids</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">occur_unique_nids</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">nid</span> <span class="ow">in</span> <span class="n">nids</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">nid</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">nid2_occurxs</span><span class="p">[</span><span class="n">nid</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">occurx</span><span class="p">)</span>
 
-    <span class="c1"># Annot Stats</span>
-    <span class="c1"># TODO: number of images where chips cover entire image</span>
-    <span class="c1"># TODO: total image coverage of annotation</span>
-    <span class="c1"># TODO: total annotation overlap</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ax2_unknown = ibs.is_aid_unknown(valid_aids)</span>
-<span class="sd">    ax2_nid = ibs.get_annot_name_rowids(valid_aids)</span>
-<span class="sd">    assert all([nid &lt; 0 if unknown else nid &gt; 0 for nid, unknown in</span>
-<span class="sd">                zip(ax2_nid, ax2_unknown)]), &#39;bad annot nid&#39;</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1">#</span>
+    <span class="n">name_annot_stats</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">get_stats</span><span class="p">(</span>
+        <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">len</span><span class="p">,</span> <span class="n">nid2_annotxs</span><span class="o">.</span><span class="n">values</span><span class="p">())),</span> <span class="n">use_median</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">use_sum</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+    <span class="n">occurence_annot_stats</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">get_stats</span><span class="p">(</span>
+        <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">len</span><span class="p">,</span> <span class="n">occurid2_aids_named</span><span class="o">.</span><span class="n">values</span><span class="p">())),</span> <span class="n">use_median</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">use_sum</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+    <span class="n">occurence_encounter_stats</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">get_stats</span><span class="p">(</span>
+        <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">len</span><span class="p">,</span> <span class="n">occurid2_nids</span><span class="o">.</span><span class="n">values</span><span class="p">())),</span> <span class="n">use_median</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">use_sum</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+    <span class="n">annot_encounter_stats</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">get_stats</span><span class="p">(</span>
+        <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">len</span><span class="p">,</span> <span class="n">nid2_occurxs</span><span class="o">.</span><span class="n">values</span><span class="p">())),</span> <span class="n">use_median</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">use_sum</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+
     <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Checking Annot Species&#39;</span><span class="p">)</span>
     <span class="n">unknown_annots</span> <span class="o">=</span> <span class="n">valid_annots</span><span class="o">.</span><span class="n">compress</span><span class="p">(</span><span class="n">ibs</span><span class="o">.</span><span class="n">is_aid_unknown</span><span class="p">(</span><span class="n">valid_annots</span><span class="p">))</span>
@@ -432,17 +449,129 @@
 
     <span class="c1"># Time stats</span>
     <span class="n">unixtime_list</span> <span class="o">=</span> <span class="n">valid_images</span><span class="o">.</span><span class="n">unixtime2</span>
+    <span class="n">unixtime_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">unixtime</span> <span class="o">+</span> <span class="p">(</span><span class="n">gmt_offset</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span> <span class="k">for</span> <span class="n">unixtime</span> <span class="ow">in</span> <span class="n">unixtime_list</span><span class="p">]</span>
+
     <span class="c1"># valid_unixtime_list = [time for time in unixtime_list if time != -1]</span>
     <span class="c1"># unixtime_statstr = ibs.get_image_time_statstr(valid_gids)</span>
     <span class="k">if</span> <span class="n">ut</span><span class="o">.</span><span class="n">get_argflag</span><span class="p">(</span><span class="s1">&#39;--hackshow-unixtime&#39;</span><span class="p">):</span>
         <span class="n">show_time_distributions</span><span class="p">(</span><span class="n">ibs</span><span class="p">,</span> <span class="n">unixtime_list</span><span class="p">)</span>
         <span class="n">ut</span><span class="o">.</span><span class="n">show_if_requested</span><span class="p">()</span>
+
     <span class="n">unixtime_statstr</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">repr3</span><span class="p">(</span><span class="n">ut</span><span class="o">.</span><span class="n">get_timestats_dict</span><span class="p">(</span><span class="n">unixtime_list</span><span class="p">,</span> <span class="n">full</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">si</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">date_str_list</span> <span class="o">=</span> <span class="n">get_dates</span><span class="p">(</span><span class="n">ibs</span><span class="p">,</span> <span class="n">valid_gids</span><span class="p">)</span>
+    <span class="n">ggr_dates_stats</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">dict_hist</span><span class="p">(</span><span class="n">date_str_list</span><span class="p">)</span>
 
     <span class="c1"># GPS stats</span>
     <span class="n">gps_list_</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_image_gps</span><span class="p">(</span><span class="n">valid_gids</span><span class="p">)</span>
     <span class="n">gpsvalid_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">gps</span> <span class="o">!=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">gps</span> <span class="ow">in</span> <span class="n">gps_list_</span><span class="p">]</span>
     <span class="n">gps_list</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">compress</span><span class="p">(</span><span class="n">gps_list_</span><span class="p">,</span> <span class="n">gpsvalid_list</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">with_map</span><span class="p">:</span>
+
+        <span class="k">def</span> <span class="nf">plot_kenya</span><span class="p">(</span><span class="n">ibs</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">gps_list</span><span class="o">=</span><span class="p">[],</span> <span class="n">focus</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">focus2</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">margin</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
+            <span class="kn">import</span> <span class="nn">utool</span> <span class="k">as</span> <span class="nn">ut</span>
+            <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+            <span class="kn">import</span> <span class="nn">geopandas</span>
+            <span class="kn">import</span> <span class="nn">shapely</span>
+
+            <span class="k">if</span> <span class="n">focus2</span><span class="p">:</span>
+                <span class="n">focus</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="n">world</span> <span class="o">=</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span>
+                <span class="n">geopandas</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="s1">&#39;naturalearth_lowres&#39;</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">africa</span> <span class="o">=</span> <span class="n">world</span><span class="p">[</span><span class="n">world</span><span class="o">.</span><span class="n">continent</span> <span class="o">==</span> <span class="s1">&#39;Africa&#39;</span><span class="p">]</span>
+            <span class="n">kenya</span> <span class="o">=</span> <span class="n">africa</span><span class="p">[</span><span class="n">africa</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;Kenya&#39;</span><span class="p">]</span>
+
+            <span class="n">cities</span> <span class="o">=</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span>
+                <span class="n">geopandas</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="s1">&#39;naturalearth_cities&#39;</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">nairobi</span> <span class="o">=</span> <span class="n">cities</span><span class="p">[</span><span class="n">cities</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;Nairobi&#39;</span><span class="p">]</span>
+
+            <span class="n">kenya</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;white&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
+
+            <span class="n">path_dict</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">compute_ggr_path_dict</span><span class="p">()</span>
+            <span class="n">meru</span> <span class="o">=</span> <span class="n">path_dict</span><span class="p">[</span><span class="s1">&#39;County Meru&#39;</span><span class="p">]</span>
+
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">path_dict</span><span class="p">:</span>
+                <span class="n">path</span> <span class="o">=</span> <span class="n">path_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+                <span class="n">polygon</span> <span class="o">=</span> <span class="n">shapely</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">Polygon</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">vertices</span><span class="p">[:,</span> <span class="p">::</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+                <span class="n">gdf</span> <span class="o">=</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">([</span><span class="mi">1</span><span class="p">],</span> <span class="n">geometry</span><span class="o">=</span><span class="p">[</span><span class="n">polygon</span><span class="p">],</span> <span class="n">crs</span><span class="o">=</span><span class="n">world</span><span class="o">.</span><span class="n">crs</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;County&#39;</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="s1">&#39;Meru&#39;</span> <span class="ow">in</span> <span class="n">key</span><span class="p">:</span>
+                        <span class="n">gdf</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">),</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">gdf</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;grey&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">focus</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;Land Tenure&#39;</span><span class="p">):</span>
+                        <span class="n">gdf</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">focus2</span><span class="p">:</span>
+                <span class="n">flag_list</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">gps</span> <span class="ow">in</span> <span class="n">gps_list</span><span class="p">:</span>
+                    <span class="n">flag</span> <span class="o">=</span> <span class="n">meru</span><span class="o">.</span><span class="n">contains_point</span><span class="p">(</span><span class="n">gps</span><span class="p">)</span>
+                    <span class="n">flag_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">flag</span><span class="p">)</span>
+                <span class="n">gps_list</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">compress</span><span class="p">(</span><span class="n">gps_list</span><span class="p">,</span> <span class="n">flag_list</span><span class="p">)</span>
+
+            <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+                <span class="p">{</span>
+                    <span class="s1">&#39;Latitude&#39;</span><span class="p">:</span> <span class="n">ut</span><span class="o">.</span><span class="n">take_column</span><span class="p">(</span><span class="n">gps_list</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                    <span class="s1">&#39;Longitude&#39;</span><span class="p">:</span> <span class="n">ut</span><span class="o">.</span><span class="n">take_column</span><span class="p">(</span><span class="n">gps_list</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+                <span class="p">}</span>
+            <span class="p">)</span>
+            <span class="n">gdf</span> <span class="o">=</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">(</span>
+                <span class="n">df</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="n">geopandas</span><span class="o">.</span><span class="n">points_from_xy</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">Longitude</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">Latitude</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">gdf</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
+
+            <span class="n">min_lat</span><span class="p">,</span> <span class="n">min_lon</span> <span class="o">=</span> <span class="n">gdf</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+            <span class="n">max_lat</span><span class="p">,</span> <span class="n">max_lon</span> <span class="o">=</span> <span class="n">gdf</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+            <span class="n">dom_lat</span> <span class="o">=</span> <span class="n">max_lat</span> <span class="o">-</span> <span class="n">min_lat</span>
+            <span class="n">dom_lon</span> <span class="o">=</span> <span class="n">max_lon</span> <span class="o">-</span> <span class="n">min_lon</span>
+            <span class="n">margin_lat</span> <span class="o">=</span> <span class="n">dom_lat</span> <span class="o">*</span> <span class="n">margin</span>
+            <span class="n">margin_lon</span> <span class="o">=</span> <span class="n">dom_lon</span> <span class="o">*</span> <span class="n">margin</span>
+            <span class="n">min_lat</span> <span class="o">-=</span> <span class="n">margin_lat</span>
+            <span class="n">min_lon</span> <span class="o">-=</span> <span class="n">margin_lon</span>
+            <span class="n">max_lat</span> <span class="o">+=</span> <span class="n">margin_lat</span>
+            <span class="n">max_lon</span> <span class="o">+=</span> <span class="n">margin_lon</span>
+
+            <span class="n">polygon</span> <span class="o">=</span> <span class="n">shapely</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">Polygon</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="p">[</span><span class="n">min_lon</span><span class="p">,</span> <span class="n">min_lat</span><span class="p">],</span>
+                    <span class="p">[</span><span class="n">min_lon</span><span class="p">,</span> <span class="n">max_lat</span><span class="p">],</span>
+                    <span class="p">[</span><span class="n">max_lon</span><span class="p">,</span> <span class="n">max_lat</span><span class="p">],</span>
+                    <span class="p">[</span><span class="n">max_lon</span><span class="p">,</span> <span class="n">min_lat</span><span class="p">],</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+            <span class="n">gdf</span> <span class="o">=</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">([</span><span class="mi">1</span><span class="p">],</span> <span class="n">geometry</span><span class="o">=</span><span class="p">[</span><span class="n">polygon</span><span class="p">],</span> <span class="n">crs</span><span class="o">=</span><span class="n">world</span><span class="o">.</span><span class="n">crs</span><span class="p">)</span>
+            <span class="n">gdf</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">)</span>
+
+            <span class="n">nairobi</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span>
+
+            <span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">&#39;major&#39;</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">&#39;minor&#39;</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">get_xaxis</span><span class="p">()</span><span class="o">.</span><span class="n">set_ticks</span><span class="p">([])</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">get_yaxis</span><span class="p">()</span><span class="o">.</span><span class="n">set_ticks</span><span class="p">([])</span>
+
+            <span class="k">if</span> <span class="n">focus</span><span class="p">:</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">set_autoscalex_on</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">set_autoscaley_on</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">([</span><span class="n">min_lon</span><span class="p">,</span> <span class="n">max_lon</span><span class="p">])</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="n">min_lat</span><span class="p">,</span> <span class="n">max_lat</span><span class="p">])</span>
+
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">30</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">400</span><span class="p">)</span>
+
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">131</span><span class="p">)</span>
+        <span class="n">plot_kenya</span><span class="p">(</span><span class="n">ibs</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">gps_list</span><span class="p">)</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">132</span><span class="p">)</span>
+        <span class="n">plot_kenya</span><span class="p">(</span><span class="n">ibs</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">gps_list</span><span class="p">,</span> <span class="n">focus</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">133</span><span class="p">)</span>
+        <span class="n">plot_kenya</span><span class="p">(</span><span class="n">ibs</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">gps_list</span><span class="p">,</span> <span class="n">focus2</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;map.png&#39;</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">get_annot_age_stats</span><span class="p">(</span><span class="n">aid_list</span><span class="p">):</span>
         <span class="n">annot_age_months_est_min</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_age_months_est_min</span><span class="p">(</span><span class="n">aid_list</span><span class="p">)</span>
@@ -570,7 +699,7 @@
             <span class="k">assert</span> <span class="n">_num_names_total_check</span> <span class="o">==</span> <span class="n">num_names</span><span class="p">,</span> <span class="s1">&#39;inconsistent num names&#39;</span>
             <span class="c1"># if not request_annot_subset:</span>
             <span class="c1"># dont check this if you have an annot subset</span>
-            <span class="k">assert</span> <span class="n">_num_annots_total_check</span> <span class="o">==</span> <span class="n">num_annots</span><span class="p">,</span> <span class="s1">&#39;inconsistent num annots&#39;</span>
+            <span class="c1"># assert _num_annots_total_check == num_annots, &#39;inconsistent num annots&#39;</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
             <span class="n">ut</span><span class="o">.</span><span class="n">printex</span><span class="p">(</span>
                 <span class="n">ex</span><span class="p">,</span>
@@ -592,20 +721,248 @@
     <span class="n">contributor_rowids</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_valid_contributor_rowids</span><span class="p">()</span>
     <span class="n">num_contributors</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">contributor_rowids</span><span class="p">)</span>
 
-    <span class="c1"># print</span>
-    <span class="n">num_tabs</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Checking Review Info&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Get reviewer statistics</span>
+    <span class="k">def</span> <span class="nf">get_review_decision_stats</span><span class="p">(</span><span class="n">ibs</span><span class="p">,</span> <span class="n">rid_list</span><span class="p">):</span>
+        <span class="n">review_decision_list</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_review_decision_str</span><span class="p">(</span><span class="n">rid_list</span><span class="p">)</span>
+        <span class="n">review_decision_to_rids</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">group_items</span><span class="p">(</span><span class="n">rid_list</span><span class="p">,</span> <span class="n">review_decision_list</span><span class="p">)</span>
+        <span class="n">review_decision_stats</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">key</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">review_decision_to_rids</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">review_decision_stats</span>
+
+    <span class="k">def</span> <span class="nf">get_review_identity</span><span class="p">(</span><span class="n">rid_list</span><span class="p">):</span>
+        <span class="n">review_identity_list</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_review_identity</span><span class="p">(</span><span class="n">rid_list</span><span class="p">)</span>
+        <span class="n">review_identity_list</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">value</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;user:web&#39;</span><span class="p">,</span> <span class="s1">&#39;human:web&#39;</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;web:None&#39;</span><span class="p">,</span> <span class="s1">&#39;web&#39;</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;auto_clf&#39;</span><span class="p">,</span> <span class="s1">&#39;vamp&#39;</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="s1">&#39;[&#39;</span><span class="p">)</span>
+            <span class="o">+</span> <span class="s1">&#39;]&#39;</span>
+            <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">review_identity_list</span>
+        <span class="p">]</span>
+        <span class="k">return</span> <span class="n">review_identity_list</span>
+
+    <span class="k">def</span> <span class="nf">get_review_identity_stats</span><span class="p">(</span><span class="n">ibs</span><span class="p">,</span> <span class="n">rid_list</span><span class="p">):</span>
+        <span class="n">review_identity_list</span> <span class="o">=</span> <span class="n">get_review_identity</span><span class="p">(</span><span class="n">rid_list</span><span class="p">)</span>
+        <span class="n">review_identity_to_rids</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">group_items</span><span class="p">(</span><span class="n">rid_list</span><span class="p">,</span> <span class="n">review_identity_list</span><span class="p">)</span>
+        <span class="n">review_identity_stats</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">key</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">review_identity_to_rids</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">review_identity_to_rids</span><span class="p">,</span> <span class="n">review_identity_stats</span>
+
+    <span class="k">def</span> <span class="nf">get_review_participation</span><span class="p">(</span>
+        <span class="n">review_aids_list</span><span class="p">,</span> <span class="n">value_list</span><span class="p">,</span> <span class="n">aid2_occurxs</span><span class="p">,</span> <span class="n">nid2_occurxs</span>
+    <span class="p">):</span>
+        <span class="n">annot_review_participation_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">encounter_review_participation_dict</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="n">review_aid_list</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">review_aids_list</span><span class="p">)</span>
+        <span class="n">review_nid_list</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_nids</span><span class="p">(</span><span class="n">review_aid_list</span><span class="p">)</span>
+        <span class="n">review_aid_nid_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">review_aid_list</span><span class="p">,</span> <span class="n">review_nid_list</span><span class="p">))</span>
+
+        <span class="n">known_aids</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">aid2_occurxs</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">known_encounters</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([])</span>
+        <span class="k">for</span> <span class="n">nid</span><span class="p">,</span> <span class="n">occurxs</span> <span class="ow">in</span> <span class="n">nid2_occurxs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">occurx</span> <span class="ow">in</span> <span class="n">occurxs</span><span class="p">:</span>
+                <span class="n">encounter</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">,</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                    <span class="n">occurx</span><span class="p">,</span>
+                    <span class="n">nid</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="n">known_encounters</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">encounter</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">review_aids</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">review_aids_list</span><span class="p">,</span> <span class="n">value_list</span><span class="p">)):</span>
+            <span class="k">for</span> <span class="n">value_</span> <span class="ow">in</span> <span class="p">[</span><span class="n">value</span><span class="p">,</span> <span class="s1">&#39;Any&#39;</span><span class="p">]:</span>
+                <span class="n">enc_values_</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">value_</span><span class="p">),</span>
+                    <span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> (INTRA)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">value_</span><span class="p">)),</span>
+                    <span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> (INTER)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">value_</span><span class="p">)),</span>
+                <span class="p">]</span>
+
+                <span class="n">review_nids</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">review_aid_nid_dict</span><span class="p">,</span> <span class="n">review_aids</span><span class="p">)</span>
+                <span class="n">review_occurxs</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">ut</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">aid2_occurxs</span><span class="p">,</span> <span class="n">review_aids</span><span class="p">))</span>
+
+                <span class="n">is_intra</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">review_occurxs</span><span class="p">))</span> <span class="o">==</span> <span class="mi">1</span>
+
+                <span class="k">if</span> <span class="n">value_</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">annot_review_participation_dict</span><span class="p">:</span>
+                    <span class="n">annot_review_participation_dict</span><span class="p">[</span><span class="n">value_</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                        <span class="s1">&#39;__KNOWN__&#39;</span><span class="p">:</span> <span class="n">known_aids</span><span class="p">,</span>
+                        <span class="s1">&#39;__HIT__&#39;</span><span class="p">:</span> <span class="nb">set</span><span class="p">([]),</span>
+                    <span class="p">}</span>
+                <span class="k">for</span> <span class="n">env_flag_</span><span class="p">,</span> <span class="n">enc_value_</span> <span class="ow">in</span> <span class="n">enc_values_</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">enc_value_</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">encounter_review_participation_dict</span><span class="p">:</span>
+                        <span class="n">encounter_review_participation_dict</span><span class="p">[</span><span class="n">enc_value_</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                            <span class="s1">&#39;__KNOWN__&#39;</span><span class="p">:</span> <span class="n">known_encounters</span><span class="p">,</span>
+                            <span class="s1">&#39;__HIT__&#39;</span><span class="p">:</span> <span class="nb">set</span><span class="p">([]),</span>
+                        <span class="p">}</span>
+
+                <span class="k">for</span> <span class="n">aid</span><span class="p">,</span> <span class="n">nid</span><span class="p">,</span> <span class="n">occurx</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">review_aids</span><span class="p">,</span> <span class="n">review_nids</span><span class="p">,</span> <span class="n">review_occurxs</span><span class="p">):</span>
+                    <span class="n">encounter</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">,</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                        <span class="n">occurx</span><span class="p">,</span>
+                        <span class="n">nid</span><span class="p">,</span>
+                    <span class="p">)</span>
+                    <span class="n">annot_review_participation_dict</span><span class="p">[</span><span class="n">value_</span><span class="p">][</span><span class="s1">&#39;__HIT__&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">aid</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">aid</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">annot_review_participation_dict</span><span class="p">[</span><span class="n">value_</span><span class="p">]:</span>
+                        <span class="n">annot_review_participation_dict</span><span class="p">[</span><span class="n">value_</span><span class="p">][</span><span class="n">aid</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+                    <span class="n">annot_review_participation_dict</span><span class="p">[</span><span class="n">value_</span><span class="p">][</span><span class="n">aid</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="k">for</span> <span class="n">env_flag_</span><span class="p">,</span> <span class="n">enc_value_</span> <span class="ow">in</span> <span class="n">enc_values_</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">env_flag_</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">is_intra</span><span class="p">]:</span>
+                            <span class="n">encounter_review_participation_dict</span><span class="p">[</span><span class="n">enc_value_</span><span class="p">][</span>
+                                <span class="s1">&#39;__HIT__&#39;</span>
+                            <span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">encounter</span><span class="p">)</span>
+                            <span class="k">if</span> <span class="p">(</span>
+                                <span class="n">encounter</span>
+                                <span class="ow">not</span> <span class="ow">in</span> <span class="n">encounter_review_participation_dict</span><span class="p">[</span><span class="n">enc_value_</span><span class="p">]</span>
+                            <span class="p">):</span>
+                                <span class="n">encounter_review_participation_dict</span><span class="p">[</span><span class="n">enc_value_</span><span class="p">][</span>
+                                    <span class="n">encounter</span>
+                                <span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+                            <span class="n">encounter_review_participation_dict</span><span class="p">[</span><span class="n">enc_value_</span><span class="p">][</span>
+                                <span class="n">encounter</span>
+                            <span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">for</span> <span class="n">review_participation_dict</span> <span class="ow">in</span> <span class="p">[</span>
+            <span class="n">annot_review_participation_dict</span><span class="p">,</span>
+            <span class="n">encounter_review_participation_dict</span><span class="p">,</span>
+        <span class="p">]:</span>
+            <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">review_participation_dict</span><span class="p">:</span>
+                <span class="n">known_values</span> <span class="o">=</span> <span class="n">review_participation_dict</span><span class="p">[</span><span class="n">value</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;__KNOWN__&#39;</span><span class="p">)</span>
+                <span class="n">hit_values</span> <span class="o">=</span> <span class="n">review_participation_dict</span><span class="p">[</span><span class="n">value</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;__HIT__&#39;</span><span class="p">)</span>
+                <span class="n">missed_values</span> <span class="o">=</span> <span class="n">known_values</span> <span class="o">-</span> <span class="n">hit_values</span>
+                <span class="n">values</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">review_participation_dict</span><span class="p">[</span><span class="n">value</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+                <span class="n">stats</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">get_stats</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">use_median</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">use_sum</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">stats</span><span class="p">[</span><span class="s1">&#39;known&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">known_values</span><span class="p">)</span>
+                <span class="n">stats</span><span class="p">[</span><span class="s1">&#39;hit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">hit_values</span><span class="p">)</span>
+                <span class="n">stats</span><span class="p">[</span><span class="s1">&#39;miss&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">missed_values</span><span class="p">)</span>
+                <span class="n">review_participation_dict</span><span class="p">[</span><span class="n">value</span><span class="p">]</span> <span class="o">=</span> <span class="n">stats</span>
+
+        <span class="k">return</span> <span class="n">annot_review_participation_dict</span><span class="p">,</span> <span class="n">encounter_review_participation_dict</span>
+
+    <span class="n">review_decision_stats</span> <span class="o">=</span> <span class="n">get_review_decision_stats</span><span class="p">(</span><span class="n">ibs</span><span class="p">,</span> <span class="n">valid_rids</span><span class="p">)</span>
+    <span class="n">review_identity_to_rids</span><span class="p">,</span> <span class="n">review_identity_stats</span> <span class="o">=</span> <span class="n">get_review_identity_stats</span><span class="p">(</span>
+        <span class="n">ibs</span><span class="p">,</span> <span class="n">valid_rids</span>
+    <span class="p">)</span>
+
+    <span class="n">review_identity_to_decision_stats</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">key</span><span class="p">:</span> <span class="n">get_review_decision_stats</span><span class="p">(</span><span class="n">ibs</span><span class="p">,</span> <span class="n">aids</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">aids</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(</span><span class="n">review_identity_to_rids</span><span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="n">review_aids_list</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_review_aid_tuple</span><span class="p">(</span><span class="n">valid_rids</span><span class="p">)</span>
+    <span class="n">review_decision_list</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_review_decision_str</span><span class="p">(</span><span class="n">valid_rids</span><span class="p">)</span>
+    <span class="n">review_identity_list</span> <span class="o">=</span> <span class="n">get_review_identity</span><span class="p">(</span><span class="n">valid_rids</span><span class="p">)</span>
+    <span class="p">(</span>
+        <span class="n">review_decision_annot_participation_dict</span><span class="p">,</span>
+        <span class="n">review_decision_encounter_participation_dict</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">=</span> <span class="n">get_review_participation</span><span class="p">(</span>
+        <span class="n">review_aids_list</span><span class="p">,</span> <span class="n">review_decision_list</span><span class="p">,</span> <span class="n">aid2_occurxs</span><span class="p">,</span> <span class="n">nid2_occurxs</span>
+    <span class="p">)</span>
+    <span class="p">(</span>
+        <span class="n">review_identity_annot_participation_dict</span><span class="p">,</span>
+        <span class="n">review_identity_encounter_participation_dict</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">=</span> <span class="n">get_review_participation</span><span class="p">(</span>
+        <span class="n">review_aids_list</span><span class="p">,</span> <span class="n">review_identity_list</span><span class="p">,</span> <span class="n">aid2_occurxs</span><span class="p">,</span> <span class="n">nid2_occurxs</span>
+    <span class="p">)</span>
+
+    <span class="n">review_tags_list</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_review_tags</span><span class="p">(</span><span class="n">valid_rids</span><span class="p">)</span>
+    <span class="n">review_tag_list</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">review_tag</span> <span class="k">if</span> <span class="n">review_tag</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="s1">&#39;+&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">review_tag</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">review_tag</span> <span class="ow">in</span> <span class="n">review_tags_list</span>
+    <span class="p">]</span>
+
+    <span class="n">review_tag_to_rids</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">group_items</span><span class="p">(</span><span class="n">valid_rids</span><span class="p">,</span> <span class="n">review_tag_list</span><span class="p">)</span>
+    <span class="n">review_tag_stats</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">review_tag_to_rids</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+
+    <span class="n">species_list</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_species_texts</span><span class="p">(</span><span class="n">valid_aids</span><span class="p">)</span>
+    <span class="n">viewpoint_list</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_viewpoints</span><span class="p">(</span><span class="n">valid_aids</span><span class="p">)</span>
+    <span class="n">quality_list</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_qualities</span><span class="p">(</span><span class="n">valid_aids</span><span class="p">)</span>
+    <span class="n">interest_list</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_interest</span><span class="p">(</span><span class="n">valid_aids</span><span class="p">)</span>
+    <span class="n">canonical_list</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_canonical</span><span class="p">(</span><span class="n">valid_aids</span><span class="p">)</span>
+
+    <span class="c1"># ggr_num_relevant = 0</span>
+    <span class="n">ggr_num_species</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">ggr_num_viewpoints</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">ggr_num_qualities</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">ggr_num_filter</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">ggr_num_aois</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">ggr_num_cas</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">ggr_num_filter_overlap</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">ggr_num_filter_remove</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">ggr_num_filter_add</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">ggr_num_aoi_overlap</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">ggr_num_aoi_remove</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">ggr_num_aoi_add</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="n">zipped</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+        <span class="nb">zip</span><span class="p">(</span>
+            <span class="n">valid_aids</span><span class="p">,</span>
+            <span class="n">species_list</span><span class="p">,</span>
+            <span class="n">viewpoint_list</span><span class="p">,</span>
+            <span class="n">quality_list</span><span class="p">,</span>
+            <span class="n">interest_list</span><span class="p">,</span>
+            <span class="n">canonical_list</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+    <span class="k">for</span> <span class="n">aid</span><span class="p">,</span> <span class="n">species_</span><span class="p">,</span> <span class="n">viewpoint_</span><span class="p">,</span> <span class="n">quality_</span><span class="p">,</span> <span class="n">interest_</span><span class="p">,</span> <span class="n">canonical_</span> <span class="ow">in</span> <span class="n">zipped</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="kc">None</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="n">species_</span><span class="p">,</span> <span class="n">viewpoint_</span><span class="p">,</span> <span class="n">quality_</span><span class="p">]</span>
+        <span class="n">species_</span> <span class="o">=</span> <span class="n">species_</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="n">viewpoint_</span> <span class="o">=</span> <span class="n">viewpoint_</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="n">quality_</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">quality_</span><span class="p">)</span>
+        <span class="c1"># if species_ in [&#39;zebra_grevys&#39;]:</span>
+        <span class="c1">#     ggr_num_relevant += 1</span>
+        <span class="k">if</span> <span class="n">species_</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;zebra_grevys&#39;</span><span class="p">]:</span>
+            <span class="n">ggr_num_species</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">filter_viewpoint_</span> <span class="o">=</span> <span class="s1">&#39;right&#39;</span> <span class="ow">in</span> <span class="n">viewpoint_</span>
+            <span class="n">filter_quality_</span> <span class="o">=</span> <span class="n">quality_</span> <span class="o">&gt;=</span> <span class="mi">3</span>
+            <span class="n">filter_</span> <span class="o">=</span> <span class="n">filter_viewpoint_</span> <span class="ow">and</span> <span class="n">filter_quality_</span>
+
+            <span class="k">if</span> <span class="n">canonical_</span><span class="p">:</span>
+                <span class="n">ggr_num_cas</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="k">if</span> <span class="n">filter_viewpoint_</span><span class="p">:</span>
+                <span class="n">ggr_num_viewpoints</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="k">if</span> <span class="n">filter_quality_</span><span class="p">:</span>
+                <span class="n">ggr_num_qualities</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="k">if</span> <span class="n">filter_</span><span class="p">:</span>
+                <span class="n">ggr_num_filter</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="n">canonical_</span><span class="p">:</span>
+                    <span class="n">ggr_num_filter_overlap</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">ggr_num_filter_remove</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">canonical_</span><span class="p">:</span>
+                    <span class="n">ggr_num_filter_add</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="k">if</span> <span class="n">interest_</span><span class="p">:</span>
+                <span class="n">ggr_num_aois</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="n">canonical_</span><span class="p">:</span>
+                    <span class="n">ggr_num_aoi_overlap</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">ggr_num_aoi_remove</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">canonical_</span><span class="p">:</span>
+                    <span class="n">ggr_num_aoi_add</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="c1">#########</span>
+
+    <span class="n">num_tabs</span> <span class="o">=</span> <span class="mi">30</span>
 
     <span class="k">def</span> <span class="nf">align2</span><span class="p">(</span><span class="n">str_</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ut</span><span class="o">.</span><span class="n">align</span><span class="p">(</span><span class="n">str_</span><span class="p">,</span> <span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="s1">&#39; :&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">align_dict2</span><span class="p">(</span><span class="n">dict_</span><span class="p">):</span>
-        <span class="n">str_</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">repr2</span><span class="p">(</span><span class="n">dict_</span><span class="p">,</span> <span class="n">si</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># str_ = ut.repr2(dict_, si=True)</span>
+        <span class="n">str_</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">repr3</span><span class="p">(</span><span class="n">dict_</span><span class="p">,</span> <span class="n">si</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">align2</span><span class="p">(</span><span class="n">str_</span><span class="p">)</span>
 
     <span class="n">header_block_lines</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;+============================&#39;</span><span class="p">)]</span> <span class="o">+</span> <span class="p">(</span>
         <span class="p">[</span>
-            <span class="p">(</span><span class="s1">&#39;+ singleton := single sighting&#39;</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;+ multiton  := multiple sightings&#39;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">&#39;+ singleton := names with a single annotation&#39;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">&#39;+ multiton  := names with multiple annotations&#39;</span><span class="p">),</span>
             <span class="p">(</span><span class="s1">&#39;--&#39;</span> <span class="o">*</span> <span class="n">num_tabs</span><span class="p">),</span>
         <span class="p">]</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">short</span> <span class="ow">and</span> <span class="n">with_header</span>
@@ -645,6 +1002,10 @@
         <span class="p">(</span><span class="s1">&#39;--&#39;</span> <span class="o">*</span> <span class="n">num_tabs</span><span class="p">),</span>
         <span class="p">(</span><span class="s1">&#39;# Annots </span><span class="si">%s</span><span class="s1">            = </span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">subset_str</span><span class="p">,</span> <span class="n">num_annots</span><span class="p">)),</span>
         <span class="p">(</span><span class="s1">&#39;# Annots (unknown)           = </span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">num_unknown_annots</span><span class="p">),</span>
+        <span class="p">(</span>
+            <span class="s1">&#39;# Annots (named)             = </span><span class="si">%d</span><span class="s1">&#39;</span>
+            <span class="o">%</span> <span class="p">(</span><span class="n">num_singleton_annots</span> <span class="o">+</span> <span class="n">num_multiton_annots</span><span class="p">)</span>
+        <span class="p">),</span>
         <span class="p">(</span><span class="s1">&#39;# Annots (singleton)         = </span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">num_singleton_annots</span><span class="p">),</span>
         <span class="p">(</span><span class="s1">&#39;# Annots (multiton)          = </span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">num_multiton_annots</span><span class="p">),</span>
     <span class="p">]</span>
@@ -652,20 +1013,9 @@
     <span class="n">annot_per_basic_block_lines</span> <span class="o">=</span> <span class="p">(</span>
         <span class="p">[</span>
             <span class="p">(</span><span class="s1">&#39;--&#39;</span> <span class="o">*</span> <span class="n">num_tabs</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;# Annots per Name (multiton) = </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">align2</span><span class="p">(</span><span class="n">multiton_stats</span><span class="p">),)),</span>
+            <span class="c1"># (&#39;# Annots per Name (multiton) = %s&#39; % (align2(multiton_stats),)),</span>
             <span class="p">(</span><span class="s1">&#39;# Annots per Image           = </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">align2</span><span class="p">(</span><span class="n">gx2_nAnnots_stats</span><span class="p">),)),</span>
             <span class="p">(</span><span class="s1">&#39;# Annots per Species         = </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">align_dict2</span><span class="p">(</span><span class="n">species2_nAids</span><span class="p">),)),</span>
-        <span class="p">]</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">short</span>
-        <span class="k">else</span> <span class="p">[]</span>
-    <span class="p">)</span>
-
-    <span class="n">occurrence_block_lines</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="p">[</span>
-            <span class="p">(</span><span class="s1">&#39;--&#39;</span> <span class="o">*</span> <span class="n">num_tabs</span><span class="p">),</span>
-            <span class="c1"># (&#39;# Occurrence Per Name (Resights) = %s&#39; % (align_dict2(resight_name_stats),)),</span>
-            <span class="c1"># (&#39;# Annots per Encounter (Singlesights) = %s&#39; % (align_dict2(singlesight_annot_stats),)),</span>
-            <span class="p">(</span><span class="s1">&#39;# Pair Tag Info (annots) = </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">align_dict2</span><span class="p">(</span><span class="n">pair_tag_info</span><span class="p">),)),</span>
         <span class="p">]</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">short</span>
         <span class="k">else</span> <span class="p">[]</span>
@@ -678,23 +1028,107 @@
 
     <span class="n">annot_per_agesex_block_lines</span> <span class="o">=</span> <span class="p">(</span>
         <span class="p">[</span>
-            <span class="s1">&#39;# Annots per Age = </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">align_dict2</span><span class="p">(</span><span class="n">agetext2_nAnnots</span><span class="p">),</span>
-            <span class="s1">&#39;# Annots per Sex = </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">align_dict2</span><span class="p">(</span><span class="n">sextext2_nAnnots</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">&#39;# Annots per Age = </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">align_dict2</span><span class="p">(</span><span class="n">agetext2_nAnnots</span><span class="p">)),</span>
+            <span class="p">(</span><span class="s1">&#39;# Annots per Sex = </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">align_dict2</span><span class="p">(</span><span class="n">sextext2_nAnnots</span><span class="p">)),</span>
         <span class="p">]</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">short</span> <span class="ow">and</span> <span class="n">with_agesex</span>
         <span class="k">else</span> <span class="p">[]</span>
     <span class="p">)</span>
 
-    <span class="n">contributor_block_lines</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">annot_ggr_census</span> <span class="o">=</span> <span class="p">(</span>
         <span class="p">[</span>
-            <span class="s1">&#39;# Images per contributor       = &#39;</span> <span class="o">+</span> <span class="n">align_dict2</span><span class="p">(</span><span class="n">contributor_tag_to_nImages</span><span class="p">),</span>
-            <span class="s1">&#39;# Annots per contributor       = &#39;</span> <span class="o">+</span> <span class="n">align_dict2</span><span class="p">(</span><span class="n">contributor_tag_to_nAnnots</span><span class="p">),</span>
-            <span class="s1">&#39;# Quality per contributor      = &#39;</span>
-            <span class="o">+</span> <span class="n">ut</span><span class="o">.</span><span class="n">repr2</span><span class="p">(</span><span class="n">contributor_tag_to_qualstats</span><span class="p">,</span> <span class="n">sorted_</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
-            <span class="s1">&#39;# Viewpoint per contributor    = &#39;</span>
-            <span class="o">+</span> <span class="n">ut</span><span class="o">.</span><span class="n">repr2</span><span class="p">(</span><span class="n">contributor_tag_to_viewstats</span><span class="p">,</span> <span class="n">sorted_</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">&#39;GGR Annots: &#39;</span><span class="p">),</span>
+            <span class="c1"># (&#39;     +-Relevant:            %s&#39; % (ggr_num_relevant,)),</span>
+            <span class="p">(</span><span class="s2">&quot;     +- Grevy&#39;s Species:    </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ggr_num_species</span><span class="p">,)),</span>
+            <span class="p">(</span><span class="s1">&#39;     |  +-AoIs:             </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ggr_num_aois</span><span class="p">,)),</span>
+            <span class="p">(</span><span class="s1">&#39;     |  |  +-Right Side:    </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ggr_num_viewpoints</span><span class="p">,)),</span>
+            <span class="p">(</span><span class="s1">&#39;     |  |  +-Good Quality:  </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ggr_num_qualities</span><span class="p">,)),</span>
+            <span class="p">(</span><span class="s1">&#39;     |  |  +-Filter:        </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ggr_num_filter</span><span class="p">,)),</span>
+            <span class="p">(</span><span class="s1">&#39;     |  +-CAs:              </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ggr_num_cas</span><span class="p">,)),</span>
+            <span class="p">(</span>
+                <span class="s1">&#39;     +-CA &amp; Filter Overlap: </span><span class="si">%s</span><span class="s1"> (CA removed </span><span class="si">%d</span><span class="s1">, added </span><span class="si">%d</span><span class="s1">)&#39;</span>
+                <span class="o">%</span> <span class="p">(</span><span class="n">ggr_num_filter_overlap</span><span class="p">,</span> <span class="n">ggr_num_filter_remove</span><span class="p">,</span> <span class="n">ggr_num_filter_add</span><span class="p">)</span>
+            <span class="p">),</span>
+            <span class="p">(</span>
+                <span class="s1">&#39;     +-CA &amp; AOI    Overlap: </span><span class="si">%s</span><span class="s1"> (CA removed </span><span class="si">%d</span><span class="s1">, added </span><span class="si">%d</span><span class="s1">)&#39;</span>
+                <span class="o">%</span> <span class="p">(</span><span class="n">ggr_num_aoi_overlap</span><span class="p">,</span> <span class="n">ggr_num_aoi_remove</span><span class="p">,</span> <span class="n">ggr_num_aoi_add</span><span class="p">)</span>
+            <span class="p">),</span>
         <span class="p">]</span>
-        <span class="k">if</span> <span class="n">with_contrib</span>
+        <span class="k">if</span> <span class="n">with_ggr</span>
+        <span class="k">else</span> <span class="p">[]</span>
+    <span class="p">)</span>
+
+    <span class="kn">from</span> <span class="nn">wbia.algo.preproc</span> <span class="kn">import</span> <span class="n">occurrence_blackbox</span>
+
+    <span class="n">occurrence_block_lines</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="p">[</span>
+            <span class="p">(</span><span class="s1">&#39;--&#39;</span> <span class="o">*</span> <span class="n">num_tabs</span><span class="p">),</span>
+            <span class="s1">&#39;# Occurrences                    = </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">occurid2_aids</span><span class="p">),),</span>
+            <span class="s1">&#39;# Occurrences with Named         = </span><span class="si">%s</span><span class="s1">&#39;</span>
+            <span class="o">%</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">ut</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">aid2_occurxs</span><span class="o">.</span><span class="n">values</span><span class="p">()))),),</span>
+            <span class="s1">&#39;#      +- GPS Filter             = </span><span class="si">%s</span><span class="s1">&#39;</span>
+            <span class="o">%</span> <span class="p">(</span><span class="n">occurence_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;use_gps&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">),),</span>
+            <span class="s1">&#39;#      +- GPS Threshold KM/Sec.  = </span><span class="si">%0.04f</span><span class="s1">&#39;</span>
+            <span class="o">%</span> <span class="p">(</span><span class="n">occurrence_blackbox</span><span class="o">.</span><span class="n">KM_PER_SEC</span><span class="p">,),</span>
+            <span class="s1">&#39;#      +- Time Filter            = </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="kc">True</span><span class="p">,),</span>
+            <span class="s1">&#39;#      +- Time Threshold Sec.    = </span><span class="si">%0.1f</span><span class="s1">&#39;</span>
+            <span class="o">%</span> <span class="p">(</span><span class="n">occurence_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;seconds_thresh&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),),</span>
+            <span class="p">(</span>
+                <span class="s1">&#39;# Named Annots per Occurrence    = </span><span class="si">%s</span><span class="s1">&#39;</span>
+                <span class="o">%</span> <span class="p">(</span><span class="n">align_dict2</span><span class="p">(</span><span class="n">occurence_annot_stats</span><span class="p">),)</span>
+            <span class="p">),</span>
+            <span class="p">(</span>
+                <span class="s1">&#39;# Encounters per Occurrence    = </span><span class="si">%s</span><span class="s1">&#39;</span>
+                <span class="o">%</span> <span class="p">(</span><span class="n">align_dict2</span><span class="p">(</span><span class="n">occurence_encounter_stats</span><span class="p">),)</span>
+            <span class="p">),</span>
+            <span class="s1">&#39;# Encounters                     = </span><span class="si">%s</span><span class="s1">&#39;</span>
+            <span class="o">%</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ut</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">nid2_occurxs</span><span class="o">.</span><span class="n">values</span><span class="p">())),),</span>
+            <span class="p">(</span>
+                <span class="s1">&#39;# Encounters per Name            = </span><span class="si">%s</span><span class="s1">&#39;</span>
+                <span class="o">%</span> <span class="p">(</span><span class="n">align_dict2</span><span class="p">(</span><span class="n">annot_encounter_stats</span><span class="p">),)</span>
+            <span class="p">),</span>
+            <span class="s1">&#39;# Annotations with Names           = </span><span class="si">%s</span><span class="s1">&#39;</span>
+            <span class="o">%</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">ut</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">nid2_annotxs</span><span class="o">.</span><span class="n">values</span><span class="p">()))),),</span>
+            <span class="p">(</span>
+                <span class="s1">&#39;# Annotations per Name             = </span><span class="si">%s</span><span class="s1">&#39;</span>
+                <span class="o">%</span> <span class="p">(</span><span class="n">align_dict2</span><span class="p">(</span><span class="n">name_annot_stats</span><span class="p">),)</span>
+            <span class="p">),</span>
+            <span class="c1"># (&#39;# Pair Tag Info (annots) = %s&#39; % (align_dict2(pair_tag_info),)),</span>
+        <span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">short</span>
+        <span class="k">else</span> <span class="p">[]</span>
+    <span class="p">)</span>
+
+    <span class="n">reviews_block_lines</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="p">[</span>
+            <span class="p">(</span><span class="s1">&#39;--&#39;</span> <span class="o">*</span> <span class="n">num_tabs</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">&#39;# All Reviews                = </span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">num_all_total_reviews</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">&#39;# Relevant Reviews           = </span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">valid_rids</span><span class="p">)),</span>
+            <span class="p">(</span><span class="s1">&#39;# Reviews per Decision       = </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">align_dict2</span><span class="p">(</span><span class="n">review_decision_stats</span><span class="p">)),</span>
+            <span class="p">(</span><span class="s1">&#39;# Reviews per Reviewer       = </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">align_dict2</span><span class="p">(</span><span class="n">review_identity_stats</span><span class="p">)),</span>
+            <span class="p">(</span>
+                <span class="s1">&#39;# Review Breakdown           = </span><span class="si">%s</span><span class="s1">&#39;</span>
+                <span class="o">%</span> <span class="n">align_dict2</span><span class="p">(</span><span class="n">review_identity_to_decision_stats</span><span class="p">)</span>
+            <span class="p">),</span>
+            <span class="p">(</span><span class="s1">&#39;# Reviews with Tag           = </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">align_dict2</span><span class="p">(</span><span class="n">review_tag_stats</span><span class="p">)),</span>
+            <span class="p">(</span>
+                <span class="s1">&#39;# Annot Review Participation by Decision = </span><span class="si">%s</span><span class="s1">&#39;</span>
+                <span class="o">%</span> <span class="n">align_dict2</span><span class="p">(</span><span class="n">review_decision_annot_participation_dict</span><span class="p">)</span>
+            <span class="p">),</span>
+            <span class="p">(</span>
+                <span class="s1">&#39;# Encounter Review Participation by Decision = </span><span class="si">%s</span><span class="s1">&#39;</span>
+                <span class="o">%</span> <span class="n">align_dict2</span><span class="p">(</span><span class="n">review_decision_encounter_participation_dict</span><span class="p">)</span>
+            <span class="p">),</span>
+            <span class="p">(</span>
+                <span class="s1">&#39;# Annot Review Participation by Reviewer = </span><span class="si">%s</span><span class="s1">&#39;</span>
+                <span class="o">%</span> <span class="n">align_dict2</span><span class="p">(</span><span class="n">review_identity_annot_participation_dict</span><span class="p">)</span>
+            <span class="p">),</span>
+            <span class="p">(</span>
+                <span class="s1">&#39;# Encounter Review Participation by Reviewer = </span><span class="si">%s</span><span class="s1">&#39;</span>
+                <span class="o">%</span> <span class="n">align_dict2</span><span class="p">(</span><span class="n">review_identity_encounter_participation_dict</span><span class="p">)</span>
+            <span class="p">),</span>
+        <span class="p">]</span>
+        <span class="k">if</span> <span class="n">with_reviews</span>
         <span class="k">else</span> <span class="p">[]</span>
     <span class="p">)</span>
 
@@ -709,7 +1143,34 @@
         <span class="kc">None</span>
         <span class="k">if</span> <span class="n">short</span>
         <span class="k">else</span> <span class="p">(</span><span class="s1">&#39;Img Time Stats               = </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">align2</span><span class="p">(</span><span class="n">unixtime_statstr</span><span class="p">),)),</span>
+        <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">with_ggr</span>
+        <span class="k">else</span> <span class="p">(</span><span class="s1">&#39;GGR Days                     = </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">align_dict2</span><span class="p">(</span><span class="n">ggr_dates_stats</span><span class="p">),)),</span>
     <span class="p">]</span>
+
+    <span class="n">contributor_block_lines</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="p">[</span>
+            <span class="p">(</span><span class="s1">&#39;--&#39;</span> <span class="o">*</span> <span class="n">num_tabs</span><span class="p">),</span>
+            <span class="p">(</span>
+                <span class="s1">&#39;# Images per contributor       = &#39;</span>
+                <span class="o">+</span> <span class="n">align_dict2</span><span class="p">(</span><span class="n">contributor_tag_to_nImages</span><span class="p">)</span>
+            <span class="p">),</span>
+            <span class="p">(</span>
+                <span class="s1">&#39;# Annots per contributor       = &#39;</span>
+                <span class="o">+</span> <span class="n">align_dict2</span><span class="p">(</span><span class="n">contributor_tag_to_nAnnots</span><span class="p">)</span>
+            <span class="p">),</span>
+            <span class="p">(</span>
+                <span class="s1">&#39;# Quality per contributor      = &#39;</span>
+                <span class="o">+</span> <span class="n">align_dict2</span><span class="p">(</span><span class="n">contributor_tag_to_qualstats</span><span class="p">)</span>
+            <span class="p">),</span>
+            <span class="p">(</span>
+                <span class="s1">&#39;# Viewpoint per contributor    = &#39;</span>
+                <span class="o">+</span> <span class="n">align_dict2</span><span class="p">(</span><span class="n">contributor_tag_to_viewstats</span><span class="p">)</span>
+            <span class="p">),</span>
+        <span class="p">]</span>
+        <span class="k">if</span> <span class="n">with_contrib</span>
+        <span class="k">else</span> <span class="p">[]</span>
+    <span class="p">)</span>
 
     <span class="n">info_str_lines</span> <span class="o">=</span> <span class="p">(</span>
         <span class="n">header_block_lines</span>
@@ -718,16 +1179,18 @@
         <span class="o">+</span> <span class="n">name_block_lines</span>
         <span class="o">+</span> <span class="n">annot_block_lines</span>
         <span class="o">+</span> <span class="n">annot_per_basic_block_lines</span>
-        <span class="o">+</span> <span class="n">occurrence_block_lines</span>
         <span class="o">+</span> <span class="n">annot_per_qualview_block_lines</span>
         <span class="o">+</span> <span class="n">annot_per_agesex_block_lines</span>
+        <span class="o">+</span> <span class="n">annot_ggr_census</span>
+        <span class="o">+</span> <span class="n">occurrence_block_lines</span>
+        <span class="o">+</span> <span class="n">reviews_block_lines</span>
         <span class="o">+</span> <span class="n">img_block_lines</span>
-        <span class="o">+</span> <span class="n">contributor_block_lines</span>
         <span class="o">+</span> <span class="n">imgsize_stat_lines</span>
+        <span class="o">+</span> <span class="n">contributor_block_lines</span>
         <span class="o">+</span> <span class="p">[(</span><span class="s1">&#39;L============================&#39;</span><span class="p">)]</span>
     <span class="p">)</span>
     <span class="n">info_str</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ut</span><span class="o">.</span><span class="n">filter_Nones</span><span class="p">(</span><span class="n">info_str_lines</span><span class="p">))</span>
-    <span class="n">info_str2</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">indent</span><span class="p">(</span><span class="n">info_str</span><span class="p">,</span> <span class="s1">&#39;[</span><span class="si">{tag}</span><span class="s1">]&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tag</span><span class="o">=</span><span class="n">tag</span><span class="p">))</span>
+    <span class="n">info_str2</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">indent</span><span class="p">(</span><span class="n">info_str</span><span class="p">,</span> <span class="s1">&#39;[</span><span class="si">{tag}</span><span class="s1">] &#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tag</span><span class="o">=</span><span class="n">tag</span><span class="p">))</span>
     <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">info_str2</span><span class="p">)</span>
     <span class="n">locals_</span> <span class="o">=</span> <span class="nb">locals</span><span class="p">()</span>
@@ -1307,7 +1770,7 @@
       &copy;2020, Wild Me.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.3</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

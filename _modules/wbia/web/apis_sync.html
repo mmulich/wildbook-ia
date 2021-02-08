@@ -12,7 +12,6 @@
     <script src="../../../_static/jquery.js"></script>
     <script src="../../../_static/underscore.js"></script>
     <script src="../../../_static/doctools.js"></script>
-    <script src="../../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
    
@@ -81,7 +80,7 @@
         <span class="n">REMOTE_UUID</span> <span class="o">=</span> <span class="kc">None</span>
 
 
-<span class="n">REMOTE_URL</span> <span class="o">=</span> <span class="s1">&#39;http://</span><span class="si">%s</span><span class="s1">:</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">REMOTE_DOMAIN</span><span class="p">,</span> <span class="n">REMOTE_PORT</span><span class="p">)</span>
+<span class="n">REMOTE_URL</span> <span class="o">=</span> <span class="s1">&#39;https://</span><span class="si">%s</span><span class="s1">:</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">REMOTE_DOMAIN</span><span class="p">,</span> <span class="n">REMOTE_PORT</span><span class="p">)</span>
 <span class="n">REMOTE_UUID</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">REMOTE_UUID</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">(</span><span class="n">REMOTE_UUID</span><span class="p">)</span>
 
 
@@ -400,7 +399,9 @@
     <span class="n">name_texts</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">_sync_get_annot_endpoint</span><span class="p">(</span><span class="s1">&#39;/api/annot/name/text/&#39;</span><span class="p">,</span> <span class="n">aid_list</span><span class="p">)</span>
     <span class="n">name_uuids</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">_sync_get_annot_endpoint</span><span class="p">(</span><span class="s1">&#39;/api/annot/name/uuid/&#39;</span><span class="p">,</span> <span class="n">aid_list</span><span class="p">)</span>
     <span class="n">images</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">_sync_get_annot_endpoint</span><span class="p">(</span><span class="s1">&#39;/api/annot/image/rowid/&#39;</span><span class="p">,</span> <span class="n">aid_list</span><span class="p">)</span>
-    <span class="n">gpaths</span> <span class="o">=</span> <span class="p">[</span><span class="n">ibs</span><span class="o">.</span><span class="n">_construct_route_url_ibs</span><span class="p">(</span><span class="s1">&#39;/api/image/src/</span><span class="si">%s</span><span class="s1">/&#39;</span> <span class="o">%</span> <span class="n">gid</span><span class="p">)</span> <span class="k">for</span> <span class="n">gid</span> <span class="ow">in</span> <span class="n">images</span><span class="p">]</span>
+    <span class="n">gpaths</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">ibs</span><span class="o">.</span><span class="n">_construct_route_url_ibs</span><span class="p">(</span><span class="s1">&#39;/api/image/src/</span><span class="si">%s</span><span class="s1">.jpg&#39;</span> <span class="o">%</span> <span class="n">gid</span><span class="p">)</span> <span class="k">for</span> <span class="n">gid</span> <span class="ow">in</span> <span class="n">images</span>
+    <span class="p">]</span>
     <span class="n">specieses</span> <span class="o">=</span> <span class="p">[</span><span class="n">species_name</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">aid_list</span><span class="p">)</span>
 
     <span class="n">gid_list</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">add_images</span><span class="p">(</span><span class="n">gpaths</span><span class="p">)</span>
@@ -717,7 +718,7 @@
       &copy;2020, Wild Me.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.3</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

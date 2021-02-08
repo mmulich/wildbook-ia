@@ -12,7 +12,6 @@
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
    
@@ -102,7 +101,7 @@
         <span class="n">main_loop</span><span class="p">,</span>
         <span class="n">opendb</span><span class="p">,</span>
         <span class="n">opendb_in_background</span><span class="p">,</span>
-        <span class="n">opendb_bg_web</span><span class="p">,</span>
+        <span class="n">opendb_with_web</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="kn">from</span> <span class="nn">wbia.control.IBEISControl</span> <span class="kn">import</span> <span class="n">IBEISController</span>
     <span class="kn">from</span> <span class="nn">wbia.algo.hots.query_request</span> <span class="kn">import</span> <span class="n">QueryRequest</span>
@@ -119,6 +118,7 @@
     <span class="kn">from</span> <span class="nn">wbia.init</span> <span class="kn">import</span> <span class="n">main_helpers</span>
 
     <span class="kn">from</span> <span class="nn">wbia</span> <span class="kn">import</span> <span class="n">algo</span>
+    <span class="kn">from</span> <span class="nn">wbia</span> <span class="kn">import</span> <span class="n">research</span>
 
     <span class="kn">from</span> <span class="nn">wbia</span> <span class="kn">import</span> <span class="n">expt</span>
     <span class="kn">from</span> <span class="nn">wbia</span> <span class="kn">import</span> <span class="n">templates</span>
@@ -476,7 +476,7 @@
       &copy;2020, Wild Me.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.3</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

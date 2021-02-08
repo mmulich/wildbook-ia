@@ -12,7 +12,6 @@
     <script src="../../../_static/jquery.js"></script>
     <script src="../../../_static/underscore.js"></script>
     <script src="../../../_static/doctools.js"></script>
-    <script src="../../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
    
@@ -121,7 +120,7 @@
 <span class="sd">        python -m wbia.web.test_api --test-run_test_api</span>
 
 <span class="sd">    Example:</span>
-<span class="sd">        &gt;&gt;&gt; # xdoctest: +REQUIRES(--web-tests)</span>
+<span class="sd">        &gt;&gt;&gt; # DISABLE_DOCTEST</span>
 <span class="sd">        &gt;&gt;&gt; from wbia.web.test_api import *  # NOQA</span>
 <span class="sd">        &gt;&gt;&gt; response = run_test_api()</span>
 <span class="sd">        &gt;&gt;&gt; print(&#39;Server response: %r&#39; % (response, ))</span>
@@ -137,6 +136,8 @@
 
     <span class="c1"># Get the application port from the background process</span>
     <span class="k">if</span> <span class="n">APPLICATION_PORT</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># FIXME web_instance is a KillableProcess, not IBEISController,</span>
+        <span class="c1"># it doesn&#39;t have get_web_port_via_scan</span>
         <span class="n">web_port</span> <span class="o">=</span> <span class="n">web_instance</span><span class="o">.</span><span class="n">get_web_port_via_scan</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">web_port</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;IA web server is not running on any expected port&#39;</span><span class="p">)</span>
@@ -211,7 +212,7 @@
       &copy;2020, Wild Me.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.3</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

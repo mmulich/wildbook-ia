@@ -12,7 +12,6 @@
     <script src="../../../_static/jquery.js"></script>
     <script src="../../../_static/underscore.js"></script>
     <script src="../../../_static/doctools.js"></script>
-    <script src="../../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
    
@@ -89,13 +88,12 @@
 <span class="sd">        list_ (list):  a list of imageset-image-relationship rowids for each imageid&quot;&quot;&quot;</span>
     <span class="c1"># TODO: Group type</span>
     <span class="n">params_iter</span> <span class="o">=</span> <span class="p">((</span><span class="n">gid</span><span class="p">,)</span> <span class="k">for</span> <span class="n">gid</span> <span class="ow">in</span> <span class="n">gid_list</span><span class="p">)</span>
-    <span class="n">where_clause</span> <span class="o">=</span> <span class="s1">&#39;image_rowid=?&#39;</span>
     <span class="c1"># list of relationships for each image</span>
-    <span class="n">gsgrids_list</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">get_where</span><span class="p">(</span>
+    <span class="n">gsgrids_list</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">get_where_eq</span><span class="p">(</span>
         <span class="n">const</span><span class="o">.</span><span class="n">GSG_RELATION_TABLE</span><span class="p">,</span>
         <span class="p">(</span><span class="s1">&#39;gsgr_rowid&#39;</span><span class="p">,),</span>
         <span class="n">params_iter</span><span class="p">,</span>
-        <span class="n">where_clause</span><span class="p">,</span>
+        <span class="p">(</span><span class="s1">&#39;image_rowid&#39;</span><span class="p">,),</span>
         <span class="n">unpack_scalars</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">return</span> <span class="n">gsgrids_list</span></div>
@@ -207,10 +205,13 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        gsgrid_list (list):  eg-relate-ids from info constrained to be unique (imgsetid, gid)&quot;&quot;&quot;</span>
     <span class="n">colnames</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;image_rowid&#39;</span><span class="p">,)</span>
+    <span class="n">where_colnames</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;image_rowid&#39;</span><span class="p">,</span> <span class="s1">&#39;imageset_rowid&#39;</span><span class="p">)</span>
     <span class="n">params_iter</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="n">gid_list</span><span class="p">,</span> <span class="n">imgsetid_list</span><span class="p">)</span>
-    <span class="n">where_clause</span> <span class="o">=</span> <span class="s1">&#39;image_rowid=? AND imageset_rowid=?&#39;</span>
-    <span class="n">gsgrid_list</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">get_where</span><span class="p">(</span>
-        <span class="n">const</span><span class="o">.</span><span class="n">GSG_RELATION_TABLE</span><span class="p">,</span> <span class="n">colnames</span><span class="p">,</span> <span class="n">params_iter</span><span class="p">,</span> <span class="n">where_clause</span>
+    <span class="n">gsgrid_list</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">get_where_eq</span><span class="p">(</span>
+        <span class="n">const</span><span class="o">.</span><span class="n">GSG_RELATION_TABLE</span><span class="p">,</span>
+        <span class="n">colnames</span><span class="p">,</span>
+        <span class="n">params_iter</span><span class="p">,</span>
+        <span class="n">where_colnames</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">return</span> <span class="n">gsgrid_list</span></div>
 
@@ -306,7 +307,7 @@
       &copy;2020, Wild Me.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.3</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

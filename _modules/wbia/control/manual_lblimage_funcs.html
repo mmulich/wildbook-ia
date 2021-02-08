@@ -12,7 +12,6 @@
     <script src="../../../_static/jquery.js"></script>
     <script src="../../../_static/underscore.js"></script>
     <script src="../../../_static/doctools.js"></script>
-    <script src="../../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
    
@@ -135,9 +134,8 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">colnames</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;lblimage_rowid&#39;</span><span class="p">,)</span>
     <span class="n">params_iter</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="n">lbltype_rowid_list</span><span class="p">,</span> <span class="n">value_list</span><span class="p">)</span>
-    <span class="n">where_clause</span> <span class="o">=</span> <span class="s1">&#39;lbltype_rowid=? AND lblimage_value=?&#39;</span>
-    <span class="n">lblimage_rowid_list</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">get_where</span><span class="p">(</span>
-        <span class="n">const</span><span class="o">.</span><span class="n">LBLIMAGE_TABLE</span><span class="p">,</span> <span class="n">colnames</span><span class="p">,</span> <span class="n">params_iter</span><span class="p">,</span> <span class="n">where_clause</span>
+    <span class="n">lblimage_rowid_list</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">get_where_eq</span><span class="p">(</span>
+        <span class="n">const</span><span class="o">.</span><span class="n">LBLIMAGE_TABLE</span><span class="p">,</span> <span class="n">colnames</span><span class="p">,</span> <span class="n">params_iter</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;lbltype_rowid&#39;</span><span class="p">,</span> <span class="s1">&#39;lblimage_value&#39;</span><span class="p">)</span>
     <span class="p">)</span>
     <span class="k">return</span> <span class="n">lblimage_rowid_list</span></div>
 
@@ -206,13 +204,12 @@
     <span class="c1"># FIXME: SLOW</span>
     <span class="c1"># if verbose:</span>
     <span class="c1">#    logger.info(ut.get_caller_name(N=list(range(0, 20))))</span>
-    <span class="n">where_clause</span> <span class="o">=</span> <span class="s1">&#39;lblimage_rowid=?&#39;</span>
     <span class="n">params_iter</span> <span class="o">=</span> <span class="p">[(</span><span class="n">lblimage_rowid</span><span class="p">,)</span> <span class="k">for</span> <span class="n">lblimage_rowid</span> <span class="ow">in</span> <span class="n">lblimage_rowid_list</span><span class="p">]</span>
-    <span class="n">gids_list</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">get_where</span><span class="p">(</span>
+    <span class="n">gids_list</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">get_where_eq</span><span class="p">(</span>
         <span class="n">const</span><span class="o">.</span><span class="n">GL_RELATION_TABLE</span><span class="p">,</span>
         <span class="p">(</span><span class="s1">&#39;image_rowid&#39;</span><span class="p">,),</span>
         <span class="n">params_iter</span><span class="p">,</span>
-        <span class="n">where_clause</span><span class="p">,</span>
+        <span class="p">(</span><span class="s1">&#39;lblimage_rowid&#39;</span><span class="p">,),</span>
         <span class="n">unpack_scalars</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">return</span> <span class="n">gids_list</span></div>
@@ -260,9 +257,8 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">colnames</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;image_rowid&#39;</span><span class="p">,)</span>
     <span class="n">params_iter</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="n">gid_list</span><span class="p">,</span> <span class="n">lblimage_rowid_list</span><span class="p">)</span>
-    <span class="n">where_clause</span> <span class="o">=</span> <span class="s1">&#39;image_rowid=? AND lblimage_rowid=?&#39;</span>
-    <span class="n">glrid_list</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">get_where</span><span class="p">(</span>
-        <span class="n">const</span><span class="o">.</span><span class="n">GL_RELATION_TABLE</span><span class="p">,</span> <span class="n">colnames</span><span class="p">,</span> <span class="n">params_iter</span><span class="p">,</span> <span class="n">where_clause</span>
+    <span class="n">glrid_list</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">get_where_eq</span><span class="p">(</span>
+        <span class="n">const</span><span class="o">.</span><span class="n">GL_RELATION_TABLE</span><span class="p">,</span> <span class="n">colnames</span><span class="p">,</span> <span class="n">params_iter</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;image_rowid&#39;</span><span class="p">,</span> <span class="s1">&#39;lblimage_rowid&#39;</span><span class="p">)</span>
     <span class="p">)</span>
     <span class="k">return</span> <span class="n">glrid_list</span></div>
 
@@ -276,12 +272,11 @@
 <span class="sd">    be only of a specific lbltype/category/type</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">params_iter</span> <span class="o">=</span> <span class="p">((</span><span class="n">gid</span><span class="p">,)</span> <span class="k">for</span> <span class="n">gid</span> <span class="ow">in</span> <span class="n">gid_list</span><span class="p">)</span>
-    <span class="n">where_clause</span> <span class="o">=</span> <span class="s1">&#39;image_rowid=?&#39;</span>
-    <span class="n">glrids_list</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">get_where</span><span class="p">(</span>
+    <span class="n">glrids_list</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">get_where_eq</span><span class="p">(</span>
         <span class="n">const</span><span class="o">.</span><span class="n">GL_RELATION_TABLE</span><span class="p">,</span>
         <span class="p">(</span><span class="s1">&#39;glr_rowid&#39;</span><span class="p">,),</span>
         <span class="n">params_iter</span><span class="p">,</span>
-        <span class="n">where_clause</span><span class="o">=</span><span class="n">where_clause</span><span class="p">,</span>
+        <span class="p">(</span><span class="s1">&#39;image_rowid&#39;</span><span class="p">,),</span>
         <span class="n">unpack_scalars</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">return</span> <span class="n">glrids_list</span></div>
@@ -347,7 +342,7 @@
       &copy;2020, Wild Me.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.3</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

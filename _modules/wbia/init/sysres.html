@@ -12,7 +12,6 @@
     <script src="../../../_static/jquery.js"></script>
     <script src="../../../_static/underscore.js"></script>
     <script src="../../../_static/doctools.js"></script>
-    <script src="../../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
    
@@ -40,11 +39,15 @@
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">lru_cache</span>
 <span class="kn">from</span> <span class="nn">os.path</span> <span class="kn">import</span> <span class="n">exists</span><span class="p">,</span> <span class="n">join</span><span class="p">,</span> <span class="n">realpath</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+
 <span class="kn">import</span> <span class="nn">utool</span> <span class="k">as</span> <span class="nn">ut</span>
 <span class="kn">import</span> <span class="nn">ubelt</span> <span class="k">as</span> <span class="nn">ub</span>
 <span class="kn">from</span> <span class="nn">six.moves</span> <span class="kn">import</span> <span class="nb">input</span><span class="p">,</span> <span class="nb">zip</span><span class="p">,</span> <span class="nb">map</span>
 <span class="kn">from</span> <span class="nn">wbia</span> <span class="kn">import</span> <span class="n">constants</span> <span class="k">as</span> <span class="n">const</span>
+<span class="kn">from</span> <span class="nn">wbia.dtool.copy_sqlite_to_postgres</span> <span class="kn">import</span> <span class="n">copy_sqlite_to_postgres</span>
 
 
 <span class="p">(</span><span class="nb">print</span><span class="p">,</span> <span class="n">rrr</span><span class="p">,</span> <span class="n">profile</span><span class="p">)</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">inject2</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
@@ -77,6 +80,27 @@
 <span class="k">def</span> <span class="nf">_wbia_cache_read</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Reads from global IBEIS cache &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">ut</span><span class="o">.</span><span class="n">global_cache_read</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">appname</span><span class="o">=</span><span class="n">__APPNAME__</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="get_wbia_db_uri"><a class="viewcode-back" href="../../../wbia.init.html#wbia.init.sysres.get_wbia_db_uri">[docs]</a><span class="k">def</span> <span class="nf">get_wbia_db_uri</span><span class="p">(</span><span class="n">db_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Central location to acquire the database URI value.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        db_dir (str): colloquial &quot;dbdir&quot; (default: None)</span>
+
+<span class="sd">    The ``db_dir`` argument is only to be used in testing.</span>
+<span class="sd">    This function is monkeypatched by the testing environment</span>
+<span class="sd">    (see ``wbia.conftest`` for that code).</span>
+<span class="sd">    The monkeypatching is done because two or more instances of a controller</span>
+<span class="sd">    (i.e. ``IBEISController``) could be running in the same test.</span>
+<span class="sd">    In that scenario more than one URI may need to be defined,</span>
+<span class="sd">    which is not the case in production</span>
+<span class="sd">    and why the body of this function is kept fairly simple.</span>
+<span class="sd">    We ask the caller to supply the ``db_dir`` value</span>
+<span class="sd">    in order to match up the corresponding URI.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">ut</span><span class="o">.</span><span class="n">get_argval</span><span class="p">(</span><span class="s1">&#39;--db-uri&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></div>
 
 
 <span class="c1"># Specific cache getters / setters</span>
@@ -449,16 +473,11 @@
 <span class="sd">        &gt;&gt;&gt; ensure_pz_mtest()</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;ensure_pz_mtest&#39;</span><span class="p">)</span>
-    <span class="kn">from</span> <span class="nn">wbia</span> <span class="kn">import</span> <span class="n">sysres</span>
-
-    <span class="n">workdir</span> <span class="o">=</span> <span class="n">sysres</span><span class="o">.</span><span class="n">get_workdir</span><span class="p">()</span>
-    <span class="n">mtest_zipped_url</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">ZIPPED_URLS</span><span class="o">.</span><span class="n">PZ_MTEST</span>
-    <span class="n">mtest_dir</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">grab_zipped_url</span><span class="p">(</span><span class="n">mtest_zipped_url</span><span class="p">,</span> <span class="n">ensure</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">download_dir</span><span class="o">=</span><span class="n">workdir</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;have mtest_dir=</span><span class="si">%r</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">mtest_dir</span><span class="p">,))</span>
+    <span class="n">dbdir</span> <span class="o">=</span> <span class="n">ensure_db_from_url</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">ZIPPED_URLS</span><span class="o">.</span><span class="n">PZ_MTEST</span><span class="p">)</span>
     <span class="c1"># update the the newest database version</span>
     <span class="kn">import</span> <span class="nn">wbia</span>
 
-    <span class="n">ibs</span> <span class="o">=</span> <span class="n">wbia</span><span class="o">.</span><span class="n">opendb</span><span class="p">(</span><span class="s1">&#39;PZ_MTEST&#39;</span><span class="p">)</span>
+    <span class="n">ibs</span> <span class="o">=</span> <span class="n">wbia</span><span class="o">.</span><span class="n">opendb</span><span class="p">(</span><span class="n">dbdir</span><span class="o">=</span><span class="n">dbdir</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;cleaning up old database and ensureing everything is properly computed&#39;</span><span class="p">)</span>
     <span class="n">ibs</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">vacuum</span><span class="p">()</span>
     <span class="n">valid_aids</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_valid_aids</span><span class="p">()</span>
@@ -895,6 +914,11 @@
     <span class="k">return</span> <span class="n">ensure_db_from_url</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">ZIPPED_URLS</span><span class="o">.</span><span class="n">ORIENTATION</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="ensure_testdb_assigner"><a class="viewcode-back" href="../../../wbia.init.html#wbia.init.sysres.ensure_testdb_assigner">[docs]</a><span class="nd">@lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">ensure_testdb_assigner</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">ensure_db_from_url</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">ZIPPED_URLS</span><span class="o">.</span><span class="n">ASSIGNER</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="ensure_testdb_identification_example"><a class="viewcode-back" href="../../../wbia.init.html#wbia.init.sysres.ensure_testdb_identification_example">[docs]</a><span class="k">def</span> <span class="nf">ensure_testdb_identification_example</span><span class="p">():</span>
     <span class="k">return</span> <span class="n">ensure_db_from_url</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">ZIPPED_URLS</span><span class="o">.</span><span class="n">ID_EXAMPLE</span><span class="p">)</span></div>
 
@@ -908,9 +932,32 @@
     <span class="kn">from</span> <span class="nn">wbia</span> <span class="kn">import</span> <span class="n">sysres</span>
 
     <span class="n">workdir</span> <span class="o">=</span> <span class="n">sysres</span><span class="o">.</span><span class="n">get_workdir</span><span class="p">()</span>
-    <span class="n">dbdir</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">grab_zipped_url</span><span class="p">(</span>
-        <span class="n">zipped_url</span><span class="o">=</span><span class="n">zipped_db_url</span><span class="p">,</span> <span class="n">ensure</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">download_dir</span><span class="o">=</span><span class="n">workdir</span>
-    <span class="p">)</span>
+
+    <span class="n">retry</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="k">while</span> <span class="n">retry</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">retry</span> <span class="o">-=</span> <span class="mi">1</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">zipped_db_url</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">dbdir</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">grab_zipped_url</span><span class="p">(</span>
+                <span class="n">zipped_url</span><span class="o">=</span><span class="n">zipped_db_url</span><span class="p">,</span> <span class="n">ensure</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">download_dir</span><span class="o">=</span><span class="n">workdir</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">Path</span><span class="p">(</span><span class="n">workdir</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="k">break</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unable to download </span><span class="si">{</span><span class="n">zipped_db_url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Determine if the implementation is using a URI for database connection.</span>
+    <span class="c1"># This is confusing, sorry. If the URI is set we are using a non-sqlite</span>
+    <span class="c1"># database connection. As such, we most translate the sqlite db.</span>
+    <span class="n">uri</span> <span class="o">=</span> <span class="n">get_wbia_db_uri</span><span class="p">(</span><span class="n">dbdir</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">uri</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Copying &#39;</span><span class="si">{</span><span class="n">dbdir</span><span class="si">}</span><span class="s2">&#39; databases to the database at: </span><span class="si">{</span><span class="n">uri</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">exc</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">copy_sqlite_to_postgres</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">dbdir</span><span class="p">),</span> <span class="n">uri</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">exc</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">exc</span>
+
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;have </span><span class="si">%s</span><span class="s1">=</span><span class="si">%r</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">zipped_db_url</span><span class="p">,</span> <span class="n">dbdir</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">dbdir</span></div>
 
@@ -982,7 +1029,7 @@
       &copy;2020, Wild Me.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.3</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

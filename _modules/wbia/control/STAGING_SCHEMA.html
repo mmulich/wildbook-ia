@@ -12,7 +12,6 @@
     <script src="../../../_static/jquery.js"></script>
     <script src="../../../_static/underscore.js"></script>
     <script src="../../../_static/doctools.js"></script>
-    <script src="../../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
    
@@ -74,21 +73,27 @@
 
 <div class="viewcode-block" id="update_1_0_0"><a class="viewcode-back" href="../../../wbia.control.html#wbia.control.STAGING_SCHEMA.update_1_0_0">[docs]</a><span class="nd">@profile</span>
 <span class="k">def</span> <span class="nf">update_1_0_0</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">ibs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s1">&#39;review_rowid&#39;</span><span class="p">,</span> <span class="s1">&#39;INTEGER PRIMARY KEY&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;annot_1_rowid&#39;</span><span class="p">,</span> <span class="s1">&#39;INTEGER NOT NULL&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;annot_2_rowid&#39;</span><span class="p">,</span> <span class="s1">&#39;INTEGER NOT NULL&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;review_count&#39;</span><span class="p">,</span> <span class="s1">&#39;INTEGER NOT NULL&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;review_decision&#39;</span><span class="p">,</span> <span class="s1">&#39;INTEGER NOT NULL&#39;</span><span class="p">),</span>
+        <span class="p">(</span>
+            <span class="s1">&#39;review_time_posix&#39;</span><span class="p">,</span>
+            <span class="sd">&quot;&quot;&quot;INTEGER DEFAULT (CAST(STRFTIME(&#39;%s&#39;, &#39;NOW&#39;, &#39;UTC&#39;) AS INTEGER))&quot;&quot;&quot;</span><span class="p">,</span>
+        <span class="p">),</span>  <span class="c1"># this should probably be UCT</span>
+        <span class="p">(</span><span class="s1">&#39;review_identity&#39;</span><span class="p">,</span> <span class="s1">&#39;TEXT&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;review_tags&#39;</span><span class="p">,</span> <span class="s1">&#39;TEXT&#39;</span><span class="p">),</span>
+    <span class="p">]</span>
+    <span class="k">if</span> <span class="n">db</span><span class="o">.</span><span class="n">_engine</span><span class="o">.</span><span class="n">dialect</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;postgresql&#39;</span><span class="p">:</span>
+        <span class="n">columns</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s1">&#39;review_time_posix&#39;</span><span class="p">,</span>
+            <span class="s2">&quot;INTEGER DEFAULT (CAST(EXTRACT(EPOCH FROM NOW() AT TIME ZONE &#39;UTC&#39;) AS INTEGER))&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
     <span class="n">db</span><span class="o">.</span><span class="n">add_table</span><span class="p">(</span>
         <span class="n">const</span><span class="o">.</span><span class="n">REVIEW_TABLE</span><span class="p">,</span>
-        <span class="p">(</span>
-            <span class="p">(</span><span class="s1">&#39;review_rowid&#39;</span><span class="p">,</span> <span class="s1">&#39;INTEGER PRIMARY KEY&#39;</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;annot_1_rowid&#39;</span><span class="p">,</span> <span class="s1">&#39;INTEGER NOT NULL&#39;</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;annot_2_rowid&#39;</span><span class="p">,</span> <span class="s1">&#39;INTEGER NOT NULL&#39;</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;review_count&#39;</span><span class="p">,</span> <span class="s1">&#39;INTEGER NOT NULL&#39;</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;review_decision&#39;</span><span class="p">,</span> <span class="s1">&#39;INTEGER NOT NULL&#39;</span><span class="p">),</span>
-            <span class="p">(</span>
-                <span class="s1">&#39;review_time_posix&#39;</span><span class="p">,</span>
-                <span class="sd">&quot;&quot;&quot;INTEGER DEFAULT (CAST(STRFTIME(&#39;%s&#39;, &#39;NOW&#39;, &#39;UTC&#39;) AS INTEGER))&quot;&quot;&quot;</span><span class="p">,</span>
-            <span class="p">),</span>  <span class="c1"># this should probably be UCT</span>
-            <span class="p">(</span><span class="s1">&#39;review_identity&#39;</span><span class="p">,</span> <span class="s1">&#39;TEXT&#39;</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;review_tags&#39;</span><span class="p">,</span> <span class="s1">&#39;TEXT&#39;</span><span class="p">),</span>
-        <span class="p">),</span>
+        <span class="n">columns</span><span class="p">,</span>
         <span class="n">superkeys</span><span class="o">=</span><span class="p">[(</span><span class="s1">&#39;annot_1_rowid&#39;</span><span class="p">,</span> <span class="s1">&#39;annot_2_rowid&#39;</span><span class="p">,</span> <span class="s1">&#39;review_count&#39;</span><span class="p">)],</span>
         <span class="n">docstr</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">        Used to store completed user review states of two matched annotations</span>
@@ -138,20 +143,26 @@
 
 
 <div class="viewcode-block" id="update_1_1_0"><a class="viewcode-back" href="../../../wbia.control.html#wbia.control.STAGING_SCHEMA.update_1_1_0">[docs]</a><span class="k">def</span> <span class="nf">update_1_1_0</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">ibs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s1">&#39;test_rowid&#39;</span><span class="p">,</span> <span class="s1">&#39;INTEGER PRIMARY KEY&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;test_uuid&#39;</span><span class="p">,</span> <span class="s1">&#39;UUID&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;test_user_identity&#39;</span><span class="p">,</span> <span class="s1">&#39;TEXT&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;test_challenge_json&#39;</span><span class="p">,</span> <span class="s1">&#39;TEXT&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;test_response_json&#39;</span><span class="p">,</span> <span class="s1">&#39;TEXT&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;test_result&#39;</span><span class="p">,</span> <span class="s1">&#39;INTEGER&#39;</span><span class="p">),</span>
+        <span class="p">(</span>
+            <span class="s1">&#39;test_time_posix&#39;</span><span class="p">,</span>
+            <span class="sd">&quot;&quot;&quot;INTEGER DEFAULT (CAST(STRFTIME(&#39;%s&#39;, &#39;NOW&#39;, &#39;UTC&#39;) AS INTEGER))&quot;&quot;&quot;</span><span class="p">,</span>
+        <span class="p">),</span>  <span class="c1"># this should probably be UCT</span>
+    <span class="p">]</span>
+    <span class="k">if</span> <span class="n">db</span><span class="o">.</span><span class="n">_engine</span><span class="o">.</span><span class="n">dialect</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;postgresql&#39;</span><span class="p">:</span>
+        <span class="n">columns</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s1">&#39;test_time_posix&#39;</span><span class="p">,</span>
+            <span class="s2">&quot;INTEGER DEFAULT (CAST(EXTRACT(EPOCH FROM NOW() AT TIME ZONE &#39;UTC&#39;) AS INTEGER))&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
     <span class="n">db</span><span class="o">.</span><span class="n">add_table</span><span class="p">(</span>
         <span class="n">const</span><span class="o">.</span><span class="n">TEST_TABLE</span><span class="p">,</span>
-        <span class="p">(</span>
-            <span class="p">(</span><span class="s1">&#39;test_rowid&#39;</span><span class="p">,</span> <span class="s1">&#39;INTEGER PRIMARY KEY&#39;</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;test_uuid&#39;</span><span class="p">,</span> <span class="s1">&#39;UUID&#39;</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;test_user_identity&#39;</span><span class="p">,</span> <span class="s1">&#39;TEXT&#39;</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;test_challenge_json&#39;</span><span class="p">,</span> <span class="s1">&#39;TEXT&#39;</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;test_response_json&#39;</span><span class="p">,</span> <span class="s1">&#39;TEXT&#39;</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;test_result&#39;</span><span class="p">,</span> <span class="s1">&#39;INTEGER&#39;</span><span class="p">),</span>
-            <span class="p">(</span>
-                <span class="s1">&#39;test_time_posix&#39;</span><span class="p">,</span>
-                <span class="sd">&quot;&quot;&quot;INTEGER DEFAULT (CAST(STRFTIME(&#39;%s&#39;, &#39;NOW&#39;, &#39;UTC&#39;) AS INTEGER))&quot;&quot;&quot;</span><span class="p">,</span>
-            <span class="p">),</span>  <span class="c1"># this should probably be UCT</span>
-        <span class="p">),</span>
+        <span class="n">columns</span><span class="p">,</span>
         <span class="n">superkeys</span><span class="o">=</span><span class="p">[(</span><span class="s1">&#39;test_uuid&#39;</span><span class="p">,)],</span>
         <span class="n">docstr</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">        Used to store tests given to the user, their responses, and their results</span>
@@ -306,7 +317,7 @@
       &copy;2020, Wild Me.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.3</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

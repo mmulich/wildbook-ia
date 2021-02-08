@@ -12,7 +12,6 @@
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="wbia.algo package" href="wbia.algo.html" />
@@ -2895,6 +2894,11 @@ diff: we know this is the different animal through non-visual means</p>
 <em class="property">class </em><code class="sig-prename descclassname">wbia.constants.</code><code class="sig-name descname">ZIPPED_URLS</code><a class="reference internal" href="_modules/wbia/constants.html#ZIPPED_URLS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.constants.ZIPPED_URLS" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py attribute">
+<dt id="wbia.constants.ZIPPED_URLS.ASSIGNER">
+<code class="sig-name descname">ASSIGNER</code><em class="property"> = 'https://wildbookiarepository.azureedge.net/databases/testdb_assigner.zip'</em><a class="headerlink" href="#wbia.constants.ZIPPED_URLS.ASSIGNER" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt id="wbia.constants.ZIPPED_URLS.DF_CURVRANK">
 <code class="sig-name descname">DF_CURVRANK</code><em class="property"> = 'https://wildbookiarepository.azureedge.net/databases/testdb_curvrank.zip'</em><a class="headerlink" href="#wbia.constants.ZIPPED_URLS.DF_CURVRANK" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -3085,6 +3089,12 @@ ViewpointClassifier</p>
 </dd></dl>
 
 <dl class="py class">
+<dt id="wbia.core_annots.PartAssignmentFeatureConfig">
+<em class="property">class </em><code class="sig-prename descclassname">wbia.core_annots.</code><code class="sig-name descname">PartAssignmentFeatureConfig</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/core_annots.html#PartAssignmentFeatureConfig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.core_annots.PartAssignmentFeatureConfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="wbia.dtool.html#wbia.dtool.base.Config" title="wbia.dtool.base.Config"><code class="xref py py-class docutils literal notranslate"><span class="pre">wbia.dtool.base.Config</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
 <dt id="wbia.core_annots.ProbchipConfig">
 <em class="property">class </em><code class="sig-prename descclassname">wbia.core_annots.</code><code class="sig-name descname">ProbchipConfig</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/core_annots.html#ProbchipConfig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.core_annots.ProbchipConfig" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="wbia.dtool.html#wbia.dtool.base.Config" title="wbia.dtool.base.Config"><code class="xref py py-class docutils literal notranslate"><span class="pre">wbia.dtool.base.Config</span></code></a></p>
@@ -3103,6 +3113,16 @@ ViewpointClassifier</p>
 </pre></div>
 </div>
 </dd></dl>
+
+<dl class="py function">
+<dt id="wbia.core_annots.assigner_viewpoint_features">
+<code class="sig-prename descclassname">wbia.core_annots.</code><code class="sig-name descname">assigner_viewpoint_features</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">depc</span></em>, <em class="sig-param"><span class="n">part_aid_list</span></em>, <em class="sig-param"><span class="n">body_aid_list</span></em>, <em class="sig-param"><span class="n">config</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/core_annots.html#assigner_viewpoint_features"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.core_annots.assigner_viewpoint_features" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="wbia.core_annots.assigner_viewpoint_unit_features">
+<code class="sig-prename descclassname">wbia.core_annots.</code><code class="sig-name descname">assigner_viewpoint_unit_features</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">depc</span></em>, <em class="sig-param"><span class="n">part_aid_list</span></em>, <em class="sig-param"><span class="n">body_aid_list</span></em>, <em class="sig-param"><span class="n">config</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/core_annots.html#assigner_viewpoint_unit_features"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.core_annots.assigner_viewpoint_unit_features" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="py function">
 <dt id="wbia.core_annots.cnn_probchips">
@@ -3595,12 +3615,11 @@ python -m wbia.control.IBEISControl –test-show_depc_annot_table_input –show 
 <dd class="field-even"><p><em>(float, str)</em> – tup</p>
 </dd>
 </dl>
-<dl class="simple">
-<dt>CommandLine:</dt><dd><p>python -m wbia.core_annots –exec-compute_orients_annotations –deepsense</p>
+<dl>
+<dt>CommandLine:</dt><dd><p>pytest wbia/core_annots.py::compute_orients_annotations:0
+python -m xdoctest /Users/jason.parham/code/wildbook-ia/wbia/core_annots.py compute_orients_annotations:1 –orient</p>
 </dd>
-</dl>
-<p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># DISABLE_DOCTEST</span>
+<dt>Doctest:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># DISABLE_DOCTEST</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">wbia.core_images</span> <span class="kn">import</span> <span class="o">*</span>  <span class="c1"># NOQA</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">wbia</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">defaultdb</span> <span class="o">=</span> <span class="s1">&#39;testdb_identification&#39;</span>
@@ -3617,10 +3636,43 @@ python -m wbia.control.IBEISControl –test-show_depc_annot_table_input –show 
 <span class="gp">&gt;&gt;&gt; </span><span class="n">theta_list</span>  <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">take_column</span><span class="p">(</span><span class="n">result_list</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">bbox_list</span>   <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">xtl_list</span><span class="p">,</span> <span class="n">ytl_list</span><span class="p">,</span> <span class="n">w_list</span><span class="p">,</span> <span class="n">h_list</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ibs</span><span class="o">.</span><span class="n">set_annot_bboxes</span><span class="p">(</span><span class="n">aid_list</span><span class="p">,</span> <span class="n">bbox_list</span><span class="p">,</span> <span class="n">theta_list</span><span class="o">=</span><span class="n">theta_list</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">result_list</span> <span class="o">=</span> <span class="n">depc</span><span class="o">.</span><span class="n">get_property</span><span class="p">(</span><span class="s1">&#39;orienter&#39;</span><span class="p">,</span> <span class="n">aid_list</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">result_list</span><span class="p">)</span>
 </pre></div>
 </div>
+</dd>
+<dt>Doctest:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># DISABLE_DOCTEST</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">wbia</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">random</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">utool</span> <span class="k">as</span> <span class="nn">ut</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">wbia.init</span> <span class="kn">import</span> <span class="n">sysres</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dbdir</span> <span class="o">=</span> <span class="n">sysres</span><span class="o">.</span><span class="n">ensure_testdb_orientation</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ibs</span> <span class="o">=</span> <span class="n">wbia</span><span class="o">.</span><span class="n">opendb</span><span class="p">(</span><span class="n">dbdir</span><span class="o">=</span><span class="n">dbdir</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">aid_list</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_valid_aids</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">note_list</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_notes</span><span class="p">(</span><span class="n">aid_list</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">species_list</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_species</span><span class="p">(</span><span class="n">aid_list</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">flag_list</span> <span class="o">=</span> <span class="p">[</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">note</span> <span class="o">==</span> <span class="s1">&#39;random-01&#39;</span> <span class="ow">and</span> <span class="n">species</span> <span class="o">==</span> <span class="s1">&#39;right_whale_head&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="k">for</span> <span class="n">note</span><span class="p">,</span> <span class="n">species</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">note_list</span><span class="p">,</span> <span class="n">species_list</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">aid_list</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">compress</span><span class="p">(</span><span class="n">aid_list</span><span class="p">,</span> <span class="n">flag_list</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">aid_list</span> <span class="o">=</span> <span class="n">aid_list</span><span class="p">[:</span><span class="mi">10</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">depc</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">depc_annot</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;orienter_algo&#39;</span><span class="p">:</span> <span class="s1">&#39;plugin:orientation&#39;</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># depc.delete_property(&#39;orienter&#39;, aid_list)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result_list</span> <span class="o">=</span> <span class="n">depc</span><span class="o">.</span><span class="n">get_property</span><span class="p">(</span><span class="s1">&#39;orienter&#39;</span><span class="p">,</span> <span class="n">aid_list</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">xtl_list</span>    <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">map</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">around</span><span class="p">,</span> <span class="n">ut</span><span class="o">.</span><span class="n">take_column</span><span class="p">(</span><span class="n">result_list</span><span class="p">,</span> <span class="mi">0</span><span class="p">))))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ytl_list</span>    <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">map</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">around</span><span class="p">,</span> <span class="n">ut</span><span class="o">.</span><span class="n">take_column</span><span class="p">(</span><span class="n">result_list</span><span class="p">,</span> <span class="mi">1</span><span class="p">))))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w_list</span>      <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">map</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">around</span><span class="p">,</span> <span class="n">ut</span><span class="o">.</span><span class="n">take_column</span><span class="p">(</span><span class="n">result_list</span><span class="p">,</span> <span class="mi">2</span><span class="p">))))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">h_list</span>      <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">map</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">around</span><span class="p">,</span> <span class="n">ut</span><span class="o">.</span><span class="n">take_column</span><span class="p">(</span><span class="n">result_list</span><span class="p">,</span> <span class="mi">3</span><span class="p">))))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">theta_list</span>  <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">take_column</span><span class="p">(</span><span class="n">result_list</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bbox_list</span>   <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">xtl_list</span><span class="p">,</span> <span class="n">ytl_list</span><span class="p">,</span> <span class="n">w_list</span><span class="p">,</span> <span class="n">h_list</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># ibs.set_annot_bboxes(aid_list, bbox_list, theta_list=theta_list)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">result_list</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -3797,6 +3849,16 @@ python -m wbia.core_annots –test-gen_featweight_worker –show –db PZ_MTEST 
 </dd>
 </dl>
 </dd></dl>
+
+<dl class="py function">
+<dt id="wbia.core_annots.get_annot_lrudfb_bools">
+<code class="sig-prename descclassname">wbia.core_annots.</code><code class="sig-name descname">get_annot_lrudfb_bools</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ibs</span></em>, <em class="sig-param"><span class="n">aid_list</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/core_annots.html#get_annot_lrudfb_bools"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.core_annots.get_annot_lrudfb_bools" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="wbia.core_annots.get_annot_lrudfb_unit_vector">
+<code class="sig-prename descclassname">wbia.core_annots.</code><code class="sig-name descname">get_annot_lrudfb_unit_vector</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ibs</span></em>, <em class="sig-param"><span class="n">aid_list</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/core_annots.html#get_annot_lrudfb_unit_vector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.core_annots.get_annot_lrudfb_unit_vector" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="py function">
 <dt id="wbia.core_annots.make_configured_annots">
@@ -6259,7 +6321,7 @@ makeinit.py -x constants params entry_points other control dbio tests</p>
       &copy;2020, Wild Me.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.3</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

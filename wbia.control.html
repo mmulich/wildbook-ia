@@ -12,7 +12,6 @@
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="wbia.dbio package" href="wbia.dbio.html" />
@@ -492,6 +491,12 @@ theta - angle of rotation for a chip</p>
 <dd></dd></dl>
 
 <dl class="py method">
+<dt id="wbia.control.IBEISControl.IBEISController.base_uri">
+<em class="property">property </em><code class="sig-name descname">base_uri</code><a class="headerlink" href="#wbia.control.IBEISControl.IBEISController.base_uri" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base database URI without a specific database name</p>
+</dd></dl>
+
+<dl class="py method">
 <dt id="wbia.control.IBEISControl.IBEISController.cleanup">
 <code class="sig-name descname">cleanup</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/control/IBEISControl.html#IBEISController.cleanup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.control.IBEISControl.IBEISController.cleanup" title="Permalink to this definition">¶</a></dt>
 <dd><p>call on del?</p>
@@ -510,6 +515,11 @@ theta - angle of rotation for a chip</p>
 <dl class="py method">
 <dt id="wbia.control.IBEISControl.IBEISController.copy_database">
 <code class="sig-name descname">copy_database</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dest_dbdir</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/control/IBEISControl.html#IBEISController.copy_database"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.control.IBEISControl.IBEISController.copy_database" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="wbia.control.IBEISControl.IBEISController.daily_backup_database">
+<code class="sig-name descname">daily_backup_database</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/control/IBEISControl.html#IBEISController.daily_backup_database"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.control.IBEISControl.IBEISController.daily_backup_database" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -565,21 +575,13 @@ theta - angle of rotation for a chip</p>
 <dl class="py method">
 <dt id="wbia.control.IBEISControl.IBEISController.get_current_log_text">
 <code class="sig-name descname">get_current_log_text</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/control/IBEISControl.html#IBEISController.get_current_log_text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.control.IBEISControl.IBEISController.get_current_log_text" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="simple">
-<dt>CommandLine:</dt><dd><p>python -m wbia.control.IBEISControl –exec-get_current_log_text
-python -m wbia.control.IBEISControl –exec-get_current_log_text –domain <a class="reference external" href="http://52.33.105.88">http://52.33.105.88</a></p>
-</dd>
-</dl>
-<p class="rubric">Example</p>
+<dd><p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># xdoctest: +REQUIRES(--web-tests)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">wbia.control.IBEISControl</span> <span class="kn">import</span> <span class="o">*</span>  <span class="c1"># NOQA</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">wbia</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">wbia.web</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">wbia</span><span class="o">.</span><span class="n">opendb_bg_web</span><span class="p">(</span><span class="s1">&#39;testdb1&#39;</span><span class="p">,</span> <span class="n">start_job_queue</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">managed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">web_ibs</span><span class="p">:</span>
-<span class="gp">... </span>    <span class="n">resp</span> <span class="o">=</span> <span class="n">web_ibs</span><span class="o">.</span><span class="n">send_wbia_request</span><span class="p">(</span><span class="s1">&#39;/log/current/&#39;</span><span class="p">,</span> <span class="s1">&#39;get&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">-------Logs ----: </span><span class="se">\n</span><span class="s1">&#39;</span> <span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">L____ END LOGS ___</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">wbia</span><span class="o">.</span><span class="n">opendb_with_web</span><span class="p">(</span><span class="s1">&#39;testdb1&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="p">(</span><span class="n">ibs</span><span class="p">,</span> <span class="n">client</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">resp</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;/log/current/&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">resp</span><span class="o">.</span><span class="n">json</span>
+<span class="go">{&#39;status&#39;: {&#39;success&#39;: True, &#39;code&#39;: 200, &#39;message&#39;: &#39;&#39;, &#39;cache&#39;: -1}, &#39;response&#39;: None}</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -608,7 +610,7 @@ python -m wbia.control.IBEISControl –exec-get_database_icon –show –db Oxfo
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">wbia.control.IBEISControl</span> <span class="kn">import</span> <span class="o">*</span>  <span class="c1"># NOQA</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">wbia</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ibs</span> <span class="o">=</span> <span class="n">wbia</span><span class="o">.</span><span class="n">opendb</span><span class="p">(</span><span class="n">defaultdb</span><span class="o">=</span><span class="s1">&#39;testdb1&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">icon</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_database_icon</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">icon</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_database_icon</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ut</span><span class="o">.</span><span class="n">quit_if_noshow</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">wbia.plottool</span> <span class="k">as</span> <span class="nn">pt</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">icon</span><span class="p">)</span>
@@ -648,7 +650,7 @@ URL:    /api/core/db/uuid/init/</p>
 <dl class="py method">
 <dt id="wbia.control.IBEISControl.IBEISController.get_db_name">
 <code class="sig-name descname">get_db_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/control/IBEISControl.html#IBEISController.get_db_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.control.IBEISControl.IBEISController.get_db_name" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for ibs.get_dbname().</p>
+<dd><p>Alias for self.get_dbname().</p>
 </dd></dl>
 
 <dl class="py method">
@@ -850,9 +852,21 @@ URL:    /api/core/db/name/</p>
 </dd></dl>
 
 <dl class="py method">
+<dt id="wbia.control.IBEISControl.IBEISController.is_using_postgres_db">
+<em class="property">property </em><code class="sig-name descname">is_using_postgres_db</code><a class="headerlink" href="#wbia.control.IBEISControl.IBEISController.is_using_postgres_db" title="Permalink to this definition">¶</a></dt>
+<dd><p>Indicates whether this controller is using postgres as the database</p>
+</dd></dl>
+
+<dl class="py method">
 <dt id="wbia.control.IBEISControl.IBEISController.load_plugin_module">
 <code class="sig-name descname">load_plugin_module</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">module</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/control/IBEISControl.html#IBEISController.load_plugin_module"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.control.IBEISControl.IBEISController.load_plugin_module" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt id="wbia.control.IBEISControl.IBEISController.make_cache_db_uri">
+<code class="sig-name descname">make_cache_db_uri</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/control/IBEISControl.html#IBEISController.make_cache_db_uri"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.control.IBEISControl.IBEISController.make_cache_db_uri" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a name of the cache produce a database connection URI</p>
+</dd></dl>
 
 <dl class="py method">
 <dt id="wbia.control.IBEISControl.IBEISController.notify_observers">
@@ -1002,7 +1016,8 @@ Make sure this is false if calling from a Thread. (default=True)</p></li>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># ENABLE_DOCTEST</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">wbia.control.IBEISControl</span> <span class="kn">import</span> <span class="o">*</span>  <span class="c1"># NOQA</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">dbdir</span> <span class="o">=</span> <span class="s1">&#39;testdb1&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">wbia.init.sysres</span> <span class="kn">import</span> <span class="n">get_workdir</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dbdir</span> <span class="o">=</span> <span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">get_workdir</span><span class="p">(),</span> <span class="s1">&#39;testdb1&#39;</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ensure</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">wbaddr</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">verbose</span> <span class="o">=</span> <span class="kc">True</span>
@@ -1872,41 +1887,21 @@ password combination is valid.</p>
 <dd class="field-odd"><p>tuple</p>
 </dd>
 </dl>
-<dl class="simple">
-<dt>CommandLine:</dt><dd><p>python -m wbia.control.controller_inject –exec-translate_wbia_webcall
-python -m wbia.control.controller_inject –exec-translate_wbia_webcall –domain <a class="reference external" href="http://52.33.105.88">http://52.33.105.88</a></p>
-</dd>
-</dl>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># xdoctest: +REQUIRES(--web-tests)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">wbia.control.controller_inject</span> <span class="kn">import</span> <span class="o">*</span>  <span class="c1"># NOQA</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">wbia</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">time</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">wbia.web</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">wbia</span><span class="o">.</span><span class="n">opendb_bg_web</span><span class="p">(</span><span class="s1">&#39;testdb1&#39;</span><span class="p">,</span> <span class="n">start_job_queue</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">managed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">web_ibs</span><span class="p">:</span>
-<span class="gp">... </span>    <span class="n">aids</span> <span class="o">=</span> <span class="n">web_ibs</span><span class="o">.</span><span class="n">send_wbia_request</span><span class="p">(</span><span class="s1">&#39;/api/annot/&#39;</span><span class="p">,</span> <span class="s1">&#39;get&#39;</span><span class="p">)</span>
-<span class="gp">... </span>    <span class="n">uuid_list</span> <span class="o">=</span> <span class="n">web_ibs</span><span class="o">.</span><span class="n">send_wbia_request</span><span class="p">(</span><span class="s1">&#39;/api/annot/uuids/&#39;</span><span class="p">,</span> <span class="n">aid_list</span><span class="o">=</span><span class="n">aids</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="gp">... </span>    <span class="n">failrsp</span> <span class="o">=</span> <span class="n">web_ibs</span><span class="o">.</span><span class="n">send_wbia_request</span><span class="p">(</span><span class="s1">&#39;/api/annot/uuids/&#39;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="gp">... </span>    <span class="n">failrsp2</span> <span class="o">=</span> <span class="n">web_ibs</span><span class="o">.</span><span class="n">send_wbia_request</span><span class="p">(</span><span class="s1">&#39;/api/query/chips/simple_dict//&#39;</span><span class="p">,</span> <span class="s1">&#39;get&#39;</span><span class="p">,</span> <span class="n">qaid_list</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">daid_list</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">json</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="gp">... </span>    <span class="n">log_text</span> <span class="o">=</span> <span class="n">web_ibs</span><span class="o">.</span><span class="n">send_wbia_request</span><span class="p">(</span><span class="s1">&#39;/api/query/chips/simple_dict/&#39;</span><span class="p">,</span> <span class="s1">&#39;get&#39;</span><span class="p">,</span> <span class="n">qaid_list</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">daid_list</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">json</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="o">.</span><span class="mi">1</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">---</span><span class="se">\n</span><span class="s1">uuid_list = </span><span class="si">%r</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">uuid_list</span><span class="p">,))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">---</span><span class="se">\n</span><span class="s1">failrsp =</span><span class="se">\n</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">failrsp</span><span class="p">,))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">---</span><span class="se">\n</span><span class="s1">failrsp2 =</span><span class="se">\n</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">failrsp2</span><span class="p">,))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">wbia</span><span class="o">.</span><span class="n">opendb_with_web</span><span class="p">(</span><span class="s1">&#39;testdb1&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="p">(</span><span class="n">ibs</span><span class="p">,</span> <span class="n">client</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">aids</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;/api/annot/&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">json</span>
+<span class="gp">... </span>    <span class="n">failrsp</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">&#39;/api/annot/uuids/&#39;</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="n">failrsp2</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;/api/query/chips/simple_dict//&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;qaid_list&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;daid_list&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">]})</span>
+<span class="gp">... </span>    <span class="n">log_text</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;/api/query/chips/simple_dict/&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;qaid_list&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;daid_list&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">]})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">---</span><span class="se">\n</span><span class="s1">failrsp =</span><span class="se">\n</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">failrsp</span><span class="o">.</span><span class="n">data</span><span class="p">,))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">---</span><span class="se">\n</span><span class="s1">failrsp2 =</span><span class="se">\n</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">failrsp2</span><span class="o">.</span><span class="n">data</span><span class="p">,))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Finished test&#39;</span><span class="p">)</span>
+<span class="go">Finished test</span>
 </pre></div>
 </div>
-<dl>
-<dt>Ignore:</dt><dd><p>app = get_flask_app()
-with app.app_context():</p>
-<blockquote>
-<div><p>#ibs = wbia.opendb(‘testdb1’)
-func = ibs.get_annot_uuids
-args = tuple()
-kwargs = dict()</p>
-</div></blockquote>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -7947,7 +7942,7 @@ URL:    /api/image/width/</p>
 
 <dl class="py function">
 <dt id="wbia.control.manual_image_funcs.get_valid_gids">
-<code class="sig-prename descclassname">wbia.control.manual_image_funcs.</code><code class="sig-name descname">get_valid_gids</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ibs</span></em>, <em class="sig-param"><span class="n">imgsetid</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">require_unixtime</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">require_gps</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">reviewed</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/control/manual_image_funcs.html#get_valid_gids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.control.manual_image_funcs.get_valid_gids" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">wbia.control.manual_image_funcs.</code><code class="sig-name descname">get_valid_gids</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ibs</span></em>, <em class="sig-param"><span class="n">imgsetid</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">imgsetid_list</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">require_unixtime</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">require_gps</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">reviewed</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/control/manual_image_funcs.html#get_valid_gids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.control.manual_image_funcs.get_valid_gids" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -11015,7 +11010,7 @@ URL:    /api/name/annot/rowid/examplar/</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">aid_list</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_valid_aids</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">nid_list</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_name_rowids</span><span class="p">(</span><span class="n">aid_list</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">exemplar_aids_list</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_name_exemplar_aids</span><span class="p">(</span><span class="n">nid_list</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">exemplar_aids_list</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="p">[</span><span class="nb">sorted</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">exemplar_aids_list</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
 <span class="go">[[], [2, 3], [2, 3], [], [5, 6], [5, 6], [7], [8], [], [10], [], [12], [13]]</span>
 </pre></div>
@@ -11050,7 +11045,7 @@ URL:    /api/name/image/rowid/</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ibs</span> <span class="o">=</span> <span class="n">wbia</span><span class="o">.</span><span class="n">opendb</span><span class="p">(</span><span class="s1">&#39;testdb1&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">nid_list</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">_get_all_known_name_rowids</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">gids_list</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_name_gids</span><span class="p">(</span><span class="n">nid_list</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">gids_list</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="p">[</span><span class="nb">sorted</span><span class="p">(</span><span class="n">gids</span><span class="p">)</span> <span class="k">for</span> <span class="n">gids</span> <span class="ow">in</span> <span class="n">gids_list</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
 <span class="go">[[2, 3], [5, 6], [7], [8], [10], [12], [13]]</span>
 </pre></div>
@@ -11328,9 +11323,8 @@ URL:    /api/name/rowid/text/</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="n">ibs</span><span class="o">.</span><span class="n">_get_all_known_name_rowids</span><span class="p">())</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;----&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ibs</span><span class="o">.</span><span class="n">print_name_table</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="n">result</span> <span class="o">==</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">name_rowid_list</span><span class="si">}</span><span class="se">\n</span><span class="s1">[1, 2, 3, 4, 5, 6, 7]&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
-<span class="go">[8, 9, 0, 10, 11, 0]</span>
-<span class="go">[1, 2, 3, 4, 5, 6, 7]</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -12623,6 +12617,20 @@ URL:    /api/part/staged/user/</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><a href="#id189"><span class="problematic" id="id190">list_</span></a> (list)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="wbia.control.manual_part_funcs.set_part_tag_text">
+<code class="sig-prename descclassname">wbia.control.manual_part_funcs.</code><code class="sig-name descname">set_part_tag_text</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ibs</span></em>, <em class="sig-param"><span class="n">part_rowid_list</span></em>, <em class="sig-param"><span class="n">part_tags_list</span></em>, <em class="sig-param"><span class="n">duplicate_behavior</span><span class="o">=</span><span class="default_value">'error'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/control/manual_part_funcs.html#set_part_tag_text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.control.manual_part_funcs.set_part_tag_text" title="Permalink to this definition">¶</a></dt>
+<dd><p>part_tags_list -&gt; part.part_tags[part_rowid_list]</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>part_rowid_list</strong> – </p></li>
+<li><p><strong>part_tags_list</strong> – </p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -14333,7 +14341,7 @@ makeinit.py -x DBCACHE_SCHEMA_CURRENT DB_SCHEMA_CURRENT _grave_template manual_w
       &copy;2020, Wild Me.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.3</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

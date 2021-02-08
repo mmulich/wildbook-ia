@@ -12,7 +12,6 @@
     <script src="../../../../_static/jquery.js"></script>
     <script src="../../../../_static/underscore.js"></script>
     <script src="../../../../_static/doctools.js"></script>
-    <script src="../../../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
    
@@ -61,6 +60,8 @@
 <span class="kn">from</span> <span class="nn">wbia.algo.graph.state</span> <span class="kn">import</span> <span class="n">SAME</span><span class="p">,</span> <span class="n">DIFF</span><span class="p">,</span> <span class="n">NULL</span>
 <span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
 <span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+
 
 <span class="nb">print</span><span class="p">,</span> <span class="n">rrr</span><span class="p">,</span> <span class="n">profile</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">inject2</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;wbia&#39;</span><span class="p">)</span>
@@ -212,6 +213,10 @@
         <span class="k">if</span> <span class="n">verbose</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">infr</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
         <span class="n">edge</span> <span class="o">=</span> <span class="n">aid1</span><span class="p">,</span> <span class="n">aid2</span> <span class="o">=</span> <span class="n">nxu</span><span class="o">.</span><span class="n">e_</span><span class="p">(</span><span class="o">*</span><span class="n">edge</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">aid1</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">aid2</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;add_feedback(aid1=None, aid2=None) called, ignoring&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">infr</span><span class="o">.</span><span class="n">has_edge</span><span class="p">(</span><span class="n">edge</span><span class="p">):</span>
             <span class="k">if</span> <span class="kc">True</span><span class="p">:</span>
@@ -1291,6 +1296,7 @@
 
         <span class="c1"># A generator that maintains the state of the algorithm</span>
         <span class="n">infr</span><span class="o">.</span><span class="n">_gen</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">infr</span><span class="o">.</span><span class="n">_gen_lock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
 
         <span class="c1"># Computer vision algorithms</span>
         <span class="n">infr</span><span class="o">.</span><span class="n">ranker</span> <span class="o">=</span> <span class="kc">None</span>
@@ -1301,9 +1307,17 @@
         <span class="n">infr</span><span class="o">.</span><span class="n">task_thresh_dict</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s1">&#39;zebra_grevys&#39;</span><span class="p">:</span> <span class="p">{</span>
                 <span class="s1">&#39;match_state&#39;</span><span class="p">:</span> <span class="p">{</span>
-                    <span class="n">POSTV</span><span class="p">:</span> <span class="mf">0.7312</span><span class="p">,</span>  <span class="c1"># GGR2 - 0.7732, Kaia CA - 0.7312</span>
-                    <span class="n">NEGTV</span><span class="p">:</span> <span class="mf">0.8892</span><span class="p">,</span>  <span class="c1"># GGR2 - 0.8605, Kaia CA - 0.8892</span>
+                    <span class="n">POSTV</span><span class="p">:</span> <span class="mf">0.7732</span><span class="p">,</span>  <span class="c1"># GGR2 - 0.7732, Kaia CA - 0.7312</span>
+                    <span class="n">NEGTV</span><span class="p">:</span> <span class="mf">0.8605</span><span class="p">,</span>  <span class="c1"># GGR2 - 0.8605, Kaia CA - 0.8892</span>
                     <span class="n">INCMP</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span>
+                <span class="p">},</span>
+                <span class="s1">&#39;photobomb_state&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;pb&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="s1">&#39;nopb&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">},</span>
+            <span class="p">},</span>
+            <span class="s1">&#39;zebra_mountain&#39;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s1">&#39;match_state&#39;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="n">POSTV</span><span class="p">:</span> <span class="mf">0.7767</span><span class="p">,</span>
+                    <span class="n">NEGTV</span><span class="p">:</span> <span class="mf">0.8640</span><span class="p">,</span>
+                    <span class="n">INCMP</span><span class="p">:</span> <span class="mf">0.8375</span><span class="p">,</span>
                 <span class="p">},</span>
                 <span class="s1">&#39;photobomb_state&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;pb&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="s1">&#39;nopb&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">},</span>
             <span class="p">},</span>
@@ -1603,7 +1617,7 @@
       &copy;2020, Wild Me.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.3</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

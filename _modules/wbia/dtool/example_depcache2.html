@@ -12,7 +12,6 @@
     <script src="../../../_static/jquery.js"></script>
     <script src="../../../_static/underscore.js"></script>
     <script src="../../../_static/doctools.js"></script>
-    <script src="../../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
    
@@ -33,11 +32,37 @@
             
   <h1>Source code for wbia.dtool.example_depcache2</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
-<span class="kn">import</span> <span class="nn">utool</span> <span class="k">as</span> <span class="nn">ut</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 
-<span class="c1"># import numpy as np</span>
-<span class="kn">from</span> <span class="nn">os.path</span> <span class="kn">import</span> <span class="n">join</span><span class="p">,</span> <span class="n">dirname</span>
+<span class="kn">import</span> <span class="nn">utool</span> <span class="k">as</span> <span class="nn">ut</span>
 <span class="kn">from</span> <span class="nn">six.moves</span> <span class="kn">import</span> <span class="nb">zip</span>
+
+<span class="kn">from</span> <span class="nn">wbia.dtool.depcache_control</span> <span class="kn">import</span> <span class="n">DependencyCache</span>
+<span class="kn">from</span> <span class="nn">wbia.dtool.example_depcache</span> <span class="kn">import</span> <span class="n">DummyController</span>
+
+
+<span class="n">HERE</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+
+
+<span class="k">def</span> <span class="nf">_depc_factory</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">cache_dir</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;DependencyCache factory for the examples</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        name (str): name of the cache (e.g. &#39;annot&#39;)</span>
+<span class="sd">        cache_dir (str): name of the cache directory</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">cache_dpath</span> <span class="o">=</span> <span class="n">HERE</span> <span class="o">/</span> <span class="n">cache_dir</span>
+    <span class="n">controller</span> <span class="o">=</span> <span class="n">DummyController</span><span class="p">(</span><span class="n">cache_dpath</span><span class="p">)</span>
+    <span class="n">depc</span> <span class="o">=</span> <span class="n">DependencyCache</span><span class="p">(</span>
+        <span class="n">controller</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">,</span>
+        <span class="n">ut</span><span class="o">.</span><span class="n">identity</span><span class="p">,</span>
+        <span class="n">table_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">root_getters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">use_globals</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">depc</span>
 
 
 <div class="viewcode-block" id="depc_34_helper"><a class="viewcode-back" href="../../../wbia.dtool.html#wbia.dtool.example_depcache2.depc_34_helper">[docs]</a><span class="k">def</span> <span class="nf">depc_34_helper</span><span class="p">(</span><span class="n">depc</span><span class="p">):</span>
@@ -119,23 +144,7 @@
 <span class="sd">        &gt;&gt;&gt; #depc[&#39;viewpoint_classification&#39;].show_input_graph()</span>
 <span class="sd">        &gt;&gt;&gt; ut.show_if_requested()</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">wbia</span> <span class="kn">import</span> <span class="n">dtool</span>
-
-    <span class="c1"># put the test cache in the dtool repo</span>
-    <span class="n">dtool_repo</span> <span class="o">=</span> <span class="n">dirname</span><span class="p">(</span><span class="n">ut</span><span class="o">.</span><span class="n">get_module_dir</span><span class="p">(</span><span class="n">dtool</span><span class="p">))</span>
-    <span class="n">cache_dpath</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="n">dtool_repo</span><span class="p">,</span> <span class="s1">&#39;DEPCACHE3&#39;</span><span class="p">)</span>
-
-    <span class="c1"># FIXME: this only puts the sql files in memory</span>
-    <span class="n">default_fname</span> <span class="o">=</span> <span class="s1">&#39;:memory:&#39;</span> <span class="k">if</span> <span class="n">in_memory</span> <span class="k">else</span> <span class="kc">None</span>
-
-    <span class="n">root</span> <span class="o">=</span> <span class="s1">&#39;annot&#39;</span>
-    <span class="n">depc</span> <span class="o">=</span> <span class="n">dtool</span><span class="o">.</span><span class="n">DependencyCache</span><span class="p">(</span>
-        <span class="n">root_tablename</span><span class="o">=</span><span class="n">root</span><span class="p">,</span>
-        <span class="n">get_root_uuid</span><span class="o">=</span><span class="n">ut</span><span class="o">.</span><span class="n">identity</span><span class="p">,</span>
-        <span class="n">default_fname</span><span class="o">=</span><span class="n">default_fname</span><span class="p">,</span>
-        <span class="n">cache_dpath</span><span class="o">=</span><span class="n">cache_dpath</span><span class="p">,</span>
-        <span class="n">use_globals</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="p">)</span>
+    <span class="n">depc</span> <span class="o">=</span> <span class="n">_depc_factory</span><span class="p">(</span><span class="s1">&#39;annot&#39;</span><span class="p">,</span> <span class="s1">&#39;DEPCACHE3&#39;</span><span class="p">)</span>
 
     <span class="c1"># ----------</span>
     <span class="c1"># dummy_cols = dict(colnames=[&#39;data&#39;], coltypes=[np.ndarray])</span>
@@ -189,23 +198,7 @@
 <span class="sd">        &gt;&gt;&gt; #depc[&#39;viewpoint_classification&#39;].show_input_graph()</span>
 <span class="sd">        &gt;&gt;&gt; ut.show_if_requested()</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">wbia</span> <span class="kn">import</span> <span class="n">dtool</span>
-
-    <span class="c1"># put the test cache in the dtool repo</span>
-    <span class="n">dtool_repo</span> <span class="o">=</span> <span class="n">dirname</span><span class="p">(</span><span class="n">ut</span><span class="o">.</span><span class="n">get_module_dir</span><span class="p">(</span><span class="n">dtool</span><span class="p">))</span>
-    <span class="n">cache_dpath</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="n">dtool_repo</span><span class="p">,</span> <span class="s1">&#39;DEPCACHE3&#39;</span><span class="p">)</span>
-
-    <span class="c1"># FIXME: this only puts the sql files in memory</span>
-    <span class="n">default_fname</span> <span class="o">=</span> <span class="s1">&#39;:memory:&#39;</span> <span class="k">if</span> <span class="n">in_memory</span> <span class="k">else</span> <span class="kc">None</span>
-
-    <span class="n">root</span> <span class="o">=</span> <span class="s1">&#39;annot&#39;</span>
-    <span class="n">depc</span> <span class="o">=</span> <span class="n">dtool</span><span class="o">.</span><span class="n">DependencyCache</span><span class="p">(</span>
-        <span class="n">root_tablename</span><span class="o">=</span><span class="n">root</span><span class="p">,</span>
-        <span class="n">get_root_uuid</span><span class="o">=</span><span class="n">ut</span><span class="o">.</span><span class="n">identity</span><span class="p">,</span>
-        <span class="n">default_fname</span><span class="o">=</span><span class="n">default_fname</span><span class="p">,</span>
-        <span class="n">cache_dpath</span><span class="o">=</span><span class="n">cache_dpath</span><span class="p">,</span>
-        <span class="n">use_globals</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="p">)</span>
+    <span class="n">depc</span> <span class="o">=</span> <span class="n">_depc_factory</span><span class="p">(</span><span class="s1">&#39;annot&#39;</span><span class="p">,</span> <span class="s1">&#39;DEPCACHE4&#39;</span><span class="p">)</span>
 
     <span class="c1"># ----------</span>
     <span class="c1"># dummy_cols = dict(colnames=[&#39;data&#39;], coltypes=[np.ndarray])</span>
@@ -235,21 +228,8 @@
 
 
 <div class="viewcode-block" id="testdata_custom_annot_depc"><a class="viewcode-back" href="../../../wbia.dtool.html#wbia.dtool.example_depcache2.testdata_custom_annot_depc">[docs]</a><span class="k">def</span> <span class="nf">testdata_custom_annot_depc</span><span class="p">(</span><span class="n">dummy_dependencies</span><span class="p">,</span> <span class="n">in_memory</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="kn">from</span> <span class="nn">wbia</span> <span class="kn">import</span> <span class="n">dtool</span>
+    <span class="n">depc</span> <span class="o">=</span> <span class="n">_depc_factory</span><span class="p">(</span><span class="s1">&#39;annot&#39;</span><span class="p">,</span> <span class="s1">&#39;DEPCACHE5&#39;</span><span class="p">)</span>
 
-    <span class="c1"># put the test cache in the dtool repo</span>
-    <span class="n">dtool_repo</span> <span class="o">=</span> <span class="n">dirname</span><span class="p">(</span><span class="n">ut</span><span class="o">.</span><span class="n">get_module_dir</span><span class="p">(</span><span class="n">dtool</span><span class="p">))</span>
-    <span class="n">cache_dpath</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="n">dtool_repo</span><span class="p">,</span> <span class="s1">&#39;DEPCACHE5&#39;</span><span class="p">)</span>
-    <span class="c1"># FIXME: this only puts the sql files in memory</span>
-    <span class="n">default_fname</span> <span class="o">=</span> <span class="s1">&#39;:memory:&#39;</span> <span class="k">if</span> <span class="n">in_memory</span> <span class="k">else</span> <span class="kc">None</span>
-    <span class="n">root</span> <span class="o">=</span> <span class="s1">&#39;annot&#39;</span>
-    <span class="n">depc</span> <span class="o">=</span> <span class="n">dtool</span><span class="o">.</span><span class="n">DependencyCache</span><span class="p">(</span>
-        <span class="n">root_tablename</span><span class="o">=</span><span class="n">root</span><span class="p">,</span>
-        <span class="n">get_root_uuid</span><span class="o">=</span><span class="n">ut</span><span class="o">.</span><span class="n">identity</span><span class="p">,</span>
-        <span class="n">default_fname</span><span class="o">=</span><span class="n">default_fname</span><span class="p">,</span>
-        <span class="n">cache_dpath</span><span class="o">=</span><span class="n">cache_dpath</span><span class="p">,</span>
-        <span class="n">use_globals</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="p">)</span>
     <span class="c1"># ----------</span>
     <span class="n">register_dummy_config</span> <span class="o">=</span> <span class="n">depc_34_helper</span><span class="p">(</span><span class="n">depc</span><span class="p">)</span>
 
@@ -318,7 +298,7 @@
       &copy;2020, Wild Me.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.3</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

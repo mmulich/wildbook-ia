@@ -12,7 +12,6 @@
     <script src="../../../_static/jquery.js"></script>
     <script src="../../../_static/underscore.js"></script>
     <script src="../../../_static/doctools.js"></script>
-    <script src="../../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
    
@@ -523,35 +522,20 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        tuple: (output, True, 200, None, jQuery_callback)</span>
 
-<span class="sd">    CommandLine:</span>
-<span class="sd">        python -m wbia.control.controller_inject --exec-translate_wbia_webcall</span>
-<span class="sd">        python -m wbia.control.controller_inject --exec-translate_wbia_webcall --domain http://52.33.105.88</span>
-
 <span class="sd">    Example:</span>
 <span class="sd">        &gt;&gt;&gt; # xdoctest: +REQUIRES(--web-tests)</span>
 <span class="sd">        &gt;&gt;&gt; from wbia.control.controller_inject import *  # NOQA</span>
 <span class="sd">        &gt;&gt;&gt; import wbia</span>
-<span class="sd">        &gt;&gt;&gt; import time</span>
-<span class="sd">        &gt;&gt;&gt; import wbia.web</span>
-<span class="sd">        &gt;&gt;&gt; with wbia.opendb_bg_web(&#39;testdb1&#39;, start_job_queue=False, managed=True) as web_ibs:</span>
-<span class="sd">        ...     aids = web_ibs.send_wbia_request(&#39;/api/annot/&#39;, &#39;get&#39;)</span>
-<span class="sd">        ...     uuid_list = web_ibs.send_wbia_request(&#39;/api/annot/uuids/&#39;, aid_list=aids, json=False)</span>
-<span class="sd">        ...     failrsp = web_ibs.send_wbia_request(&#39;/api/annot/uuids/&#39;, json=False)</span>
-<span class="sd">        ...     failrsp2 = web_ibs.send_wbia_request(&#39;/api/query/chips/simple_dict//&#39;, &#39;get&#39;, qaid_list=[0], daid_list=[0], json=False)</span>
-<span class="sd">        ...     log_text = web_ibs.send_wbia_request(&#39;/api/query/chips/simple_dict/&#39;, &#39;get&#39;, qaid_list=[0], daid_list=[0], json=False)</span>
-<span class="sd">        &gt;&gt;&gt; time.sleep(.1)</span>
-<span class="sd">        &gt;&gt;&gt; print(&#39;\n---\nuuid_list = %r&#39; % (uuid_list,))</span>
-<span class="sd">        &gt;&gt;&gt; print(&#39;\n---\nfailrsp =\n%s&#39; % (failrsp,))</span>
-<span class="sd">        &gt;&gt;&gt; print(&#39;\n---\nfailrsp2 =\n%s&#39; % (failrsp2,))</span>
+<span class="sd">        &gt;&gt;&gt; with wbia.opendb_with_web(&#39;testdb1&#39;) as (ibs, client):</span>
+<span class="sd">        ...     aids = client.get(&#39;/api/annot/&#39;).json</span>
+<span class="sd">        ...     failrsp = client.post(&#39;/api/annot/uuids/&#39;)</span>
+<span class="sd">        ...     failrsp2 = client.get(&#39;/api/query/chips/simple_dict//&#39;, data={&#39;qaid_list&#39;: [0], &#39;daid_list&#39;: [0]})</span>
+<span class="sd">        ...     log_text = client.get(&#39;/api/query/chips/simple_dict/&#39;, data={&#39;qaid_list&#39;: [0], &#39;daid_list&#39;: [0]})</span>
+<span class="sd">        &gt;&gt;&gt; print(&#39;\n---\nfailrsp =\n%s&#39; % (failrsp.data,))</span>
+<span class="sd">        &gt;&gt;&gt; print(&#39;\n---\nfailrsp2 =\n%s&#39; % (failrsp2.data,))</span>
 <span class="sd">        &gt;&gt;&gt; print(&#39;Finished test&#39;)</span>
+<span class="sd">        Finished test</span>
 
-<span class="sd">    Ignore:</span>
-<span class="sd">        app = get_flask_app()</span>
-<span class="sd">        with app.app_context():</span>
-<span class="sd">            #ibs = wbia.opendb(&#39;testdb1&#39;)</span>
-<span class="sd">            func = ibs.get_annot_uuids</span>
-<span class="sd">            args = tuple()</span>
-<span class="sd">            kwargs = dict()</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;There should not be any args=</span><span class="si">%r</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">args</span><span class="p">,)</span>
 
@@ -624,7 +608,7 @@
         <span class="n">output</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">output</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="n">ibs</span><span class="o">=</span><span class="n">ibs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">output</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="n">ibs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">WebException</span><span class="p">:</span>
             <span class="k">raise</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex2</span><span class="p">:</span>  <span class="c1"># NOQA</span>
@@ -1485,7 +1469,7 @@
       &copy;2020, Wild Me.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.3</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

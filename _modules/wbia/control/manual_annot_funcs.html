@@ -12,7 +12,6 @@
     <script src="../../../_static/jquery.js"></script>
     <script src="../../../_static/underscore.js"></script>
     <script src="../../../_static/doctools.js"></script>
-    <script src="../../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
    
@@ -872,6 +871,8 @@
     <span class="n">is_canonical</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">min_timedelta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
 <span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">aid_list</span><span class="p">:</span>  <span class="c1"># no need to filter if empty</span>
+        <span class="k">return</span> <span class="n">aid_list</span>
     <span class="c1"># -- valid aid filtering --</span>
     <span class="c1"># filter by is_exemplar</span>
     <span class="k">if</span> <span class="n">is_exemplar</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
@@ -2362,6 +2363,14 @@
             <span class="c1"># raise RuntimeError(message)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
+            <span class="n">ibs</span><span class="o">.</span><span class="n">wbia_plugin_curvrank_v2_delete_cache_optimized</span><span class="p">(</span>
+                <span class="n">update_aid_list</span><span class="p">,</span> <span class="s1">&#39;CurvRankTwoDorsal&#39;</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="n">message</span> <span class="o">=</span> <span class="s1">&#39;Could not purge CurvRankTwoDorsal cache for viewpoint&#39;</span>
+            <span class="c1"># raise RuntimeError(message)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
             <span class="n">ibs</span><span class="o">.</span><span class="n">wbia_plugin_curvrank_delete_cache_optimized</span><span class="p">(</span>
                 <span class="n">update_aid_list</span><span class="p">,</span> <span class="s1">&#39;CurvRankFinfindrHybridDorsal&#39;</span>
             <span class="p">)</span>
@@ -2516,11 +2525,12 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># FIXME: This index should when the database is defined.</span>
     <span class="c1"># Ensure that an index exists on the image column of the annotation table</span>
-    <span class="n">ibs</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        CREATE INDEX IF NOT EXISTS aid_to_part_rowids ON parts (annot_rowid);</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-    <span class="p">)</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+    <span class="k">with</span> <span class="n">ibs</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+        <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            CREATE INDEX IF NOT EXISTS aid_to_part_rowids ON parts (annot_rowid);</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+        <span class="p">)</span>
     <span class="c1"># The index maxes the following query very efficient</span>
     <span class="n">part_rowids_list</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
         <span class="n">ibs</span><span class="o">.</span><span class="n">const</span><span class="o">.</span><span class="n">PART_TABLE</span><span class="p">,</span>
@@ -4571,7 +4581,7 @@
       &copy;2020, Wild Me.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.3</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

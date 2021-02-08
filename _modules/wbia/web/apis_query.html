@@ -12,7 +12,6 @@
     <script src="../../../_static/jquery.js"></script>
     <script src="../../../_static/underscore.js"></script>
     <script src="../../../_static/doctools.js"></script>
-    <script src="../../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
    
@@ -359,6 +358,9 @@
 
 <span class="sd">    Example:</span>
 <span class="sd">        &gt;&gt;&gt; # xdoctest: +REQUIRES(--web-tests)</span>
+<span class="sd">        &gt;&gt;&gt; # xdoctest: +REQUIRES(--job-engine-tests)</span>
+<span class="sd">        &gt;&gt;&gt; # DISABLE_DOCTEST</span>
+<span class="sd">        &gt;&gt;&gt; # Disabled because this test uses opendb_bg_web, which hangs the test runner and leaves zombie processes</span>
 <span class="sd">        &gt;&gt;&gt; from wbia.web.apis_query import *  # NOQA</span>
 <span class="sd">        &gt;&gt;&gt; import wbia</span>
 <span class="sd">        &gt;&gt;&gt; web_ibs = wbia.opendb_bg_web(&#39;testdb1&#39;)  # , domain=&#39;http://52.33.105.88&#39;)</span>
@@ -411,6 +413,7 @@
 
 <span class="sd">    Example2:</span>
 <span class="sd">        &gt;&gt;&gt; # DISABLE_DOCTEST</span>
+<span class="sd">        &gt;&gt;&gt; # xdoctest: +REQUIRES(--job-engine-tests)</span>
 <span class="sd">        &gt;&gt;&gt; # This starts off using web to get information, but finishes the rest in python</span>
 <span class="sd">        &gt;&gt;&gt; from wbia.web.apis_query import *  # NOQA</span>
 <span class="sd">        &gt;&gt;&gt; import wbia</span>
@@ -467,6 +470,8 @@
         <span class="s1">&#39;curvrankdorsal&#39;</span><span class="p">,</span>
         <span class="s1">&#39;curvrankfinfindrhybriddorsal&#39;</span><span class="p">,</span>
         <span class="s1">&#39;curvrankfluke&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;curvranktwodorsal&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;curvranktwofluke&#39;</span><span class="p">,</span>
         <span class="s1">&#39;deepsense&#39;</span><span class="p">,</span>
         <span class="s1">&#39;finfindr&#39;</span><span class="p">,</span>
         <span class="s1">&#39;kaggle7&#39;</span><span class="p">,</span>
@@ -578,16 +583,6 @@
 
 <div class="viewcode-block" id="review_query_chips_test"><a class="viewcode-back" href="../../../wbia.web.html#wbia.web.apis_query.review_query_chips_test">[docs]</a><span class="nd">@register_route</span><span class="p">(</span><span class="s1">&#39;/test/review/query/chip/&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
 <span class="k">def</span> <span class="nf">review_query_chips_test</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    CommandLine:</span>
-<span class="sd">        python -m wbia.web.apis_query review_query_chips_test --show</span>
-
-<span class="sd">    Example:</span>
-<span class="sd">        &gt;&gt;&gt; # SCRIPT</span>
-<span class="sd">        &gt;&gt;&gt; import wbia</span>
-<span class="sd">        &gt;&gt;&gt; web_ibs = wbia.opendb_bg_web(</span>
-<span class="sd">        &gt;&gt;&gt;     browser=True, url_suffix=&#39;/test/review/query/chip/?__format__=true&#39;)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ibs</span> <span class="o">=</span> <span class="n">current_app</span><span class="o">.</span><span class="n">ibs</span>
 
     <span class="c1"># the old block curvature dtw</span>
@@ -602,6 +597,10 @@
         <span class="n">query_config_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;pipeline_root&#39;</span><span class="p">:</span> <span class="s1">&#39;CurvRankFinfindrHybridDorsal&#39;</span><span class="p">}</span>
     <span class="k">elif</span> <span class="s1">&#39;use_curvrank_fluke&#39;</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="p">:</span>
         <span class="n">query_config_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;pipeline_root&#39;</span><span class="p">:</span> <span class="s1">&#39;CurvRankFluke&#39;</span><span class="p">}</span>
+    <span class="k">elif</span> <span class="s1">&#39;use_curvrank_v2_dorsal&#39;</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="p">:</span>
+        <span class="n">query_config_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;pipeline_root&#39;</span><span class="p">:</span> <span class="s1">&#39;CurvRankTwoDorsal&#39;</span><span class="p">}</span>
+    <span class="k">elif</span> <span class="s1">&#39;use_curvrank_v2_fluke&#39;</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="p">:</span>
+        <span class="n">query_config_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;pipeline_root&#39;</span><span class="p">:</span> <span class="s1">&#39;CurvRankTwoFluke&#39;</span><span class="p">}</span>
     <span class="k">elif</span> <span class="s1">&#39;use_deepsense&#39;</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="p">:</span>
         <span class="n">query_config_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;pipeline_root&#39;</span><span class="p">:</span> <span class="s1">&#39;Deepsense&#39;</span><span class="p">}</span>
     <span class="k">elif</span> <span class="s1">&#39;use_finfindr&#39;</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="p">:</span>
@@ -796,6 +795,24 @@
     <span class="k">return</span> <span class="n">result_dict</span></div>
 
 
+<div class="viewcode-block" id="log_render_status"><a class="viewcode-back" href="../../../wbia.web.html#wbia.web.apis_query.log_render_status">[docs]</a><span class="nd">@register_ibs_method</span>
+<span class="k">def</span> <span class="nf">log_render_status</span><span class="p">(</span><span class="n">ibs</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="kn">import</span> <span class="nn">os</span>
+
+    <span class="n">json_log_path</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_logdir_local</span><span class="p">()</span>
+    <span class="n">json_log_filename</span> <span class="o">=</span> <span class="s1">&#39;render.log&#39;</span>
+    <span class="n">json_log_filepath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">json_log_path</span><span class="p">,</span> <span class="n">json_log_filename</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Logging renders added to: </span><span class="si">%r</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">json_log_filepath</span><span class="p">,))</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">json_log_filepath</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">json_log_file</span><span class="p">:</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">arg</span><span class="p">,)</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">])</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">line</span><span class="p">,)</span>
+            <span class="n">json_log_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;WRITE RENDER.LOG FAILED&#39;</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="query_chips_graph"><a class="viewcode-back" href="../../../wbia.web.html#wbia.web.apis_query.query_chips_graph">[docs]</a><span class="nd">@register_ibs_method</span>
 <span class="nd">@register_api</span><span class="p">(</span><span class="s1">&#39;/api/query/graph/&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">])</span>
 <span class="k">def</span> <span class="nf">query_chips_graph</span><span class="p">(</span>
@@ -806,7 +823,7 @@
     <span class="n">query_config_dict</span><span class="o">=</span><span class="p">{},</span>
     <span class="n">echo_query_params</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">cache_images</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">n</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span>
+    <span class="n">n</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
     <span class="n">view_orientation</span><span class="o">=</span><span class="s1">&#39;horizontal&#39;</span><span class="p">,</span>
     <span class="n">return_summary</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
@@ -997,6 +1014,20 @@
                     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                         <span class="n">filepath_matches</span> <span class="o">=</span> <span class="kc">None</span>
                         <span class="n">extern_flag</span> <span class="o">=</span> <span class="s1">&#39;error&#39;</span>
+                    <span class="n">log_render_status</span><span class="p">(</span>
+                        <span class="n">ibs</span><span class="p">,</span>
+                        <span class="n">cm</span><span class="o">.</span><span class="n">qaid</span><span class="p">,</span>
+                        <span class="n">daid</span><span class="p">,</span>
+                        <span class="n">quuid</span><span class="p">,</span>
+                        <span class="n">duuid</span><span class="p">,</span>
+                        <span class="n">cm</span><span class="p">,</span>
+                        <span class="n">qreq_</span><span class="p">,</span>
+                        <span class="n">view_orientation</span><span class="p">,</span>
+                        <span class="kc">True</span><span class="p">,</span>
+                        <span class="kc">False</span><span class="p">,</span>
+                        <span class="n">filepath_matches</span><span class="p">,</span>
+                        <span class="n">extern_flag</span><span class="p">,</span>
+                    <span class="p">)</span>
                     <span class="k">try</span><span class="p">:</span>
                         <span class="n">_</span><span class="p">,</span> <span class="n">filepath_heatmask</span> <span class="o">=</span> <span class="n">ensure_review_image</span><span class="p">(</span>
                             <span class="n">ibs</span><span class="p">,</span>
@@ -1010,6 +1041,20 @@
                     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                         <span class="n">filepath_heatmask</span> <span class="o">=</span> <span class="kc">None</span>
                         <span class="n">extern_flag</span> <span class="o">=</span> <span class="s1">&#39;error&#39;</span>
+                    <span class="n">log_render_status</span><span class="p">(</span>
+                        <span class="n">ibs</span><span class="p">,</span>
+                        <span class="n">cm</span><span class="o">.</span><span class="n">qaid</span><span class="p">,</span>
+                        <span class="n">daid</span><span class="p">,</span>
+                        <span class="n">quuid</span><span class="p">,</span>
+                        <span class="n">duuid</span><span class="p">,</span>
+                        <span class="n">cm</span><span class="p">,</span>
+                        <span class="n">qreq_</span><span class="p">,</span>
+                        <span class="n">view_orientation</span><span class="p">,</span>
+                        <span class="kc">False</span><span class="p">,</span>
+                        <span class="kc">True</span><span class="p">,</span>
+                        <span class="n">filepath_heatmask</span><span class="p">,</span>
+                        <span class="n">extern_flag</span><span class="p">,</span>
+                    <span class="p">)</span>
                     <span class="k">try</span><span class="p">:</span>
                         <span class="n">_</span><span class="p">,</span> <span class="n">filepath_clean</span> <span class="o">=</span> <span class="n">ensure_review_image</span><span class="p">(</span>
                             <span class="n">ibs</span><span class="p">,</span>
@@ -1023,6 +1068,20 @@
                     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                         <span class="n">filepath_clean</span> <span class="o">=</span> <span class="kc">None</span>
                         <span class="n">extern_flag</span> <span class="o">=</span> <span class="s1">&#39;error&#39;</span>
+                    <span class="n">log_render_status</span><span class="p">(</span>
+                        <span class="n">ibs</span><span class="p">,</span>
+                        <span class="n">cm</span><span class="o">.</span><span class="n">qaid</span><span class="p">,</span>
+                        <span class="n">daid</span><span class="p">,</span>
+                        <span class="n">quuid</span><span class="p">,</span>
+                        <span class="n">duuid</span><span class="p">,</span>
+                        <span class="n">cm</span><span class="p">,</span>
+                        <span class="n">qreq_</span><span class="p">,</span>
+                        <span class="n">view_orientation</span><span class="p">,</span>
+                        <span class="kc">False</span><span class="p">,</span>
+                        <span class="kc">False</span><span class="p">,</span>
+                        <span class="n">filepath_clean</span><span class="p">,</span>
+                        <span class="n">extern_flag</span><span class="p">,</span>
+                    <span class="p">)</span>
 
                     <span class="k">if</span> <span class="n">filepath_matches</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                         <span class="n">args</span> <span class="o">=</span> <span class="p">(</span>
@@ -1442,13 +1501,12 @@
 <span class="sd">        &gt;&gt;&gt; # Open local instance</span>
 <span class="sd">        &gt;&gt;&gt; ibs = wbia.opendb(&#39;PZ_MTEST&#39;)</span>
 <span class="sd">        &gt;&gt;&gt; uuid_list = ibs.annots().uuids[0:10]</span>
-<span class="sd">        &gt;&gt;&gt; # Start up the web instance</span>
-<span class="sd">        &gt;&gt;&gt; web_ibs = wbia.opendb_bg_web(db=&#39;PZ_MTEST&#39;, web=True, browser=False)</span>
 <span class="sd">        &gt;&gt;&gt; data = dict(annot_uuid_list=uuid_list)</span>
-<span class="sd">        &gt;&gt;&gt; resp = web_ibs.send_wbia_request(&#39;/api/query/graph/v2/&#39;, **data)</span>
-<span class="sd">        &gt;&gt;&gt; print(&#39;resp = %r&#39; % (resp,))</span>
-<span class="sd">        &gt;&gt;&gt; #cmdict_list = json_dict[&#39;response&#39;]</span>
-<span class="sd">        &gt;&gt;&gt; #assert &#39;score_list&#39; in cmdict_list[0]</span>
+<span class="sd">        &gt;&gt;&gt; # Start up the web instance</span>
+<span class="sd">        &gt;&gt;&gt; with wbia.opendb_with_web(db=&#39;PZ_MTEST&#39;) as (ibs, client):</span>
+<span class="sd">        ...     resp = client.post(&#39;/api/query/graph/v2/&#39;, data=data)</span>
+<span class="sd">        &gt;&gt;&gt; resp.json</span>
+<span class="sd">        {&#39;status&#39;: {&#39;success&#39;: False, &#39;code&#39;: 608, &#39;message&#39;: &#39;Invalid image and/or annotation UUIDs (0, 1)&#39;, &#39;cache&#39;: -1}, &#39;response&#39;: {&#39;invalid_image_uuid_list&#39;: [], &#39;invalid_annot_uuid_list&#39;: [[0, &#39;...&#39;]]}}</span>
 
 <span class="sd">    Example:</span>
 <span class="sd">        &gt;&gt;&gt; # DEBUG_SCRIPT</span>
@@ -2080,7 +2138,7 @@
       &copy;2020, Wild Me.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.3</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

@@ -12,7 +12,6 @@
     <script src="../../../_static/jquery.js"></script>
     <script src="../../../_static/underscore.js"></script>
     <script src="../../../_static/doctools.js"></script>
-    <script src="../../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
    
@@ -45,7 +44,6 @@
 <span class="kn">from</span> <span class="nn">wbia.web</span> <span class="kn">import</span> <span class="n">appfuncs</span> <span class="k">as</span> <span class="n">appf</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="p">(</span><span class="nb">print</span><span class="p">,</span> <span class="n">rrr</span><span class="p">,</span> <span class="n">profile</span><span class="p">)</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">inject2</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;wbia&#39;</span><span class="p">)</span>
 
 <span class="n">CLASS_INJECT_KEY</span><span class="p">,</span> <span class="n">register_ibs_method</span> <span class="o">=</span> <span class="n">controller_inject</span><span class="o">.</span><span class="n">make_ibs_register_decorator</span><span class="p">(</span>
@@ -474,6 +472,7 @@
     <span class="k">return</span> <span class="n">result_dict</span></div>
 
 
+<span class="c1"># this is where the aids_list response from commit_localization_results is packaged &amp; returned in json</span>
 <div class="viewcode-block" id="detect_cnn_json"><a class="viewcode-back" href="../../../wbia.web.html#wbia.web.apis_detect.detect_cnn_json">[docs]</a><span class="nd">@register_ibs_method</span>
 <span class="nd">@accessor_decors</span><span class="o">.</span><span class="n">getter_1to1</span>
 <span class="k">def</span> <span class="nf">detect_cnn_json</span><span class="p">(</span><span class="n">ibs</span><span class="p">,</span> <span class="n">gid_list</span><span class="p">,</span> <span class="n">detect_func</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{},</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -499,40 +498,54 @@
 <span class="sd">        &gt;&gt;&gt; print(results_dict)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># TODO: Return confidence here as well</span>
+    <span class="k">def</span> <span class="nf">_json_result</span><span class="p">(</span><span class="n">ibs</span><span class="p">,</span> <span class="n">aid</span><span class="p">):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="n">aid</span><span class="p">,</span>
+            <span class="s1">&#39;uuid&#39;</span><span class="p">:</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_uuids</span><span class="p">(</span><span class="n">aid</span><span class="p">),</span>
+            <span class="s1">&#39;xtl&#39;</span><span class="p">:</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_bboxes</span><span class="p">(</span><span class="n">aid</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="s1">&#39;ytl&#39;</span><span class="p">:</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_bboxes</span><span class="p">(</span><span class="n">aid</span><span class="p">)[</span><span class="mi">1</span><span class="p">],</span>
+            <span class="s1">&#39;left&#39;</span><span class="p">:</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_bboxes</span><span class="p">(</span><span class="n">aid</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="s1">&#39;top&#39;</span><span class="p">:</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_bboxes</span><span class="p">(</span><span class="n">aid</span><span class="p">)[</span><span class="mi">1</span><span class="p">],</span>
+            <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_bboxes</span><span class="p">(</span><span class="n">aid</span><span class="p">)[</span><span class="mi">2</span><span class="p">],</span>
+            <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_bboxes</span><span class="p">(</span><span class="n">aid</span><span class="p">)[</span><span class="mi">3</span><span class="p">],</span>
+            <span class="s1">&#39;theta&#39;</span><span class="p">:</span> <span class="nb">round</span><span class="p">(</span><span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_thetas</span><span class="p">(</span><span class="n">aid</span><span class="p">),</span> <span class="mi">4</span><span class="p">),</span>
+            <span class="s1">&#39;confidence&#39;</span><span class="p">:</span> <span class="nb">round</span><span class="p">(</span><span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_detect_confidence</span><span class="p">(</span><span class="n">aid</span><span class="p">),</span> <span class="mi">4</span><span class="p">),</span>
+            <span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_species_texts</span><span class="p">(</span><span class="n">aid</span><span class="p">),</span>
+            <span class="s1">&#39;species&#39;</span><span class="p">:</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_species_texts</span><span class="p">(</span><span class="n">aid</span><span class="p">),</span>
+            <span class="s1">&#39;viewpoint&#39;</span><span class="p">:</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_viewpoints</span><span class="p">(</span><span class="n">aid</span><span class="p">),</span>
+            <span class="s1">&#39;quality&#39;</span><span class="p">:</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_qualities</span><span class="p">(</span><span class="n">aid</span><span class="p">),</span>
+            <span class="s1">&#39;multiple&#39;</span><span class="p">:</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_multiple</span><span class="p">(</span><span class="n">aid</span><span class="p">),</span>
+            <span class="s1">&#39;interest&#39;</span><span class="p">:</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_interest</span><span class="p">(</span><span class="n">aid</span><span class="p">),</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">result</span>
+
     <span class="n">image_uuid_list</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_image_uuids</span><span class="p">(</span><span class="n">gid_list</span><span class="p">)</span>
     <span class="n">ibs</span><span class="o">.</span><span class="n">assert_valid_gids</span><span class="p">(</span><span class="n">gid_list</span><span class="p">)</span>
-    <span class="c1"># Get detections from depc</span>
+    <span class="c1"># Get detections from depc --- this output will be affected by assigner</span>
     <span class="n">aids_list</span> <span class="o">=</span> <span class="n">detect_func</span><span class="p">(</span><span class="n">gid_list</span><span class="p">,</span> <span class="o">**</span><span class="n">config</span><span class="p">)</span>
-    <span class="n">results_list</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="p">[</span>
-            <span class="p">{</span>
-                <span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="n">aid</span><span class="p">,</span>
-                <span class="s1">&#39;uuid&#39;</span><span class="p">:</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_uuids</span><span class="p">(</span><span class="n">aid</span><span class="p">),</span>
-                <span class="s1">&#39;xtl&#39;</span><span class="p">:</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_bboxes</span><span class="p">(</span><span class="n">aid</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
-                <span class="s1">&#39;ytl&#39;</span><span class="p">:</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_bboxes</span><span class="p">(</span><span class="n">aid</span><span class="p">)[</span><span class="mi">1</span><span class="p">],</span>
-                <span class="s1">&#39;left&#39;</span><span class="p">:</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_bboxes</span><span class="p">(</span><span class="n">aid</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
-                <span class="s1">&#39;top&#39;</span><span class="p">:</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_bboxes</span><span class="p">(</span><span class="n">aid</span><span class="p">)[</span><span class="mi">1</span><span class="p">],</span>
-                <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_bboxes</span><span class="p">(</span><span class="n">aid</span><span class="p">)[</span><span class="mi">2</span><span class="p">],</span>
-                <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_bboxes</span><span class="p">(</span><span class="n">aid</span><span class="p">)[</span><span class="mi">3</span><span class="p">],</span>
-                <span class="s1">&#39;theta&#39;</span><span class="p">:</span> <span class="nb">round</span><span class="p">(</span><span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_thetas</span><span class="p">(</span><span class="n">aid</span><span class="p">),</span> <span class="mi">4</span><span class="p">),</span>
-                <span class="s1">&#39;confidence&#39;</span><span class="p">:</span> <span class="nb">round</span><span class="p">(</span><span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_detect_confidence</span><span class="p">(</span><span class="n">aid</span><span class="p">),</span> <span class="mi">4</span><span class="p">),</span>
-                <span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_species_texts</span><span class="p">(</span><span class="n">aid</span><span class="p">),</span>
-                <span class="s1">&#39;species&#39;</span><span class="p">:</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_species_texts</span><span class="p">(</span><span class="n">aid</span><span class="p">),</span>
-                <span class="s1">&#39;viewpoint&#39;</span><span class="p">:</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_viewpoints</span><span class="p">(</span><span class="n">aid</span><span class="p">),</span>
-                <span class="s1">&#39;quality&#39;</span><span class="p">:</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_qualities</span><span class="p">(</span><span class="n">aid</span><span class="p">),</span>
-                <span class="s1">&#39;multiple&#39;</span><span class="p">:</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_multiple</span><span class="p">(</span><span class="n">aid</span><span class="p">),</span>
-                <span class="s1">&#39;interest&#39;</span><span class="p">:</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_interest</span><span class="p">(</span><span class="n">aid</span><span class="p">),</span>
-            <span class="p">}</span>
-            <span class="k">for</span> <span class="n">aid</span> <span class="ow">in</span> <span class="n">aid_list</span>
-        <span class="p">]</span>
-        <span class="k">for</span> <span class="n">aid_list</span> <span class="ow">in</span> <span class="n">aids_list</span>
-    <span class="p">]</span>
+    <span class="n">results_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">has_assignments</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">for</span> <span class="n">aid_list</span> <span class="ow">in</span> <span class="n">aids_list</span><span class="p">:</span>
+        <span class="n">result_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">aid</span> <span class="ow">in</span> <span class="n">aid_list</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">aid</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>  <span class="c1"># we have an assignment</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="n">_json_result</span><span class="p">(</span><span class="n">ibs</span><span class="p">,</span> <span class="n">aid</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">aid</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+                <span class="n">has_assignments</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">aid</span><span class="p">:</span>
+                    <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_json_result</span><span class="p">(</span><span class="n">ibs</span><span class="p">,</span> <span class="n">val</span><span class="p">))</span>
+            <span class="n">result_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+        <span class="n">results_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result_list</span><span class="p">)</span>
+
     <span class="n">score_list</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">gid_list</span><span class="p">)</span>
     <span class="c1"># Wrap up results with other information</span>
     <span class="n">results_dict</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s1">&#39;image_uuid_list&#39;</span><span class="p">:</span> <span class="n">image_uuid_list</span><span class="p">,</span>
         <span class="s1">&#39;results_list&#39;</span><span class="p">:</span> <span class="n">results_list</span><span class="p">,</span>
         <span class="s1">&#39;score_list&#39;</span><span class="p">:</span> <span class="n">score_list</span><span class="p">,</span>
+        <span class="s1">&#39;has_assignments&#39;</span><span class="p">:</span> <span class="n">has_assignments</span><span class="p">,</span>
     <span class="p">}</span>
     <span class="k">return</span> <span class="n">results_dict</span></div>
 
@@ -929,6 +942,8 @@
     <span class="n">use_labeler_species</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">orienter_algo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">orienter_model_tag</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">assigner_algo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">assigner_model_tag</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">update_json_log</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">apply_nms_post_use_labeler_species</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
@@ -1015,10 +1030,21 @@
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">bbox_list</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">ibs</span><span class="o">.</span><span class="n">set_annot_bboxes</span><span class="p">(</span><span class="n">aid_list</span><span class="p">,</span> <span class="n">bbox_list</span><span class="p">,</span> <span class="n">theta_list</span><span class="o">=</span><span class="n">theta_list</span><span class="p">)</span>
 
+    <span class="k">if</span> <span class="n">assigner_algo</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># aids_list is a list of lists of aids, now we want a list of lists of &lt;tuples or singletons of aids&gt;</span>
+        <span class="n">all_assignments</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">aids</span> <span class="ow">in</span> <span class="n">aids_list</span><span class="p">:</span>
+            <span class="n">assigned</span><span class="p">,</span> <span class="n">unassigned</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">assign_parts_one_image</span><span class="p">(</span><span class="n">aids</span><span class="p">)</span>
+            <span class="c1"># unassigned aids should also be tuples to indicate they went through the assigner</span>
+            <span class="n">unassigned</span> <span class="o">=</span> <span class="p">[(</span><span class="n">aid</span><span class="p">,)</span> <span class="k">for</span> <span class="n">aid</span> <span class="ow">in</span> <span class="n">unassigned</span><span class="p">]</span>
+            <span class="n">all_assignments</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">assigned</span> <span class="o">+</span> <span class="n">unassigned</span><span class="p">)</span>
+            <span class="n">aids_list</span> <span class="o">=</span> <span class="n">all_assignments</span>
+
     <span class="n">ibs</span><span class="o">.</span><span class="n">_clean_species</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">update_json_log</span><span class="p">:</span>
         <span class="n">ibs</span><span class="o">.</span><span class="n">log_detections</span><span class="p">(</span><span class="n">aid_list</span><span class="p">)</span>
 
+    <span class="c1"># list of list of ints</span>
     <span class="k">return</span> <span class="n">aids_list</span></div>
 
 
@@ -1291,7 +1317,7 @@
       &copy;2020, Wild Me.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.3</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

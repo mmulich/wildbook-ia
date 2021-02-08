@@ -12,7 +12,6 @@
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="wbia.algo.preproc package" href="wbia.algo.preproc.html" />
@@ -1930,7 +1929,7 @@ writes the uuid map to disk</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># STEP 0: CLEAR THE CACHE</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">clear_uuid_cache</span><span class="p">(</span><span class="n">qreq_</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># STEP 1: ASSERT EMPTY INDEX</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">daid_list</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_valid_aids</span><span class="p">(</span><span class="n">species</span><span class="o">=</span><span class="n">ZEB_PLAIN</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">daid_list</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">ibs</span><span class="o">.</span><span class="n">get_valid_aids</span><span class="p">(</span><span class="n">species</span><span class="o">=</span><span class="n">ZEB_PLAIN</span><span class="p">))[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">uncovered_aids</span><span class="p">,</span> <span class="n">covered_aids_list</span> <span class="o">=</span> <span class="n">group_daids_by_cached_nnindexer</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="n">qreq_</span><span class="p">,</span> <span class="n">daid_list</span><span class="p">,</span> <span class="n">min_reindex_thresh</span><span class="p">,</span> <span class="n">max_covers</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">result1</span> <span class="o">=</span> <span class="n">uncovered_aids</span><span class="p">,</span> <span class="n">covered_aids_list</span>
@@ -2042,14 +2041,14 @@ if possible and if that fails fallbs back to request_memcache.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ZEB_PLAIN</span> <span class="o">=</span> <span class="n">wbia</span><span class="o">.</span><span class="n">const</span><span class="o">.</span><span class="n">TEST_SPECIES</span><span class="o">.</span><span class="n">ZEB_PLAIN</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ibs</span> <span class="o">=</span> <span class="n">wbia</span><span class="o">.</span><span class="n">opendb</span><span class="p">(</span><span class="s1">&#39;testdb1&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">use_memcache</span><span class="p">,</span> <span class="n">max_covers</span><span class="p">,</span> <span class="n">verbose</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">True</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">daid_list</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_valid_aids</span><span class="p">(</span><span class="n">species</span><span class="o">=</span><span class="n">ZEB_PLAIN</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">daid_list</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">ibs</span><span class="o">.</span><span class="n">get_valid_aids</span><span class="p">(</span><span class="n">species</span><span class="o">=</span><span class="n">ZEB_PLAIN</span><span class="p">))[</span><span class="mi">0</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">qreq_</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">new_query_request</span><span class="p">(</span><span class="n">daid_list</span><span class="p">,</span> <span class="n">daid_list</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">qreq_</span><span class="o">.</span><span class="n">qparams</span><span class="o">.</span><span class="n">min_reindex_thresh</span> <span class="o">=</span> <span class="mi">1</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">min_reindex_thresh</span> <span class="o">=</span> <span class="n">qreq_</span><span class="o">.</span><span class="n">qparams</span><span class="o">.</span><span class="n">min_reindex_thresh</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># CLEAR CACHE for clean test</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">clear_uuid_cache</span><span class="p">(</span><span class="n">qreq_</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># LOAD 3 AIDS INTO CACHE</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">aid_list</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_valid_aids</span><span class="p">(</span><span class="n">species</span><span class="o">=</span><span class="n">ZEB_PLAIN</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">aid_list</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">ibs</span><span class="o">.</span><span class="n">get_valid_aids</span><span class="p">(</span><span class="n">species</span><span class="o">=</span><span class="n">ZEB_PLAIN</span><span class="p">))[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Should fallback</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">nnindexer</span> <span class="o">=</span> <span class="n">request_augmented_wbia_nnindexer</span><span class="p">(</span><span class="n">qreq_</span><span class="p">,</span> <span class="n">aid_list</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># assert the fallback</span>
@@ -3664,7 +3663,7 @@ dependant on specifically where you are in the pipeline</p>
 
 <dl class="py method">
 <dt id="wbia.algo.hots.query_request.QueryRequest.execute">
-<code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">qaids</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">prog_hook</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">use_cache</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">invalidate_supercache</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/algo/hots/query_request.html#QueryRequest.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.algo.hots.query_request.QueryRequest.execute" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">qaids</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">prog_hook</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">use_cache</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">use_supercache</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">invalidate_supercache</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wbia/algo/hots/query_request.html#QueryRequest.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wbia.algo.hots.query_request.QueryRequest.execute" title="Permalink to this definition">¶</a></dt>
 <dd><p>Runs the hotspotter pipeline and returns chip match objects.</p>
 <dl class="simple">
 <dt>CommandLine:</dt><dd><p>python -m wbia.algo.hots.query_request execute –show</p>
@@ -4689,7 +4688,7 @@ makeinit.py –modname=wbia.algo.hots</p>
       &copy;2020, Wild Me.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.3</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

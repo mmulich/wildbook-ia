@@ -12,7 +12,6 @@
     <script src="../../../_static/jquery.js"></script>
     <script src="../../../_static/underscore.js"></script>
     <script src="../../../_static/doctools.js"></script>
-    <script src="../../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
    
@@ -1356,6 +1355,9 @@
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;No annot filter returning&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">avail_aids</span>
 
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">avail_aids</span><span class="p">:</span>  <span class="c1"># no need to filter if empty</span>
+        <span class="k">return</span> <span class="n">avail_aids</span>
+
     <span class="n">VerbosityContext</span> <span class="o">=</span> <span class="n">verb_context</span><span class="p">(</span><span class="s1">&#39;FILTER_INDEPENDENT&#39;</span><span class="p">,</span> <span class="n">aidcfg</span><span class="p">,</span> <span class="n">verbose</span><span class="p">)</span>
     <span class="n">VerbosityContext</span><span class="o">.</span><span class="n">startfilter</span><span class="p">(</span><span class="n">withpre</span><span class="o">=</span><span class="n">withpre</span><span class="p">)</span>
 
@@ -1631,6 +1633,9 @@
     <span class="k">if</span> <span class="n">aidcfg</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;No annot filter returning&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">avail_aids</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">avail_aids</span><span class="p">:</span>  <span class="c1"># no need to filter if empty</span>
         <span class="k">return</span> <span class="n">avail_aids</span>
 
     <span class="n">VerbosityContext</span> <span class="o">=</span> <span class="n">verb_context</span><span class="p">(</span><span class="s1">&#39;FILTER_INTRAGROUP&#39;</span><span class="p">,</span> <span class="n">aidcfg</span><span class="p">,</span> <span class="n">verbose</span><span class="p">)</span>
@@ -2398,7 +2403,7 @@
       &copy;2020, Wild Me.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.3</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

@@ -12,7 +12,6 @@
     <script src="../../../_static/jquery.js"></script>
     <script src="../../../_static/underscore.js"></script>
     <script src="../../../_static/doctools.js"></script>
-    <script src="../../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
    
@@ -103,6 +102,7 @@
 <span class="sd">    Example:</span>
 <span class="sd">        &gt;&gt;&gt; # ENABLE_DOCTEST</span>
 <span class="sd">        &gt;&gt;&gt; from wbia.dbio.export_subset import *  # NOQA</span>
+<span class="sd">        &gt;&gt;&gt; from wbia.init.sysres import get_workdir</span>
 <span class="sd">        &gt;&gt;&gt; import wbia</span>
 <span class="sd">        &gt;&gt;&gt; db1 = ut.get_argval(&#39;--db1&#39;, str, default=None)</span>
 <span class="sd">        &gt;&gt;&gt; db2 = ut.get_argval(&#39;--db2&#39;, str, default=None)</span>
@@ -111,18 +111,18 @@
 <span class="sd">        &gt;&gt;&gt; delete_ibsdir = False</span>
 <span class="sd">        &gt;&gt;&gt; # Check for test mode instead of script mode</span>
 <span class="sd">        &gt;&gt;&gt; if db1 is None and db2 is None and dbdir1 is None and dbdir2 is None:</span>
-<span class="sd">        ...     db1 = &#39;testdb1&#39;</span>
-<span class="sd">        ...     dbdir2 = &#39;testdb_dst&#39;</span>
+<span class="sd">        ...     dbdir1 = &#39;/&#39;.join([get_workdir(), &#39;testdb1&#39;])</span>
+<span class="sd">        ...     dbdir2 = &#39;/&#39;.join([get_workdir(), &#39;testdb_dst&#39;])</span>
 <span class="sd">        ...     delete_ibsdir = True</span>
 <span class="sd">        &gt;&gt;&gt; # Open the source and destination database</span>
 <span class="sd">        &gt;&gt;&gt; assert db1 is not None or dbdir1 is not None</span>
 <span class="sd">        &gt;&gt;&gt; assert db2 is not None or dbdir2 is not None</span>
 <span class="sd">        &gt;&gt;&gt; ibs_src = wbia.opendb(db=db1, dbdir=dbdir1)</span>
 <span class="sd">        &gt;&gt;&gt; ibs_dst = wbia.opendb(db=db2, dbdir=dbdir2, allow_newdir=True,</span>
-<span class="sd">        &gt;&gt;&gt;                        delete_ibsdir=delete_ibsdir)</span>
+<span class="sd">        ...                       delete_ibsdir=delete_ibsdir)</span>
 <span class="sd">        &gt;&gt;&gt; merge_databases(ibs_src, ibs_dst)</span>
 <span class="sd">        &gt;&gt;&gt; check_merge(ibs_src, ibs_dst)</span>
-<span class="sd">        &gt;&gt;&gt; ibs_dst.print_dbinfo()</span>
+<span class="sd">        &gt;&gt;&gt; # ibs_dst.print_dbinfo()</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># TODO: ensure images are localized</span>
     <span class="c1"># otherwise this wont work</span>
@@ -1355,7 +1355,7 @@
       &copy;2020, Wild Me.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.3</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

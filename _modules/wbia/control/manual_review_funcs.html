@@ -12,7 +12,6 @@
     <script src="../../../_static/jquery.js"></script>
     <script src="../../../_static/underscore.js"></script>
     <script src="../../../_static/doctools.js"></script>
-    <script src="../../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
    
@@ -91,24 +90,25 @@
 <span class="sd">        CREATE INDEX IF NOT EXISTS {index_name} ON {table} ({index_cols});</span>
 <span class="sd">        &quot;&quot;&quot;</span>
     <span class="p">)</span>
-    <span class="n">sqlcmd</span> <span class="o">=</span> <span class="n">sqlfmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-        <span class="n">index_name</span><span class="o">=</span><span class="s1">&#39;aidpair_to_rowid&#39;</span><span class="p">,</span>
-        <span class="n">table</span><span class="o">=</span><span class="n">ibs</span><span class="o">.</span><span class="n">const</span><span class="o">.</span><span class="n">REVIEW_TABLE</span><span class="p">,</span>
-        <span class="n">index_cols</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">REVIEW_AID1</span><span class="p">,</span> <span class="n">REVIEW_AID2</span><span class="p">]),</span>
-    <span class="p">)</span>
-    <span class="n">ibs</span><span class="o">.</span><span class="n">staging</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sqlcmd</span><span class="p">)</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
-    <span class="n">sqlcmd</span> <span class="o">=</span> <span class="n">sqlfmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-        <span class="n">index_name</span><span class="o">=</span><span class="s1">&#39;aid1_to_rowids&#39;</span><span class="p">,</span>
-        <span class="n">table</span><span class="o">=</span><span class="n">ibs</span><span class="o">.</span><span class="n">const</span><span class="o">.</span><span class="n">REVIEW_TABLE</span><span class="p">,</span>
-        <span class="n">index_cols</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">REVIEW_AID1</span><span class="p">]),</span>
-    <span class="p">)</span>
-    <span class="n">ibs</span><span class="o">.</span><span class="n">staging</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sqlcmd</span><span class="p">)</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
-    <span class="n">sqlcmd</span> <span class="o">=</span> <span class="n">sqlfmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-        <span class="n">index_name</span><span class="o">=</span><span class="s1">&#39;aid2_to_rowids&#39;</span><span class="p">,</span>
-        <span class="n">table</span><span class="o">=</span><span class="n">ibs</span><span class="o">.</span><span class="n">const</span><span class="o">.</span><span class="n">REVIEW_TABLE</span><span class="p">,</span>
-        <span class="n">index_cols</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">REVIEW_AID2</span><span class="p">]),</span>
-    <span class="p">)</span>
-    <span class="n">ibs</span><span class="o">.</span><span class="n">staging</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sqlcmd</span><span class="p">)</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span></div>
+    <span class="k">with</span> <span class="n">ibs</span><span class="o">.</span><span class="n">staging</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+        <span class="n">sqlcmd</span> <span class="o">=</span> <span class="n">sqlfmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">index_name</span><span class="o">=</span><span class="s1">&#39;aidpair_to_rowid&#39;</span><span class="p">,</span>
+            <span class="n">table</span><span class="o">=</span><span class="n">ibs</span><span class="o">.</span><span class="n">const</span><span class="o">.</span><span class="n">REVIEW_TABLE</span><span class="p">,</span>
+            <span class="n">index_cols</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">REVIEW_AID1</span><span class="p">,</span> <span class="n">REVIEW_AID2</span><span class="p">]),</span>
+        <span class="p">)</span>
+        <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sqlcmd</span><span class="p">)</span>
+        <span class="n">sqlcmd</span> <span class="o">=</span> <span class="n">sqlfmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">index_name</span><span class="o">=</span><span class="s1">&#39;aid1_to_rowids&#39;</span><span class="p">,</span>
+            <span class="n">table</span><span class="o">=</span><span class="n">ibs</span><span class="o">.</span><span class="n">const</span><span class="o">.</span><span class="n">REVIEW_TABLE</span><span class="p">,</span>
+            <span class="n">index_cols</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">REVIEW_AID1</span><span class="p">]),</span>
+        <span class="p">)</span>
+        <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sqlcmd</span><span class="p">)</span>
+        <span class="n">sqlcmd</span> <span class="o">=</span> <span class="n">sqlfmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">index_name</span><span class="o">=</span><span class="s1">&#39;aid2_to_rowids&#39;</span><span class="p">,</span>
+            <span class="n">table</span><span class="o">=</span><span class="n">ibs</span><span class="o">.</span><span class="n">const</span><span class="o">.</span><span class="n">REVIEW_TABLE</span><span class="p">,</span>
+            <span class="n">index_cols</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">REVIEW_AID2</span><span class="p">]),</span>
+        <span class="p">)</span>
+        <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sqlcmd</span><span class="p">)</span></div>
 
 
 <span class="nd">@register_ibs_method</span>
@@ -600,9 +600,8 @@
         <span class="n">REVIEW_EVIDENCE_DECISION</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">params_iter</span> <span class="o">=</span> <span class="p">[(</span><span class="n">aid</span><span class="p">,)</span> <span class="k">for</span> <span class="n">aid</span> <span class="ow">in</span> <span class="n">aid_list</span><span class="p">]</span>
-    <span class="n">where_clause</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">=?&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">REVIEW_AID1</span><span class="p">)</span>
-    <span class="n">review_tuple_decisions_list</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">staging</span><span class="o">.</span><span class="n">get_where</span><span class="p">(</span>
-        <span class="n">const</span><span class="o">.</span><span class="n">REVIEW_TABLE</span><span class="p">,</span> <span class="n">colnames</span><span class="p">,</span> <span class="n">params_iter</span><span class="p">,</span> <span class="n">where_clause</span><span class="p">,</span> <span class="n">unpack_scalars</span><span class="o">=</span><span class="kc">False</span>
+    <span class="n">review_tuple_decisions_list</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">staging</span><span class="o">.</span><span class="n">get_where_eq</span><span class="p">(</span>
+        <span class="n">const</span><span class="o">.</span><span class="n">REVIEW_TABLE</span><span class="p">,</span> <span class="n">colnames</span><span class="p">,</span> <span class="n">params_iter</span><span class="p">,</span> <span class="p">(</span><span class="n">REVIEW_AID1</span><span class="p">,),</span> <span class="n">unpack_scalars</span><span class="o">=</span><span class="kc">False</span>
     <span class="p">)</span>
     <span class="k">return</span> <span class="n">review_tuple_decisions_list</span></div>
 
@@ -620,9 +619,8 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">colnames</span> <span class="o">=</span> <span class="p">(</span><span class="n">REVIEW_ROWID</span><span class="p">,)</span>
     <span class="n">params_iter</span> <span class="o">=</span> <span class="p">[(</span><span class="n">aid</span><span class="p">,)</span> <span class="k">for</span> <span class="n">aid</span> <span class="ow">in</span> <span class="n">aid_list</span><span class="p">]</span>
-    <span class="n">where_clause</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">=?&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">REVIEW_AID1</span><span class="p">)</span>
-    <span class="n">review_rowids</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">staging</span><span class="o">.</span><span class="n">get_where</span><span class="p">(</span>
-        <span class="n">const</span><span class="o">.</span><span class="n">REVIEW_TABLE</span><span class="p">,</span> <span class="n">colnames</span><span class="p">,</span> <span class="n">params_iter</span><span class="p">,</span> <span class="n">where_clause</span><span class="p">,</span> <span class="n">unpack_scalars</span><span class="o">=</span><span class="kc">False</span>
+    <span class="n">review_rowids</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">staging</span><span class="o">.</span><span class="n">get_where_eq</span><span class="p">(</span>
+        <span class="n">const</span><span class="o">.</span><span class="n">REVIEW_TABLE</span><span class="p">,</span> <span class="n">colnames</span><span class="p">,</span> <span class="n">params_iter</span><span class="p">,</span> <span class="p">(</span><span class="n">REVIEW_AID1</span><span class="p">,),</span> <span class="n">unpack_scalars</span><span class="o">=</span><span class="kc">False</span>
     <span class="p">)</span>
     <span class="k">return</span> <span class="n">review_rowids</span></div>
 
@@ -646,12 +644,11 @@
 <span class="k">def</span> <span class="nf">get_review_rowids_from_aid1</span><span class="p">(</span><span class="n">ibs</span><span class="p">,</span> <span class="n">aid_list</span><span class="p">,</span> <span class="n">eager</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nInput</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="n">colnames</span> <span class="o">=</span> <span class="p">(</span><span class="n">REVIEW_ROWID</span><span class="p">,)</span>
     <span class="n">params_iter</span> <span class="o">=</span> <span class="p">[(</span><span class="n">aid</span><span class="p">,)</span> <span class="k">for</span> <span class="n">aid</span> <span class="ow">in</span> <span class="n">aid_list</span><span class="p">]</span>
-    <span class="n">where_clause</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">=?&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">REVIEW_AID1</span><span class="p">,)</span>
-    <span class="n">review_rowids</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">staging</span><span class="o">.</span><span class="n">get_where</span><span class="p">(</span>
+    <span class="n">review_rowids</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">staging</span><span class="o">.</span><span class="n">get_where_eq</span><span class="p">(</span>
         <span class="n">const</span><span class="o">.</span><span class="n">REVIEW_TABLE</span><span class="p">,</span>
         <span class="n">colnames</span><span class="p">,</span>
         <span class="n">params_iter</span><span class="p">,</span>
-        <span class="n">where_clause</span><span class="o">=</span><span class="n">where_clause</span><span class="p">,</span>
+        <span class="p">(</span><span class="n">REVIEW_AID1</span><span class="p">,),</span>
         <span class="n">unpack_scalars</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">return</span> <span class="n">review_rowids</span></div>
@@ -661,12 +658,11 @@
 <span class="k">def</span> <span class="nf">get_review_rowids_from_aid2</span><span class="p">(</span><span class="n">ibs</span><span class="p">,</span> <span class="n">aid_list</span><span class="p">,</span> <span class="n">eager</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nInput</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="n">colnames</span> <span class="o">=</span> <span class="p">(</span><span class="n">REVIEW_ROWID</span><span class="p">,)</span>
     <span class="n">params_iter</span> <span class="o">=</span> <span class="p">[(</span><span class="n">aid</span><span class="p">,)</span> <span class="k">for</span> <span class="n">aid</span> <span class="ow">in</span> <span class="n">aid_list</span><span class="p">]</span>
-    <span class="n">where_clause</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">=?&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">REVIEW_AID2</span><span class="p">,)</span>
-    <span class="n">review_rowids</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">staging</span><span class="o">.</span><span class="n">get_where</span><span class="p">(</span>
+    <span class="n">review_rowids</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">staging</span><span class="o">.</span><span class="n">get_where_eq</span><span class="p">(</span>
         <span class="n">const</span><span class="o">.</span><span class="n">REVIEW_TABLE</span><span class="p">,</span>
         <span class="n">colnames</span><span class="p">,</span>
         <span class="n">params_iter</span><span class="p">,</span>
-        <span class="n">where_clause</span><span class="o">=</span><span class="n">where_clause</span><span class="p">,</span>
+        <span class="p">(</span><span class="n">REVIEW_AID2</span><span class="p">,),</span>
         <span class="n">unpack_scalars</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">return</span> <span class="n">review_rowids</span></div>
@@ -1078,7 +1074,7 @@
       &copy;2020, Wild Me.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.3</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

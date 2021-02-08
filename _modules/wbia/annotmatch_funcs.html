@@ -12,7 +12,6 @@
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
     <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
    
@@ -79,14 +78,15 @@
     <span class="n">params_iter</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="n">aid1_list</span><span class="p">)</span>
     <span class="k">if</span> <span class="kc">True</span><span class="p">:</span>
         <span class="c1"># HACK IN INDEX</span>
-        <span class="n">ibs</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
-            <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">            CREATE INDEX IF NOT EXISTS aid1_to_am ON {ANNOTMATCH_TABLE} ({annot_rowid1});</span>
-<span class="sd">            &quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="n">ANNOTMATCH_TABLE</span><span class="o">=</span><span class="n">ibs</span><span class="o">.</span><span class="n">const</span><span class="o">.</span><span class="n">ANNOTMATCH_TABLE</span><span class="p">,</span>
-                <span class="n">annot_rowid1</span><span class="o">=</span><span class="n">manual_annotmatch_funcs</span><span class="o">.</span><span class="n">ANNOT_ROWID1</span><span class="p">,</span>
+        <span class="k">with</span> <span class="n">ibs</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+            <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+                <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">                CREATE INDEX IF NOT EXISTS aid1_to_am ON {ANNOTMATCH_TABLE} ({annot_rowid1});</span>
+<span class="sd">                &quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">ANNOTMATCH_TABLE</span><span class="o">=</span><span class="n">ibs</span><span class="o">.</span><span class="n">const</span><span class="o">.</span><span class="n">ANNOTMATCH_TABLE</span><span class="p">,</span>
+                    <span class="n">annot_rowid1</span><span class="o">=</span><span class="n">manual_annotmatch_funcs</span><span class="o">.</span><span class="n">ANNOT_ROWID1</span><span class="p">,</span>
+                <span class="p">)</span>
             <span class="p">)</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
     <span class="n">where_colnames</span> <span class="o">=</span> <span class="p">[</span><span class="n">manual_annotmatch_funcs</span><span class="o">.</span><span class="n">ANNOT_ROWID1</span><span class="p">]</span>
     <span class="n">annotmatch_rowid_list</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">get_where_eq</span><span class="p">(</span>
         <span class="n">ibs</span><span class="o">.</span><span class="n">const</span><span class="o">.</span><span class="n">ANNOTMATCH_TABLE</span><span class="p">,</span>
@@ -116,14 +116,15 @@
         <span class="n">nInput</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">aid2_list</span><span class="p">)</span>
     <span class="k">if</span> <span class="kc">True</span><span class="p">:</span>
         <span class="c1"># HACK IN INDEX</span>
-        <span class="n">ibs</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
-            <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">            CREATE INDEX IF NOT EXISTS aid2_to_am ON {ANNOTMATCH_TABLE} ({annot_rowid2});</span>
-<span class="sd">            &quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="n">ANNOTMATCH_TABLE</span><span class="o">=</span><span class="n">ibs</span><span class="o">.</span><span class="n">const</span><span class="o">.</span><span class="n">ANNOTMATCH_TABLE</span><span class="p">,</span>
-                <span class="n">annot_rowid2</span><span class="o">=</span><span class="n">manual_annotmatch_funcs</span><span class="o">.</span><span class="n">ANNOT_ROWID2</span><span class="p">,</span>
+        <span class="k">with</span> <span class="n">ibs</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+            <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+                <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">                CREATE INDEX IF NOT EXISTS aid2_to_am ON {ANNOTMATCH_TABLE} ({annot_rowid2});</span>
+<span class="sd">                &quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">ANNOTMATCH_TABLE</span><span class="o">=</span><span class="n">ibs</span><span class="o">.</span><span class="n">const</span><span class="o">.</span><span class="n">ANNOTMATCH_TABLE</span><span class="p">,</span>
+                    <span class="n">annot_rowid2</span><span class="o">=</span><span class="n">manual_annotmatch_funcs</span><span class="o">.</span><span class="n">ANNOT_ROWID2</span><span class="p">,</span>
+                <span class="p">)</span>
             <span class="p">)</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
     <span class="n">colnames</span> <span class="o">=</span> <span class="p">(</span><span class="n">manual_annotmatch_funcs</span><span class="o">.</span><span class="n">ANNOTMATCH_ROWID</span><span class="p">,)</span>
     <span class="c1"># FIXME: col_rowid is not correct</span>
     <span class="n">params_iter</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="n">aid2_list</span><span class="p">)</span>
@@ -844,7 +845,7 @@
       &copy;2020, Wild Me.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.3</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

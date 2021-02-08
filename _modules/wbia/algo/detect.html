@@ -12,7 +12,6 @@
     <script src="../../../_static/jquery.js"></script>
     <script src="../../../_static/underscore.js"></script>
     <script src="../../../_static/doctools.js"></script>
-    <script src="../../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
    
@@ -39,7 +38,9 @@
 <span class="kn">from</span> <span class="nn">wbia.algo.detect</span> <span class="kn">import</span> <span class="n">grabmodels</span>
 <span class="kn">from</span> <span class="nn">wbia.algo.detect</span> <span class="kn">import</span> <span class="n">randomforest</span>
 <span class="kn">from</span> <span class="nn">wbia.algo.detect</span> <span class="kn">import</span> <span class="n">yolo</span>
+<span class="kn">from</span> <span class="nn">wbia.algo.detect</span> <span class="kn">import</span> <span class="n">assigner</span>
 
+<span class="c1"># from wbia.algo.detect import train_assigner</span>
 <span class="c1"># from wbia.algo.detect import selectivesearch</span>
 <span class="c1"># from wbia.algo.detect import ssd</span>
 <span class="c1"># from wbia.algo.detect import fasterrcnn</span>
@@ -127,6 +128,7 @@
     <span class="p">(</span><span class="s1">&#39;grabmodels&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
     <span class="p">(</span><span class="s1">&#39;randomforest&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
     <span class="p">(</span><span class="s1">&#39;yolo&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;assigner&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
     <span class="c1"># (&#39;selectivesearch&#39;, None),</span>
     <span class="c1"># (&#39;ssd&#39;, None),</span>
     <span class="c1"># (&#39;fasterrcnn&#39;, None),</span>
@@ -199,7 +201,7 @@
       &copy;2020, Wild Me.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.3</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

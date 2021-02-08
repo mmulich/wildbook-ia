@@ -12,7 +12,6 @@
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="wbia.detecttools package" href="wbia.detecttools.html" />
@@ -438,6 +437,7 @@ python -m wbia merge_databases:0 –db1 lewa_grevys –db2 GZ_Master1</p>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># ENABLE_DOCTEST</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">wbia.dbio.export_subset</span> <span class="kn">import</span> <span class="o">*</span>  <span class="c1"># NOQA</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">wbia.init.sysres</span> <span class="kn">import</span> <span class="n">get_workdir</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">wbia</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">db1</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">get_argval</span><span class="p">(</span><span class="s1">&#39;--db1&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">db2</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">get_argval</span><span class="p">(</span><span class="s1">&#39;--db2&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
@@ -446,18 +446,18 @@ python -m wbia merge_databases:0 –db1 lewa_grevys –db2 GZ_Master1</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">delete_ibsdir</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Check for test mode instead of script mode</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="n">db1</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">db2</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">dbdir1</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">dbdir2</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-<span class="gp">... </span>    <span class="n">db1</span> <span class="o">=</span> <span class="s1">&#39;testdb1&#39;</span>
-<span class="gp">... </span>    <span class="n">dbdir2</span> <span class="o">=</span> <span class="s1">&#39;testdb_dst&#39;</span>
+<span class="gp">... </span>    <span class="n">dbdir1</span> <span class="o">=</span> <span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">get_workdir</span><span class="p">(),</span> <span class="s1">&#39;testdb1&#39;</span><span class="p">])</span>
+<span class="gp">... </span>    <span class="n">dbdir2</span> <span class="o">=</span> <span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">get_workdir</span><span class="p">(),</span> <span class="s1">&#39;testdb_dst&#39;</span><span class="p">])</span>
 <span class="gp">... </span>    <span class="n">delete_ibsdir</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Open the source and destination database</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="n">db1</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">dbdir1</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="n">db2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">dbdir2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ibs_src</span> <span class="o">=</span> <span class="n">wbia</span><span class="o">.</span><span class="n">opendb</span><span class="p">(</span><span class="n">db</span><span class="o">=</span><span class="n">db1</span><span class="p">,</span> <span class="n">dbdir</span><span class="o">=</span><span class="n">dbdir1</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ibs_dst</span> <span class="o">=</span> <span class="n">wbia</span><span class="o">.</span><span class="n">opendb</span><span class="p">(</span><span class="n">db</span><span class="o">=</span><span class="n">db2</span><span class="p">,</span> <span class="n">dbdir</span><span class="o">=</span><span class="n">dbdir2</span><span class="p">,</span> <span class="n">allow_newdir</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>                       <span class="n">delete_ibsdir</span><span class="o">=</span><span class="n">delete_ibsdir</span><span class="p">)</span>
+<span class="gp">... </span>                      <span class="n">delete_ibsdir</span><span class="o">=</span><span class="n">delete_ibsdir</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">merge_databases</span><span class="p">(</span><span class="n">ibs_src</span><span class="p">,</span> <span class="n">ibs_dst</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">check_merge</span><span class="p">(</span><span class="n">ibs_src</span><span class="p">,</span> <span class="n">ibs_dst</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ibs_dst</span><span class="o">.</span><span class="n">print_dbinfo</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># ibs_dst.print_dbinfo()</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1188,7 +1188,7 @@ best word i can think of is io. maybe marshall?</p>
       &copy;2020, Wild Me.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.3</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

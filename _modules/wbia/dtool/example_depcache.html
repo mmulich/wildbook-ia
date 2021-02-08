@@ -12,7 +12,6 @@
     <script src="../../../_static/jquery.js"></script>
     <script src="../../../_static/underscore.js"></script>
     <script src="../../../_static/doctools.js"></script>
-    <script src="../../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
    
@@ -38,13 +37,19 @@
 <span class="sd">    python -m dtool.example_depcache --exec-dummy_example_depcacahe --show</span>
 <span class="sd">    python -m dtool.depcache_control --exec-make_graph --show</span>
 <span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">os.path</span> <span class="kn">import</span> <span class="n">join</span>
+
 <span class="kn">import</span> <span class="nn">utool</span> <span class="k">as</span> <span class="nn">ut</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">uuid</span>
-<span class="kn">from</span> <span class="nn">os.path</span> <span class="kn">import</span> <span class="n">join</span><span class="p">,</span> <span class="n">dirname</span>
 <span class="kn">from</span> <span class="nn">six.moves</span> <span class="kn">import</span> <span class="nb">zip</span>
+
 <span class="kn">from</span> <span class="nn">wbia.dtool</span> <span class="kn">import</span> <span class="n">depcache_control</span>
 <span class="kn">from</span> <span class="nn">wbia</span> <span class="kn">import</span> <span class="n">dtool</span>
+
+
+<span class="n">HERE</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
 
 
 <span class="k">if</span> <span class="kc">False</span><span class="p">:</span>
@@ -66,6 +71,20 @@
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Requesting global dummy &#39;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">rowid</span> <span class="ow">in</span> <span class="n">parent_rowids</span><span class="p">:</span>
             <span class="k">yield</span> <span class="s1">&#39;dummy&#39;</span>
+
+
+<div class="viewcode-block" id="DummyController"><a class="viewcode-back" href="../../../wbia.dtool.html#wbia.dtool.example_depcache.DummyController">[docs]</a><span class="k">class</span> <span class="nc">DummyController</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Just enough (IBEIS) controller to make the dependency cache examples work&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cache_dpath</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cache_dpath</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">cache_dpath</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cache_dpath</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<div class="viewcode-block" id="DummyController.make_cache_db_uri"><a class="viewcode-back" href="../../../wbia.dtool.html#wbia.dtool.example_depcache.DummyController.make_cache_db_uri">[docs]</a>    <span class="k">def</span> <span class="nf">make_cache_db_uri</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;sqlite:///</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">cache_dpath</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">.sqlite&#39;</span></div>
+
+<div class="viewcode-block" id="DummyController.get_cachedir"><a class="viewcode-back" href="../../../wbia.dtool.html#wbia.dtool.example_depcache.DummyController.get_cachedir">[docs]</a>    <span class="k">def</span> <span class="nf">get_cachedir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache_dpath</span></div></div>
 
 
 <div class="viewcode-block" id="DummyKptsConfig"><a class="viewcode-back" href="../../../wbia.dtool.html#wbia.dtool.example_depcache.DummyKptsConfig">[docs]</a><span class="k">class</span> <span class="nc">DummyKptsConfig</span><span class="p">(</span><span class="n">dtool</span><span class="o">.</span><span class="n">Config</span><span class="p">):</span>
@@ -254,16 +273,17 @@
     <span class="k">def</span> <span class="nf">get_root_uuid</span><span class="p">(</span><span class="n">aid_list</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ut</span><span class="o">.</span><span class="n">lmap</span><span class="p">(</span><span class="n">ut</span><span class="o">.</span><span class="n">hashable_to_uuid</span><span class="p">,</span> <span class="n">aid_list</span><span class="p">)</span>
 
-    <span class="c1"># put the test cache in the dtool repo</span>
-    <span class="n">dtool_repo</span> <span class="o">=</span> <span class="n">dirname</span><span class="p">(</span><span class="n">ut</span><span class="o">.</span><span class="n">get_module_dir</span><span class="p">(</span><span class="n">dtool</span><span class="p">))</span>
-    <span class="n">cache_dpath</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="n">dtool_repo</span><span class="p">,</span> <span class="s1">&#39;DEPCACHE&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">fname</span><span class="p">:</span>
+        <span class="n">fname</span> <span class="o">=</span> <span class="n">dummy_root</span>
 
+    <span class="n">cache_dpath</span> <span class="o">=</span> <span class="n">HERE</span> <span class="o">/</span> <span class="s1">&#39;DEPCACHE&#39;</span>
+    <span class="n">controller</span> <span class="o">=</span> <span class="n">DummyController</span><span class="p">(</span><span class="n">cache_dpath</span><span class="p">)</span>
     <span class="n">depc</span> <span class="o">=</span> <span class="n">dtool</span><span class="o">.</span><span class="n">DependencyCache</span><span class="p">(</span>
-        <span class="n">root_tablename</span><span class="o">=</span><span class="n">dummy_root</span><span class="p">,</span>
-        <span class="n">default_fname</span><span class="o">=</span><span class="n">fname</span><span class="p">,</span>
-        <span class="n">cache_dpath</span><span class="o">=</span><span class="n">cache_dpath</span><span class="p">,</span>
-        <span class="n">get_root_uuid</span><span class="o">=</span><span class="n">get_root_uuid</span><span class="p">,</span>
-        <span class="c1"># root_asobject=root_asobject,</span>
+        <span class="n">controller</span><span class="p">,</span>
+        <span class="n">fname</span><span class="p">,</span>
+        <span class="n">get_root_uuid</span><span class="p">,</span>
+        <span class="n">table_name</span><span class="o">=</span><span class="n">dummy_root</span><span class="p">,</span>
+        <span class="n">root_getters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">use_globals</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span>
 
@@ -759,8 +779,8 @@
     <span class="n">req</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
 
     <span class="c1"># ut.InstanceList(</span>
-    <span class="n">db</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">depc</span><span class="o">.</span><span class="n">fname_to_db</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="c1"># db_list = ut.InstanceList(depc.fname_to_db.values())</span>
+    <span class="n">db</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">depc</span><span class="o">.</span><span class="n">_db_by_name</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="c1"># db_list = ut.InstanceList(depc._db_by_name.values())</span>
     <span class="c1"># db_list.print_table_csv(&#39;config&#39;, exclude_columns=&#39;config_strid&#39;)</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;config table&#39;</span><span class="p">)</span>
@@ -840,7 +860,7 @@
       &copy;2020, Wild Me.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.3</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

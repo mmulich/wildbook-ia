@@ -12,7 +12,6 @@
     <script src="../../../_static/jquery.js"></script>
     <script src="../../../_static/underscore.js"></script>
     <script src="../../../_static/doctools.js"></script>
-    <script src="../../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
    
@@ -523,11 +522,12 @@
         <span class="c1"># FIXME: This index should when the database is defined.</span>
         <span class="c1"># Ensure that an index exists on the image column of the annotation table</span>
         <span class="c1"># logger.info(len(nid_list_))</span>
-        <span class="n">ibs</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
-            <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">            CREATE INDEX IF NOT EXISTS nid_to_aids ON annotations (name_rowid);</span>
-<span class="sd">            &quot;&quot;&quot;</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+        <span class="k">with</span> <span class="n">ibs</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+            <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+                <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">                CREATE INDEX IF NOT EXISTS nid_to_aids ON annotations (name_rowid);</span>
+<span class="sd">                &quot;&quot;&quot;</span>
+            <span class="p">)</span>
         <span class="n">aids_list</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
             <span class="n">const</span><span class="o">.</span><span class="n">ANNOTATION_TABLE</span><span class="p">,</span>
             <span class="p">(</span><span class="n">ANNOT_ROWID</span><span class="p">,),</span>
@@ -550,7 +550,8 @@
 <span class="s2">        &quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="n">input_str</span><span class="o">=</span><span class="n">input_str</span><span class="p">,</span> <span class="n">ANNOTATION_TABLE</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">ANNOTATION_TABLE</span>
         <span class="p">)</span>
-        <span class="n">pair_list</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">opstr</span><span class="p">)</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+        <span class="k">with</span> <span class="n">ibs</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+            <span class="n">pair_list</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">opstr</span><span class="p">)</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
         <span class="n">aidscol</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ut</span><span class="o">.</span><span class="n">get_list_column</span><span class="p">(</span><span class="n">pair_list</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
         <span class="n">nidscol</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ut</span><span class="o">.</span><span class="n">get_list_column</span><span class="p">(</span><span class="n">pair_list</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
         <span class="n">unique_nids</span><span class="p">,</span> <span class="n">groupx</span> <span class="o">=</span> <span class="n">vt</span><span class="o">.</span><span class="n">group_indices</span><span class="p">(</span><span class="n">nidscol</span><span class="p">)</span>
@@ -651,7 +652,7 @@
 <span class="sd">        &gt;&gt;&gt; aid_list = ibs.get_valid_aids()</span>
 <span class="sd">        &gt;&gt;&gt; nid_list = ibs.get_annot_name_rowids(aid_list)</span>
 <span class="sd">        &gt;&gt;&gt; exemplar_aids_list = ibs.get_name_exemplar_aids(nid_list)</span>
-<span class="sd">        &gt;&gt;&gt; result = exemplar_aids_list</span>
+<span class="sd">        &gt;&gt;&gt; result = [sorted(i) for i in exemplar_aids_list]</span>
 <span class="sd">        &gt;&gt;&gt; print(result)</span>
 <span class="sd">        [[], [2, 3], [2, 3], [], [5, 6], [5, 6], [7], [8], [], [10], [], [12], [13]]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -693,7 +694,7 @@
 <span class="sd">        &gt;&gt;&gt; ibs = wbia.opendb(&#39;testdb1&#39;)</span>
 <span class="sd">        &gt;&gt;&gt; nid_list = ibs._get_all_known_name_rowids()</span>
 <span class="sd">        &gt;&gt;&gt; gids_list = ibs.get_name_gids(nid_list)</span>
-<span class="sd">        &gt;&gt;&gt; result = gids_list</span>
+<span class="sd">        &gt;&gt;&gt; result = [sorted(gids) for gids in gids_list]</span>
 <span class="sd">        &gt;&gt;&gt; print(result)</span>
 <span class="sd">        [[2, 3], [5, 6], [7], [8], [10], [12], [13]]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -1076,9 +1077,8 @@
 <span class="sd">        &gt;&gt;&gt; result += str(ibs._get_all_known_name_rowids())</span>
 <span class="sd">        &gt;&gt;&gt; print(&#39;----&#39;)</span>
 <span class="sd">        &gt;&gt;&gt; ibs.print_name_table()</span>
+<span class="sd">        &gt;&gt;&gt; assert result == f&#39;{name_rowid_list}\n[1, 2, 3, 4, 5, 6, 7]&#39;</span>
 <span class="sd">        &gt;&gt;&gt; print(result)</span>
-<span class="sd">        [8, 9, 0, 10, 11, 0]</span>
-<span class="sd">        [1, 2, 3, 4, 5, 6, 7]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">ensure</span><span class="p">:</span>
         <span class="n">name_rowid_list</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">add_names</span><span class="p">(</span><span class="n">name_text_list</span><span class="p">)</span>
@@ -1728,7 +1728,7 @@
       &copy;2020, Wild Me.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.3</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

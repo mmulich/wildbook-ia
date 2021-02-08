@@ -12,7 +12,6 @@
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
     <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
    
@@ -84,6 +83,7 @@
 <span class="kn">from</span> <span class="nn">six.moves</span> <span class="kn">import</span> <span class="nb">zip</span>
 <span class="kn">from</span> <span class="nn">vtool</span> <span class="kn">import</span> <span class="n">image_filters</span>
 <span class="kn">from</span> <span class="nn">wbia</span> <span class="kn">import</span> <span class="n">dtool</span>
+<span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">import</span> <span class="nn">utool</span> <span class="k">as</span> <span class="nn">ut</span>
 <span class="kn">import</span> <span class="nn">vtool</span> <span class="k">as</span> <span class="nn">vt</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -95,7 +95,6 @@
 
 <span class="p">(</span><span class="nb">print</span><span class="p">,</span> <span class="n">rrr</span><span class="p">,</span> <span class="n">profile</span><span class="p">)</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">inject2</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;wbia&#39;</span><span class="p">)</span>
-
 
 <span class="n">derived_attribute</span> <span class="o">=</span> <span class="n">register_preprocs</span><span class="p">[</span><span class="s1">&#39;annot&#39;</span><span class="p">]</span>
 <span class="n">register_subprop</span> <span class="o">=</span> <span class="n">register_subprops</span><span class="p">[</span><span class="s1">&#39;annot&#39;</span><span class="p">]</span>
@@ -2207,7 +2206,11 @@
 
 <div class="viewcode-block" id="OrienterConfig"><a class="viewcode-back" href="../../api.html#wbia.core_annots.OrienterConfig">[docs]</a><span class="k">class</span> <span class="nc">OrienterConfig</span><span class="p">(</span><span class="n">dtool</span><span class="o">.</span><span class="n">Config</span><span class="p">):</span>
     <span class="n">_param_info_list</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">ut</span><span class="o">.</span><span class="n">ParamInfo</span><span class="p">(</span><span class="s1">&#39;orienter_algo&#39;</span><span class="p">,</span> <span class="s1">&#39;deepsense&#39;</span><span class="p">,</span> <span class="n">valid_values</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;deepsense&#39;</span><span class="p">]),</span>
+        <span class="n">ut</span><span class="o">.</span><span class="n">ParamInfo</span><span class="p">(</span>
+            <span class="s1">&#39;orienter_algo&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;plugin:orientation&#39;</span><span class="p">,</span>
+            <span class="n">valid_values</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;deepsense&#39;</span><span class="p">,</span> <span class="s1">&#39;plugin:orientation&#39;</span><span class="p">],</span>
+        <span class="p">),</span>
         <span class="n">ut</span><span class="o">.</span><span class="n">ParamInfo</span><span class="p">(</span><span class="s1">&#39;orienter_weight_filepath&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
     <span class="p">]</span>
     <span class="n">_sub_config_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">ChipConfig</span><span class="p">]</span></div>
@@ -2235,9 +2238,10 @@
 <span class="sd">        (float, str): tup</span>
 
 <span class="sd">    CommandLine:</span>
-<span class="sd">        python -m wbia.core_annots --exec-compute_orients_annotations --deepsense</span>
+<span class="sd">        pytest wbia/core_annots.py::compute_orients_annotations:0</span>
+<span class="sd">        python -m xdoctest /Users/jason.parham/code/wildbook-ia/wbia/core_annots.py compute_orients_annotations:1 --orient</span>
 
-<span class="sd">    Example:</span>
+<span class="sd">    Doctest:</span>
 <span class="sd">        &gt;&gt;&gt; # DISABLE_DOCTEST</span>
 <span class="sd">        &gt;&gt;&gt; from wbia.core_images import *  # NOQA</span>
 <span class="sd">        &gt;&gt;&gt; import wbia</span>
@@ -2255,7 +2259,37 @@
 <span class="sd">        &gt;&gt;&gt; theta_list  = ut.take_column(result_list, 4)</span>
 <span class="sd">        &gt;&gt;&gt; bbox_list   = list(zip(xtl_list, ytl_list, w_list, h_list))</span>
 <span class="sd">        &gt;&gt;&gt; ibs.set_annot_bboxes(aid_list, bbox_list, theta_list=theta_list)</span>
+<span class="sd">        &gt;&gt;&gt; print(result_list)</span>
+
+<span class="sd">    Doctest:</span>
+<span class="sd">        &gt;&gt;&gt; # DISABLE_DOCTEST</span>
+<span class="sd">        &gt;&gt;&gt; import wbia</span>
+<span class="sd">        &gt;&gt;&gt; import random</span>
+<span class="sd">        &gt;&gt;&gt; import utool as ut</span>
+<span class="sd">        &gt;&gt;&gt; from wbia.init import sysres</span>
+<span class="sd">        &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">        &gt;&gt;&gt; dbdir = sysres.ensure_testdb_orientation()</span>
+<span class="sd">        &gt;&gt;&gt; ibs = wbia.opendb(dbdir=dbdir)</span>
+<span class="sd">        &gt;&gt;&gt; aid_list = ibs.get_valid_aids()</span>
+<span class="sd">        &gt;&gt;&gt; note_list = ibs.get_annot_notes(aid_list)</span>
+<span class="sd">        &gt;&gt;&gt; species_list = ibs.get_annot_species(aid_list)</span>
+<span class="sd">        &gt;&gt;&gt; flag_list = [</span>
+<span class="sd">        &gt;&gt;&gt;     note == &#39;random-01&#39; and species == &#39;right_whale_head&#39;</span>
+<span class="sd">        &gt;&gt;&gt;     for note, species in zip(note_list, species_list)</span>
+<span class="sd">        &gt;&gt;&gt; ]</span>
+<span class="sd">        &gt;&gt;&gt; aid_list = ut.compress(aid_list, flag_list)</span>
+<span class="sd">        &gt;&gt;&gt; aid_list = aid_list[:10]</span>
+<span class="sd">        &gt;&gt;&gt; depc = ibs.depc_annot</span>
+<span class="sd">        &gt;&gt;&gt; config = {&#39;orienter_algo&#39;: &#39;plugin:orientation&#39;}</span>
+<span class="sd">        &gt;&gt;&gt; # depc.delete_property(&#39;orienter&#39;, aid_list)</span>
 <span class="sd">        &gt;&gt;&gt; result_list = depc.get_property(&#39;orienter&#39;, aid_list, None, config=config)</span>
+<span class="sd">        &gt;&gt;&gt; xtl_list    = list(map(int, map(np.around, ut.take_column(result_list, 0))))</span>
+<span class="sd">        &gt;&gt;&gt; ytl_list    = list(map(int, map(np.around, ut.take_column(result_list, 1))))</span>
+<span class="sd">        &gt;&gt;&gt; w_list      = list(map(int, map(np.around, ut.take_column(result_list, 2))))</span>
+<span class="sd">        &gt;&gt;&gt; h_list      = list(map(int, map(np.around, ut.take_column(result_list, 3))))</span>
+<span class="sd">        &gt;&gt;&gt; theta_list  = ut.take_column(result_list, 4)</span>
+<span class="sd">        &gt;&gt;&gt; bbox_list   = list(zip(xtl_list, ytl_list, w_list, h_list))</span>
+<span class="sd">        &gt;&gt;&gt; # ibs.set_annot_bboxes(aid_list, bbox_list, theta_list=theta_list)</span>
 <span class="sd">        &gt;&gt;&gt; print(result_list)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[ibs] Process Annotation Labels&#39;</span><span class="p">)</span>
@@ -2299,6 +2333,169 @@
                 <span class="n">result_gen</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Deepsense orienter not working!&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;orienter_algo&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;plugin:orientation&#39;</span><span class="p">]:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[ibs] orienting using Orientation Plug-in&#39;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">wbia_orientation</span> <span class="kn">import</span> <span class="n">_plugin</span>  <span class="c1"># NOQA</span>
+            <span class="kn">from</span> <span class="nn">wbia_orientation.utils.data_manipulation</span> <span class="kn">import</span> <span class="n">get_object_aligned_box</span>
+            <span class="kn">import</span> <span class="nn">vtool</span> <span class="k">as</span> <span class="nn">vt</span>
+
+            <span class="n">species_list</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_species</span><span class="p">(</span><span class="n">aid_list</span><span class="p">)</span>
+
+            <span class="n">species_dict</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">aid</span><span class="p">,</span> <span class="n">species</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">aid_list</span><span class="p">,</span> <span class="n">species_list</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">species</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">species_dict</span><span class="p">:</span>
+                    <span class="n">species_dict</span><span class="p">[</span><span class="n">species</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">species_dict</span><span class="p">[</span><span class="n">species</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">aid</span><span class="p">)</span>
+
+            <span class="n">results_dict</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">species_key_list</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">species_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+            <span class="k">for</span> <span class="n">species</span> <span class="ow">in</span> <span class="n">species_key_list</span><span class="p">:</span>
+                <span class="n">species_tag</span> <span class="o">=</span> <span class="n">_plugin</span><span class="o">.</span><span class="n">SPECIES_MODEL_TAG_MAPPING</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">species</span><span class="p">,</span> <span class="n">species</span><span class="p">)</span>
+                <span class="n">message</span> <span class="o">=</span> <span class="s1">&#39;Orientation plug-in does not support species_tag = </span><span class="si">%r</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                    <span class="n">species_tag</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="k">assert</span> <span class="n">species_tag</span> <span class="ow">in</span> <span class="n">_plugin</span><span class="o">.</span><span class="n">MODEL_URLS</span><span class="p">,</span> <span class="n">message</span>
+                <span class="k">assert</span> <span class="n">species_tag</span> <span class="ow">in</span> <span class="n">_plugin</span><span class="o">.</span><span class="n">CONFIGS</span><span class="p">,</span> <span class="n">message</span>
+                <span class="n">aid_list_</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">species_dict</span><span class="p">[</span><span class="n">species</span><span class="p">])</span>
+                <span class="nb">print</span><span class="p">(</span>
+                    <span class="s1">&#39;Computing </span><span class="si">%d</span><span class="s1"> orientations for species = </span><span class="si">%r</span><span class="s1">&#39;</span>
+                    <span class="o">%</span> <span class="p">(</span>
+                        <span class="nb">len</span><span class="p">(</span><span class="n">aid_list_</span><span class="p">),</span>
+                        <span class="n">species</span><span class="p">,</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+
+                <span class="n">output_list</span><span class="p">,</span> <span class="n">theta_list</span> <span class="o">=</span> <span class="n">_plugin</span><span class="o">.</span><span class="n">wbia_plugin_detect_oriented_box</span><span class="p">(</span>
+                    <span class="n">ibs</span><span class="p">,</span> <span class="n">aid_list_</span><span class="p">,</span> <span class="n">species_tag</span><span class="p">,</span> <span class="n">plot_samples</span><span class="o">=</span><span class="kc">False</span>
+                <span class="p">)</span>
+
+                <span class="k">for</span> <span class="n">aid_</span><span class="p">,</span> <span class="n">predicted_output</span><span class="p">,</span> <span class="n">predicted_theta</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+                    <span class="n">aid_list_</span><span class="p">,</span> <span class="n">output_list</span><span class="p">,</span> <span class="n">theta_list</span>
+                <span class="p">):</span>
+                    <span class="n">xc</span><span class="p">,</span> <span class="n">yc</span><span class="p">,</span> <span class="n">xt</span><span class="p">,</span> <span class="n">yt</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">predicted_output</span>
+                    <span class="n">predicted_verts</span> <span class="o">=</span> <span class="n">get_object_aligned_box</span><span class="p">(</span><span class="n">xc</span><span class="p">,</span> <span class="n">yc</span><span class="p">,</span> <span class="n">xt</span><span class="p">,</span> <span class="n">yt</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
+                    <span class="n">predicted_verts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">predicted_verts</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span>
+                        <span class="n">np</span><span class="o">.</span><span class="n">int64</span>
+                    <span class="p">)</span>
+                    <span class="n">predicted_verts</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="n">predicted_verts</span><span class="o">.</span><span class="n">tolist</span><span class="p">()))</span>
+
+                    <span class="n">calculated_theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">yt</span> <span class="o">-</span> <span class="n">yc</span><span class="p">,</span> <span class="n">xt</span> <span class="o">-</span> <span class="n">xc</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="mi">90</span><span class="p">)</span>
+                    <span class="n">predicted_rot</span> <span class="o">=</span> <span class="n">vt</span><span class="o">.</span><span class="n">rotation_around_mat3x3</span><span class="p">(</span>
+                        <span class="n">calculated_theta</span> <span class="o">*</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">xc</span><span class="p">,</span> <span class="n">yc</span>
+                    <span class="p">)</span>
+                    <span class="n">predicted_aligned_verts</span> <span class="o">=</span> <span class="n">vt</span><span class="o">.</span><span class="n">transform_points_with_homography</span><span class="p">(</span>
+                        <span class="n">predicted_rot</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">predicted_verts</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+                    <span class="p">)</span><span class="o">.</span><span class="n">T</span>
+                    <span class="n">predicted_aligned_verts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span><span class="n">predicted_aligned_verts</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span>
+                        <span class="n">np</span><span class="o">.</span><span class="n">int64</span>
+                    <span class="p">)</span>
+                    <span class="n">predicted_aligned_verts</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
+                        <span class="nb">map</span><span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="n">predicted_aligned_verts</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+                    <span class="p">)</span>
+
+                    <span class="n">predicted_bbox</span> <span class="o">=</span> <span class="n">vt</span><span class="o">.</span><span class="n">bboxes_from_vert_list</span><span class="p">([</span><span class="n">predicted_aligned_verts</span><span class="p">])[</span>
+                        <span class="mi">0</span>
+                    <span class="p">]</span>
+                    <span class="p">(</span>
+                        <span class="n">predicted_xtl</span><span class="p">,</span>
+                        <span class="n">predicted_ytl</span><span class="p">,</span>
+                        <span class="n">predicted_w</span><span class="p">,</span>
+                        <span class="n">predicted_h</span><span class="p">,</span>
+                    <span class="p">)</span> <span class="o">=</span> <span class="n">predicted_bbox</span>
+
+                    <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">predicted_xtl</span><span class="p">,</span>
+                        <span class="n">predicted_ytl</span><span class="p">,</span>
+                        <span class="n">predicted_w</span><span class="p">,</span>
+                        <span class="n">predicted_h</span><span class="p">,</span>
+                        <span class="n">calculated_theta</span><span class="p">,</span>
+                        <span class="c1"># predicted_theta,</span>
+                    <span class="p">)</span>
+                    <span class="n">results_dict</span><span class="p">[</span><span class="n">aid_</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span>
+
+                    <span class="k">if</span> <span class="kc">False</span><span class="p">:</span>
+                        <span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">combinations</span>
+
+                        <span class="n">predicted_bbox_verts</span> <span class="o">=</span> <span class="n">vt</span><span class="o">.</span><span class="n">verts_list_from_bboxes_list</span><span class="p">(</span>
+                            <span class="p">[</span><span class="n">predicted_bbox</span><span class="p">]</span>
+                        <span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                        <span class="n">predicted_bbox_rot</span> <span class="o">=</span> <span class="n">vt</span><span class="o">.</span><span class="n">rotation_around_bbox_mat3x3</span><span class="p">(</span>
+                            <span class="n">calculated_theta</span><span class="p">,</span> <span class="n">predicted_bbox</span>
+                        <span class="p">)</span>
+                        <span class="n">predicted_bbox_rotated_verts</span> <span class="o">=</span> <span class="p">(</span>
+                            <span class="n">vt</span><span class="o">.</span><span class="n">transform_points_with_homography</span><span class="p">(</span>
+                                <span class="n">predicted_bbox_rot</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">predicted_bbox_verts</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+                            <span class="p">)</span><span class="o">.</span><span class="n">T</span>
+                        <span class="p">)</span>
+                        <span class="n">predicted_bbox_rotated_verts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span>
+                            <span class="n">predicted_bbox_rotated_verts</span>
+                        <span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+                        <span class="n">predicted_bbox_rotated_verts</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
+                            <span class="nb">map</span><span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="n">predicted_bbox_rotated_verts</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+                        <span class="p">)</span>
+
+                        <span class="n">gid_</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_gids</span><span class="p">(</span><span class="n">aid_</span><span class="p">)</span>
+                        <span class="n">image</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_images</span><span class="p">(</span><span class="n">gid_</span><span class="p">)</span>
+
+                        <span class="n">original_bbox</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_bboxes</span><span class="p">(</span><span class="n">aid_</span><span class="p">)</span>
+                        <span class="n">original_theta</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_thetas</span><span class="p">(</span><span class="n">aid_</span><span class="p">)</span>
+                        <span class="n">original_verts</span> <span class="o">=</span> <span class="n">vt</span><span class="o">.</span><span class="n">verts_list_from_bboxes_list</span><span class="p">([</span><span class="n">original_bbox</span><span class="p">])[</span>
+                            <span class="mi">0</span>
+                        <span class="p">]</span>
+                        <span class="n">original_rot</span> <span class="o">=</span> <span class="n">vt</span><span class="o">.</span><span class="n">rotation_around_bbox_mat3x3</span><span class="p">(</span>
+                            <span class="n">original_theta</span><span class="p">,</span> <span class="n">original_bbox</span>
+                        <span class="p">)</span>
+                        <span class="n">rotated_verts</span> <span class="o">=</span> <span class="n">vt</span><span class="o">.</span><span class="n">transform_points_with_homography</span><span class="p">(</span>
+                            <span class="n">original_rot</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">original_verts</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+                        <span class="p">)</span><span class="o">.</span><span class="n">T</span>
+                        <span class="n">rotated_verts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span><span class="n">rotated_verts</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+                        <span class="n">rotated_verts</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="n">rotated_verts</span><span class="o">.</span><span class="n">tolist</span><span class="p">()))</span>
+
+                        <span class="n">color</span> <span class="o">=</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+                        <span class="k">for</span> <span class="n">vert</span> <span class="ow">in</span> <span class="n">original_verts</span><span class="p">:</span>
+                            <span class="n">cv2</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">vert</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+                        <span class="k">for</span> <span class="n">vert1</span><span class="p">,</span> <span class="n">vert2</span> <span class="ow">in</span> <span class="n">combinations</span><span class="p">(</span><span class="n">original_verts</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+                            <span class="n">cv2</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">vert1</span><span class="p">,</span> <span class="n">vert2</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+
+                        <span class="n">color</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">)</span>
+                        <span class="k">for</span> <span class="n">vert</span> <span class="ow">in</span> <span class="n">rotated_verts</span><span class="p">:</span>
+                            <span class="n">cv2</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">vert</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+                        <span class="k">for</span> <span class="n">vert1</span><span class="p">,</span> <span class="n">vert2</span> <span class="ow">in</span> <span class="n">combinations</span><span class="p">(</span><span class="n">rotated_verts</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+                            <span class="n">cv2</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">vert1</span><span class="p">,</span> <span class="n">vert2</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+
+                        <span class="n">color</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+                        <span class="k">for</span> <span class="n">vert</span> <span class="ow">in</span> <span class="n">predicted_verts</span><span class="p">:</span>
+                            <span class="n">cv2</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">vert</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+                        <span class="k">for</span> <span class="n">vert1</span><span class="p">,</span> <span class="n">vert2</span> <span class="ow">in</span> <span class="n">combinations</span><span class="p">(</span><span class="n">predicted_verts</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+                            <span class="n">cv2</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">vert1</span><span class="p">,</span> <span class="n">vert2</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+
+                        <span class="n">color</span> <span class="o">=</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+                        <span class="k">for</span> <span class="n">vert</span> <span class="ow">in</span> <span class="n">predicted_aligned_verts</span><span class="p">:</span>
+                            <span class="n">cv2</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">vert</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+                        <span class="k">for</span> <span class="n">vert1</span><span class="p">,</span> <span class="n">vert2</span> <span class="ow">in</span> <span class="n">combinations</span><span class="p">(</span><span class="n">predicted_aligned_verts</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+                            <span class="n">cv2</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">vert1</span><span class="p">,</span> <span class="n">vert2</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+
+                        <span class="n">color</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">)</span>
+                        <span class="k">for</span> <span class="n">vert</span> <span class="ow">in</span> <span class="n">predicted_bbox_rotated_verts</span><span class="p">:</span>
+                            <span class="n">cv2</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">vert</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+                        <span class="k">for</span> <span class="n">vert1</span><span class="p">,</span> <span class="n">vert2</span> <span class="ow">in</span> <span class="n">combinations</span><span class="p">(</span><span class="n">predicted_bbox_rotated_verts</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+                            <span class="n">cv2</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">vert1</span><span class="p">,</span> <span class="n">vert2</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+                        <span class="n">cv2</span><span class="o">.</span><span class="n">imwrite</span><span class="p">(</span><span class="s1">&#39;/tmp/image.</span><span class="si">%d</span><span class="s1">.png&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">aid_</span><span class="p">),</span> <span class="n">image</span><span class="p">)</span>
+
+            <span class="n">result_gen</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">aid</span> <span class="ow">in</span> <span class="n">aid_list</span><span class="p">:</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="n">results_dict</span><span class="p">[</span><span class="n">aid</span><span class="p">]</span>
+                <span class="n">result_gen</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Orientation plug-in not working!&#39;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
             <span class="s1">&#39;specified orienter algo is not supported in config = </span><span class="si">%r</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">config</span><span class="p">,)</span>
@@ -2307,6 +2504,525 @@
     <span class="c1"># yield detections</span>
     <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">result_gen</span><span class="p">:</span>
         <span class="k">yield</span> <span class="n">result</span></div>
+
+
+<span class="c1"># for assigning part-annots to body-annots of the same individual:</span>
+<div class="viewcode-block" id="PartAssignmentFeatureConfig"><a class="viewcode-back" href="../../api.html#wbia.core_annots.PartAssignmentFeatureConfig">[docs]</a><span class="k">class</span> <span class="nc">PartAssignmentFeatureConfig</span><span class="p">(</span><span class="n">dtool</span><span class="o">.</span><span class="n">Config</span><span class="p">):</span>
+    <span class="n">_param_info_list</span> <span class="o">=</span> <span class="p">[]</span></div>
+
+
+<span class="c1"># just like theta_assignement_features above but with a one-hot encoding of viewpoints</span>
+<span class="c1"># viewpoints are a boolean value for each viewpoint. will possibly need to modify this for other species</span>
+<div class="viewcode-block" id="assigner_viewpoint_features"><a class="viewcode-back" href="../../api.html#wbia.core_annots.assigner_viewpoint_features">[docs]</a><span class="nd">@derived_attribute</span><span class="p">(</span>
+    <span class="n">tablename</span><span class="o">=</span><span class="s1">&#39;assigner_viewpoint_features&#39;</span><span class="p">,</span>
+    <span class="n">parents</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;annotations&#39;</span><span class="p">,</span> <span class="s1">&#39;annotations&#39;</span><span class="p">],</span>
+    <span class="n">colnames</span><span class="o">=</span><span class="p">[</span>
+        <span class="s1">&#39;p_v1_x&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;p_v1_y&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;p_v2_x&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;p_v2_y&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;p_v3_x&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;p_v3_y&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;p_v4_x&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;p_v4_y&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;p_center_x&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;p_center_y&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;b_xtl&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;b_ytl&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;b_xbr&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;b_ybr&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;b_center_x&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;b_center_y&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;int_area_scalar&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;part_body_distance&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;part_body_centroid_dist&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;int_over_union&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;int_over_part&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;int_over_body&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;part_over_body&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;part_is_left&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;part_is_right&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;part_is_up&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;part_is_down&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;part_is_front&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;part_is_back&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;body_is_left&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;body_is_right&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;body_is_up&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;body_is_down&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;body_is_front&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;body_is_back&#39;</span><span class="p">,</span>
+    <span class="p">],</span>
+    <span class="n">coltypes</span><span class="o">=</span><span class="p">[</span>
+        <span class="nb">float</span><span class="p">,</span>
+        <span class="nb">float</span><span class="p">,</span>
+        <span class="nb">float</span><span class="p">,</span>
+        <span class="nb">float</span><span class="p">,</span>
+        <span class="nb">float</span><span class="p">,</span>
+        <span class="nb">float</span><span class="p">,</span>
+        <span class="nb">float</span><span class="p">,</span>
+        <span class="nb">float</span><span class="p">,</span>
+        <span class="nb">float</span><span class="p">,</span>
+        <span class="nb">float</span><span class="p">,</span>
+        <span class="nb">float</span><span class="p">,</span>
+        <span class="nb">float</span><span class="p">,</span>
+        <span class="nb">float</span><span class="p">,</span>
+        <span class="nb">float</span><span class="p">,</span>
+        <span class="nb">float</span><span class="p">,</span>
+        <span class="nb">float</span><span class="p">,</span>
+        <span class="nb">float</span><span class="p">,</span>
+        <span class="nb">float</span><span class="p">,</span>
+        <span class="nb">float</span><span class="p">,</span>
+        <span class="nb">float</span><span class="p">,</span>
+        <span class="nb">float</span><span class="p">,</span>
+        <span class="nb">float</span><span class="p">,</span>
+        <span class="nb">float</span><span class="p">,</span>
+        <span class="nb">bool</span><span class="p">,</span>
+        <span class="nb">bool</span><span class="p">,</span>
+        <span class="nb">bool</span><span class="p">,</span>
+        <span class="nb">bool</span><span class="p">,</span>
+        <span class="nb">bool</span><span class="p">,</span>
+        <span class="nb">bool</span><span class="p">,</span>
+        <span class="nb">bool</span><span class="p">,</span>
+        <span class="nb">bool</span><span class="p">,</span>
+        <span class="nb">bool</span><span class="p">,</span>
+        <span class="nb">bool</span><span class="p">,</span>
+        <span class="nb">bool</span><span class="p">,</span>
+        <span class="nb">bool</span><span class="p">,</span>
+    <span class="p">],</span>
+    <span class="n">configclass</span><span class="o">=</span><span class="n">PartAssignmentFeatureConfig</span><span class="p">,</span>
+    <span class="n">fname</span><span class="o">=</span><span class="s1">&#39;assigner_viewpoint_features&#39;</span><span class="p">,</span>
+    <span class="n">rm_extern_on_delete</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">chunksize</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span>  <span class="c1"># chunk size is huge bc we need accurate means and stdevs of various traits</span>
+<span class="p">)</span>
+<span class="k">def</span> <span class="nf">assigner_viewpoint_features</span><span class="p">(</span><span class="n">depc</span><span class="p">,</span> <span class="n">part_aid_list</span><span class="p">,</span> <span class="n">body_aid_list</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+    <span class="kn">from</span> <span class="nn">shapely</span> <span class="kn">import</span> <span class="n">geometry</span>
+    <span class="kn">import</span> <span class="nn">math</span>
+
+    <span class="n">ibs</span> <span class="o">=</span> <span class="n">depc</span><span class="o">.</span><span class="n">controller</span>
+
+    <span class="n">part_gids</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_gids</span><span class="p">(</span><span class="n">part_aid_list</span><span class="p">)</span>
+    <span class="n">body_gids</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_gids</span><span class="p">(</span><span class="n">body_aid_list</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="p">(</span>
+        <span class="n">part_gids</span> <span class="o">==</span> <span class="n">body_gids</span>
+    <span class="p">),</span> <span class="s1">&#39;can only compute assignment features on aids in the same image&#39;</span>
+    <span class="n">parts_are_parts</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">_are_part_annots</span><span class="p">(</span><span class="n">part_aid_list</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="n">parts_are_parts</span><span class="p">),</span> <span class="s1">&#39;all part_aids must be part annots.&#39;</span>
+    <span class="n">bodies_are_parts</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">_are_part_annots</span><span class="p">(</span><span class="n">body_aid_list</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">bodies_are_parts</span><span class="p">),</span> <span class="s1">&#39;body_aids cannot be part annots&#39;</span>
+
+    <span class="n">im_widths</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_image_widths</span><span class="p">(</span><span class="n">part_gids</span><span class="p">)</span>
+    <span class="n">im_heights</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_image_heights</span><span class="p">(</span><span class="n">part_gids</span><span class="p">)</span>
+
+    <span class="n">part_verts</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_rotated_verts</span><span class="p">(</span><span class="n">part_aid_list</span><span class="p">)</span>
+    <span class="n">body_verts</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_rotated_verts</span><span class="p">(</span><span class="n">body_aid_list</span><span class="p">)</span>
+    <span class="n">part_verts</span> <span class="o">=</span> <span class="n">_norm_vertices</span><span class="p">(</span><span class="n">part_verts</span><span class="p">,</span> <span class="n">im_widths</span><span class="p">,</span> <span class="n">im_heights</span><span class="p">)</span>
+    <span class="n">body_verts</span> <span class="o">=</span> <span class="n">_norm_vertices</span><span class="p">(</span><span class="n">body_verts</span><span class="p">,</span> <span class="n">im_widths</span><span class="p">,</span> <span class="n">im_heights</span><span class="p">)</span>
+    <span class="n">part_polys</span> <span class="o">=</span> <span class="p">[</span><span class="n">geometry</span><span class="o">.</span><span class="n">Polygon</span><span class="p">(</span><span class="n">vert</span><span class="p">)</span> <span class="k">for</span> <span class="n">vert</span> <span class="ow">in</span> <span class="n">part_verts</span><span class="p">]</span>
+    <span class="n">body_polys</span> <span class="o">=</span> <span class="p">[</span><span class="n">geometry</span><span class="o">.</span><span class="n">Polygon</span><span class="p">(</span><span class="n">vert</span><span class="p">)</span> <span class="k">for</span> <span class="n">vert</span> <span class="ow">in</span> <span class="n">body_verts</span><span class="p">]</span>
+    <span class="n">intersect_polys</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">part</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">body</span><span class="p">)</span> <span class="k">for</span> <span class="n">part</span><span class="p">,</span> <span class="n">body</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">part_polys</span><span class="p">,</span> <span class="n">body_polys</span><span class="p">)</span>
+    <span class="p">]</span>
+    <span class="n">intersect_areas</span> <span class="o">=</span> <span class="p">[</span><span class="n">poly</span><span class="o">.</span><span class="n">area</span> <span class="k">for</span> <span class="n">poly</span> <span class="ow">in</span> <span class="n">intersect_polys</span><span class="p">]</span>
+    <span class="c1"># just to make int_areas more comparable via ML methods, and since all distances &lt; 1</span>
+    <span class="n">int_area_scalars</span> <span class="o">=</span> <span class="p">[</span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">area</span><span class="p">)</span> <span class="k">for</span> <span class="n">area</span> <span class="ow">in</span> <span class="n">intersect_areas</span><span class="p">]</span>
+
+    <span class="n">part_bboxes</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_bboxes</span><span class="p">(</span><span class="n">part_aid_list</span><span class="p">)</span>
+    <span class="n">body_bboxes</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_bboxes</span><span class="p">(</span><span class="n">body_aid_list</span><span class="p">)</span>
+    <span class="n">part_bboxes</span> <span class="o">=</span> <span class="n">_norm_bboxes</span><span class="p">(</span><span class="n">part_bboxes</span><span class="p">,</span> <span class="n">im_widths</span><span class="p">,</span> <span class="n">im_heights</span><span class="p">)</span>
+    <span class="n">body_bboxes</span> <span class="o">=</span> <span class="n">_norm_bboxes</span><span class="p">(</span><span class="n">body_bboxes</span><span class="p">,</span> <span class="n">im_widths</span><span class="p">,</span> <span class="n">im_heights</span><span class="p">)</span>
+    <span class="n">part_areas</span> <span class="o">=</span> <span class="p">[</span><span class="n">bbox</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">bbox</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="k">for</span> <span class="n">bbox</span> <span class="ow">in</span> <span class="n">part_bboxes</span><span class="p">]</span>
+    <span class="n">body_areas</span> <span class="o">=</span> <span class="p">[</span><span class="n">bbox</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">bbox</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="k">for</span> <span class="n">bbox</span> <span class="ow">in</span> <span class="n">body_bboxes</span><span class="p">]</span>
+    <span class="n">union_areas</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">part</span> <span class="o">+</span> <span class="n">body</span> <span class="o">-</span> <span class="n">intersect</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">part</span><span class="p">,</span> <span class="n">body</span><span class="p">,</span> <span class="n">intersect</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">part_areas</span><span class="p">,</span> <span class="n">body_areas</span><span class="p">,</span> <span class="n">intersect_areas</span><span class="p">)</span>
+    <span class="p">]</span>
+    <span class="n">int_over_unions</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">intersect</span> <span class="o">/</span> <span class="n">union</span> <span class="k">for</span> <span class="p">(</span><span class="n">intersect</span><span class="p">,</span> <span class="n">union</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">intersect_areas</span><span class="p">,</span> <span class="n">union_areas</span><span class="p">)</span>
+    <span class="p">]</span>
+
+    <span class="n">part_body_distances</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">part</span><span class="o">.</span><span class="n">distance</span><span class="p">(</span><span class="n">body</span><span class="p">)</span> <span class="k">for</span> <span class="n">part</span><span class="p">,</span> <span class="n">body</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">part_polys</span><span class="p">,</span> <span class="n">body_polys</span><span class="p">)</span>
+    <span class="p">]</span>
+
+    <span class="n">part_centroids</span> <span class="o">=</span> <span class="p">[</span><span class="n">poly</span><span class="o">.</span><span class="n">centroid</span> <span class="k">for</span> <span class="n">poly</span> <span class="ow">in</span> <span class="n">part_polys</span><span class="p">]</span>
+    <span class="n">body_centroids</span> <span class="o">=</span> <span class="p">[</span><span class="n">poly</span><span class="o">.</span><span class="n">centroid</span> <span class="k">for</span> <span class="n">poly</span> <span class="ow">in</span> <span class="n">body_polys</span><span class="p">]</span>
+
+    <span class="n">part_body_centroid_dists</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">part</span><span class="o">.</span><span class="n">distance</span><span class="p">(</span><span class="n">body</span><span class="p">)</span> <span class="k">for</span> <span class="n">part</span><span class="p">,</span> <span class="n">body</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">part_centroids</span><span class="p">,</span> <span class="n">body_centroids</span><span class="p">)</span>
+    <span class="p">]</span>
+
+    <span class="n">int_over_parts</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">int_area</span> <span class="o">/</span> <span class="n">part_area</span> <span class="k">for</span> <span class="n">part_area</span><span class="p">,</span> <span class="n">int_area</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">part_areas</span><span class="p">,</span> <span class="n">intersect_areas</span><span class="p">)</span>
+    <span class="p">]</span>
+
+    <span class="n">int_over_bodys</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">int_area</span> <span class="o">/</span> <span class="n">body_area</span> <span class="k">for</span> <span class="n">body_area</span><span class="p">,</span> <span class="n">int_area</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">body_areas</span><span class="p">,</span> <span class="n">intersect_areas</span><span class="p">)</span>
+    <span class="p">]</span>
+
+    <span class="n">part_over_bodys</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">part_area</span> <span class="o">/</span> <span class="n">body_area</span> <span class="k">for</span> <span class="n">part_area</span><span class="p">,</span> <span class="n">body_area</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">part_areas</span><span class="p">,</span> <span class="n">body_areas</span><span class="p">)</span>
+    <span class="p">]</span>
+
+    <span class="n">part_lrudfb_bools</span> <span class="o">=</span> <span class="n">get_annot_lrudfb_bools</span><span class="p">(</span><span class="n">ibs</span><span class="p">,</span> <span class="n">part_aid_list</span><span class="p">)</span>
+    <span class="n">body_lrudfb_bools</span> <span class="o">=</span> <span class="n">get_annot_lrudfb_bools</span><span class="p">(</span><span class="n">ibs</span><span class="p">,</span> <span class="n">part_aid_list</span><span class="p">)</span>
+
+    <span class="c1"># note that here only parts have thetas, hence only returning body bboxes</span>
+    <span class="n">result_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+        <span class="nb">zip</span><span class="p">(</span>
+            <span class="n">part_verts</span><span class="p">,</span>
+            <span class="n">part_centroids</span><span class="p">,</span>
+            <span class="n">body_bboxes</span><span class="p">,</span>
+            <span class="n">body_centroids</span><span class="p">,</span>
+            <span class="n">int_area_scalars</span><span class="p">,</span>
+            <span class="n">part_body_distances</span><span class="p">,</span>
+            <span class="n">part_body_centroid_dists</span><span class="p">,</span>
+            <span class="n">int_over_unions</span><span class="p">,</span>
+            <span class="n">int_over_parts</span><span class="p">,</span>
+            <span class="n">int_over_bodys</span><span class="p">,</span>
+            <span class="n">part_over_bodys</span><span class="p">,</span>
+            <span class="n">part_lrudfb_bools</span><span class="p">,</span>
+            <span class="n">body_lrudfb_bools</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="k">for</span> <span class="p">(</span>
+        <span class="n">part_vert</span><span class="p">,</span>
+        <span class="n">part_center</span><span class="p">,</span>
+        <span class="n">body_bbox</span><span class="p">,</span>
+        <span class="n">body_center</span><span class="p">,</span>
+        <span class="n">int_area_scalar</span><span class="p">,</span>
+        <span class="n">part_body_distance</span><span class="p">,</span>
+        <span class="n">part_body_centroid_dist</span><span class="p">,</span>
+        <span class="n">int_over_union</span><span class="p">,</span>
+        <span class="n">int_over_part</span><span class="p">,</span>
+        <span class="n">int_over_body</span><span class="p">,</span>
+        <span class="n">part_over_body</span><span class="p">,</span>
+        <span class="n">part_lrudfb_bool</span><span class="p">,</span>
+        <span class="n">body_lrudfb_bool</span><span class="p">,</span>
+    <span class="p">)</span> <span class="ow">in</span> <span class="n">result_list</span><span class="p">:</span>
+        <span class="n">ans</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">part_vert</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+            <span class="n">part_vert</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
+            <span class="n">part_vert</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+            <span class="n">part_vert</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
+            <span class="n">part_vert</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+            <span class="n">part_vert</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
+            <span class="n">part_vert</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+            <span class="n">part_vert</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
+            <span class="n">part_center</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
+            <span class="n">part_center</span><span class="o">.</span><span class="n">y</span><span class="p">,</span>
+            <span class="n">body_bbox</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="n">body_bbox</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+            <span class="n">body_bbox</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+            <span class="n">body_bbox</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
+            <span class="n">body_center</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
+            <span class="n">body_center</span><span class="o">.</span><span class="n">y</span><span class="p">,</span>
+            <span class="n">int_area_scalar</span><span class="p">,</span>
+            <span class="n">part_body_distance</span><span class="p">,</span>
+            <span class="n">part_body_centroid_dist</span><span class="p">,</span>
+            <span class="n">int_over_union</span><span class="p">,</span>
+            <span class="n">int_over_part</span><span class="p">,</span>
+            <span class="n">int_over_body</span><span class="p">,</span>
+            <span class="n">part_over_body</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">ans</span> <span class="o">+=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">part_lrudfb_bool</span><span class="p">)</span>
+        <span class="n">ans</span> <span class="o">+=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">body_lrudfb_bool</span><span class="p">)</span>
+        <span class="k">yield</span> <span class="n">ans</span></div>
+
+
+<span class="c1"># the plus means an additional vector from p to b</span>
+<div class="viewcode-block" id="assigner_viewpoint_unit_features"><a class="viewcode-back" href="../../api.html#wbia.core_annots.assigner_viewpoint_unit_features">[docs]</a><span class="nd">@derived_attribute</span><span class="p">(</span>
+    <span class="n">tablename</span><span class="o">=</span><span class="s1">&#39;assigner_viewpoint_unit_features&#39;</span><span class="p">,</span>
+    <span class="n">parents</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;annotations&#39;</span><span class="p">,</span> <span class="s1">&#39;annotations&#39;</span><span class="p">],</span>
+    <span class="n">colnames</span><span class="o">=</span><span class="p">[</span>
+        <span class="s1">&#39;p_v1_x&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;p_v1_y&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;p_v2_x&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;p_v2_y&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;p_v3_x&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;p_v3_y&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;p_v4_x&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;p_v4_y&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;p_center_x&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;p_center_y&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;b_xtl&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;b_ytl&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;b_xbr&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;b_ybr&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;b_center_x&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;b_center_y&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;int_area_scalar&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;part_body_distance&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;part_body_centroid_dist&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;body_to_part_x&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;body_to_part_y&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;int_over_union&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;int_over_part&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;int_over_body&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;part_over_body&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;part_is_left&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;part_is_right&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;part_is_up&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;part_is_down&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;part_is_front&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;part_is_back&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;body_is_left&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;body_is_right&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;body_is_up&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;body_is_down&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;body_is_front&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;body_is_back&#39;</span><span class="p">,</span>
+    <span class="p">],</span>
+    <span class="n">coltypes</span><span class="o">=</span><span class="p">[</span>
+        <span class="nb">float</span><span class="p">,</span>
+        <span class="nb">float</span><span class="p">,</span>
+        <span class="nb">float</span><span class="p">,</span>
+        <span class="nb">float</span><span class="p">,</span>
+        <span class="nb">float</span><span class="p">,</span>
+        <span class="nb">float</span><span class="p">,</span>
+        <span class="nb">float</span><span class="p">,</span>
+        <span class="nb">float</span><span class="p">,</span>
+        <span class="nb">float</span><span class="p">,</span>
+        <span class="nb">float</span><span class="p">,</span>
+        <span class="nb">float</span><span class="p">,</span>
+        <span class="nb">float</span><span class="p">,</span>
+        <span class="nb">float</span><span class="p">,</span>
+        <span class="nb">float</span><span class="p">,</span>
+        <span class="nb">float</span><span class="p">,</span>
+        <span class="nb">float</span><span class="p">,</span>
+        <span class="nb">float</span><span class="p">,</span>
+        <span class="nb">float</span><span class="p">,</span>
+        <span class="nb">float</span><span class="p">,</span>
+        <span class="nb">float</span><span class="p">,</span>
+        <span class="nb">float</span><span class="p">,</span>
+        <span class="nb">float</span><span class="p">,</span>
+        <span class="nb">float</span><span class="p">,</span>
+        <span class="nb">float</span><span class="p">,</span>
+        <span class="nb">float</span><span class="p">,</span>
+        <span class="nb">float</span><span class="p">,</span>
+        <span class="nb">float</span><span class="p">,</span>
+        <span class="nb">float</span><span class="p">,</span>
+        <span class="nb">float</span><span class="p">,</span>
+        <span class="nb">float</span><span class="p">,</span>
+        <span class="nb">float</span><span class="p">,</span>
+        <span class="nb">float</span><span class="p">,</span>
+        <span class="nb">float</span><span class="p">,</span>
+        <span class="nb">float</span><span class="p">,</span>
+        <span class="nb">float</span><span class="p">,</span>
+        <span class="nb">float</span><span class="p">,</span>
+        <span class="nb">float</span><span class="p">,</span>
+    <span class="p">],</span>
+    <span class="n">configclass</span><span class="o">=</span><span class="n">PartAssignmentFeatureConfig</span><span class="p">,</span>
+    <span class="n">fname</span><span class="o">=</span><span class="s1">&#39;assigner_viewpoint_unit_features&#39;</span><span class="p">,</span>
+    <span class="n">rm_extern_on_delete</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">chunksize</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span>  <span class="c1"># chunk size is huge bc we need accurate means and stdevs of various traits</span>
+<span class="p">)</span>
+<span class="k">def</span> <span class="nf">assigner_viewpoint_unit_features</span><span class="p">(</span><span class="n">depc</span><span class="p">,</span> <span class="n">part_aid_list</span><span class="p">,</span> <span class="n">body_aid_list</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+    <span class="kn">from</span> <span class="nn">shapely</span> <span class="kn">import</span> <span class="n">geometry</span>
+    <span class="kn">import</span> <span class="nn">math</span>
+
+    <span class="n">ibs</span> <span class="o">=</span> <span class="n">depc</span><span class="o">.</span><span class="n">controller</span>
+
+    <span class="n">part_gids</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_gids</span><span class="p">(</span><span class="n">part_aid_list</span><span class="p">)</span>
+    <span class="n">body_gids</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_gids</span><span class="p">(</span><span class="n">body_aid_list</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="p">(</span>
+        <span class="n">part_gids</span> <span class="o">==</span> <span class="n">body_gids</span>
+    <span class="p">),</span> <span class="s1">&#39;can only compute assignment features on aids in the same image&#39;</span>
+    <span class="n">parts_are_parts</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">_are_part_annots</span><span class="p">(</span><span class="n">part_aid_list</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="n">parts_are_parts</span><span class="p">),</span> <span class="s1">&#39;all part_aids must be part annots.&#39;</span>
+    <span class="n">bodies_are_parts</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">_are_part_annots</span><span class="p">(</span><span class="n">body_aid_list</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">bodies_are_parts</span><span class="p">),</span> <span class="s1">&#39;body_aids cannot be part annots&#39;</span>
+
+    <span class="n">im_widths</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_image_widths</span><span class="p">(</span><span class="n">part_gids</span><span class="p">)</span>
+    <span class="n">im_heights</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_image_heights</span><span class="p">(</span><span class="n">part_gids</span><span class="p">)</span>
+
+    <span class="n">part_verts</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_rotated_verts</span><span class="p">(</span><span class="n">part_aid_list</span><span class="p">)</span>
+    <span class="n">body_verts</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_rotated_verts</span><span class="p">(</span><span class="n">body_aid_list</span><span class="p">)</span>
+    <span class="n">part_verts</span> <span class="o">=</span> <span class="n">_norm_vertices</span><span class="p">(</span><span class="n">part_verts</span><span class="p">,</span> <span class="n">im_widths</span><span class="p">,</span> <span class="n">im_heights</span><span class="p">)</span>
+    <span class="n">body_verts</span> <span class="o">=</span> <span class="n">_norm_vertices</span><span class="p">(</span><span class="n">body_verts</span><span class="p">,</span> <span class="n">im_widths</span><span class="p">,</span> <span class="n">im_heights</span><span class="p">)</span>
+    <span class="n">part_polys</span> <span class="o">=</span> <span class="p">[</span><span class="n">geometry</span><span class="o">.</span><span class="n">Polygon</span><span class="p">(</span><span class="n">vert</span><span class="p">)</span> <span class="k">for</span> <span class="n">vert</span> <span class="ow">in</span> <span class="n">part_verts</span><span class="p">]</span>
+    <span class="n">body_polys</span> <span class="o">=</span> <span class="p">[</span><span class="n">geometry</span><span class="o">.</span><span class="n">Polygon</span><span class="p">(</span><span class="n">vert</span><span class="p">)</span> <span class="k">for</span> <span class="n">vert</span> <span class="ow">in</span> <span class="n">body_verts</span><span class="p">]</span>
+    <span class="n">intersect_polys</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">part</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">body</span><span class="p">)</span> <span class="k">for</span> <span class="n">part</span><span class="p">,</span> <span class="n">body</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">part_polys</span><span class="p">,</span> <span class="n">body_polys</span><span class="p">)</span>
+    <span class="p">]</span>
+    <span class="n">intersect_areas</span> <span class="o">=</span> <span class="p">[</span><span class="n">poly</span><span class="o">.</span><span class="n">area</span> <span class="k">for</span> <span class="n">poly</span> <span class="ow">in</span> <span class="n">intersect_polys</span><span class="p">]</span>
+    <span class="c1"># just to make int_areas more comparable via ML methods, and since all distances &lt; 1</span>
+    <span class="n">int_area_scalars</span> <span class="o">=</span> <span class="p">[</span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">area</span><span class="p">)</span> <span class="k">for</span> <span class="n">area</span> <span class="ow">in</span> <span class="n">intersect_areas</span><span class="p">]</span>
+
+    <span class="n">part_bboxes</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_bboxes</span><span class="p">(</span><span class="n">part_aid_list</span><span class="p">)</span>
+    <span class="n">body_bboxes</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_bboxes</span><span class="p">(</span><span class="n">body_aid_list</span><span class="p">)</span>
+    <span class="n">part_bboxes</span> <span class="o">=</span> <span class="n">_norm_bboxes</span><span class="p">(</span><span class="n">part_bboxes</span><span class="p">,</span> <span class="n">im_widths</span><span class="p">,</span> <span class="n">im_heights</span><span class="p">)</span>
+    <span class="n">body_bboxes</span> <span class="o">=</span> <span class="n">_norm_bboxes</span><span class="p">(</span><span class="n">body_bboxes</span><span class="p">,</span> <span class="n">im_widths</span><span class="p">,</span> <span class="n">im_heights</span><span class="p">)</span>
+    <span class="n">part_areas</span> <span class="o">=</span> <span class="p">[</span><span class="n">bbox</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">bbox</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="k">for</span> <span class="n">bbox</span> <span class="ow">in</span> <span class="n">part_bboxes</span><span class="p">]</span>
+    <span class="n">body_areas</span> <span class="o">=</span> <span class="p">[</span><span class="n">bbox</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">bbox</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="k">for</span> <span class="n">bbox</span> <span class="ow">in</span> <span class="n">body_bboxes</span><span class="p">]</span>
+    <span class="n">union_areas</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">part</span> <span class="o">+</span> <span class="n">body</span> <span class="o">-</span> <span class="n">intersect</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">part</span><span class="p">,</span> <span class="n">body</span><span class="p">,</span> <span class="n">intersect</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">part_areas</span><span class="p">,</span> <span class="n">body_areas</span><span class="p">,</span> <span class="n">intersect_areas</span><span class="p">)</span>
+    <span class="p">]</span>
+    <span class="n">int_over_unions</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">intersect</span> <span class="o">/</span> <span class="n">union</span> <span class="k">for</span> <span class="p">(</span><span class="n">intersect</span><span class="p">,</span> <span class="n">union</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">intersect_areas</span><span class="p">,</span> <span class="n">union_areas</span><span class="p">)</span>
+    <span class="p">]</span>
+
+    <span class="n">part_body_distances</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">part</span><span class="o">.</span><span class="n">distance</span><span class="p">(</span><span class="n">body</span><span class="p">)</span> <span class="k">for</span> <span class="n">part</span><span class="p">,</span> <span class="n">body</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">part_polys</span><span class="p">,</span> <span class="n">body_polys</span><span class="p">)</span>
+    <span class="p">]</span>
+
+    <span class="n">part_centroids</span> <span class="o">=</span> <span class="p">[</span><span class="n">poly</span><span class="o">.</span><span class="n">centroid</span> <span class="k">for</span> <span class="n">poly</span> <span class="ow">in</span> <span class="n">part_polys</span><span class="p">]</span>
+    <span class="n">body_centroids</span> <span class="o">=</span> <span class="p">[</span><span class="n">poly</span><span class="o">.</span><span class="n">centroid</span> <span class="k">for</span> <span class="n">poly</span> <span class="ow">in</span> <span class="n">body_polys</span><span class="p">]</span>
+
+    <span class="n">body_to_part_xs</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">partc</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">bodyc</span><span class="o">.</span><span class="n">x</span> <span class="k">for</span> <span class="n">partc</span><span class="p">,</span> <span class="n">bodyc</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">part_centroids</span><span class="p">,</span> <span class="n">body_centroids</span><span class="p">)</span>
+    <span class="p">]</span>
+    <span class="n">body_to_part_ys</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">partc</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">bodyc</span><span class="o">.</span><span class="n">y</span> <span class="k">for</span> <span class="n">partc</span><span class="p">,</span> <span class="n">bodyc</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">part_centroids</span><span class="p">,</span> <span class="n">body_centroids</span><span class="p">)</span>
+    <span class="p">]</span>
+
+    <span class="n">part_body_centroid_dists</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">part</span><span class="o">.</span><span class="n">distance</span><span class="p">(</span><span class="n">body</span><span class="p">)</span> <span class="k">for</span> <span class="n">part</span><span class="p">,</span> <span class="n">body</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">part_centroids</span><span class="p">,</span> <span class="n">body_centroids</span><span class="p">)</span>
+    <span class="p">]</span>
+
+    <span class="n">int_over_parts</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">int_area</span> <span class="o">/</span> <span class="n">part_area</span> <span class="k">for</span> <span class="n">part_area</span><span class="p">,</span> <span class="n">int_area</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">part_areas</span><span class="p">,</span> <span class="n">intersect_areas</span><span class="p">)</span>
+    <span class="p">]</span>
+
+    <span class="n">int_over_bodys</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">int_area</span> <span class="o">/</span> <span class="n">body_area</span> <span class="k">for</span> <span class="n">body_area</span><span class="p">,</span> <span class="n">int_area</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">body_areas</span><span class="p">,</span> <span class="n">intersect_areas</span><span class="p">)</span>
+    <span class="p">]</span>
+
+    <span class="n">part_over_bodys</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">part_area</span> <span class="o">/</span> <span class="n">body_area</span> <span class="k">for</span> <span class="n">part_area</span><span class="p">,</span> <span class="n">body_area</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">part_areas</span><span class="p">,</span> <span class="n">body_areas</span><span class="p">)</span>
+    <span class="p">]</span>
+
+    <span class="n">part_lrudfb_vects</span> <span class="o">=</span> <span class="n">get_annot_lrudfb_unit_vector</span><span class="p">(</span><span class="n">ibs</span><span class="p">,</span> <span class="n">part_aid_list</span><span class="p">)</span>
+    <span class="n">body_lrudfb_vects</span> <span class="o">=</span> <span class="n">get_annot_lrudfb_unit_vector</span><span class="p">(</span><span class="n">ibs</span><span class="p">,</span> <span class="n">part_aid_list</span><span class="p">)</span>
+
+    <span class="c1"># note that here only parts have thetas, hence only returning body bboxes</span>
+    <span class="n">result_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+        <span class="nb">zip</span><span class="p">(</span>
+            <span class="n">part_verts</span><span class="p">,</span>
+            <span class="n">part_centroids</span><span class="p">,</span>
+            <span class="n">body_bboxes</span><span class="p">,</span>
+            <span class="n">body_centroids</span><span class="p">,</span>
+            <span class="n">int_area_scalars</span><span class="p">,</span>
+            <span class="n">part_body_distances</span><span class="p">,</span>
+            <span class="n">part_body_centroid_dists</span><span class="p">,</span>
+            <span class="n">body_to_part_xs</span><span class="p">,</span>
+            <span class="n">body_to_part_ys</span><span class="p">,</span>
+            <span class="n">int_over_unions</span><span class="p">,</span>
+            <span class="n">int_over_parts</span><span class="p">,</span>
+            <span class="n">int_over_bodys</span><span class="p">,</span>
+            <span class="n">part_over_bodys</span><span class="p">,</span>
+            <span class="n">part_lrudfb_vects</span><span class="p">,</span>
+            <span class="n">body_lrudfb_vects</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="k">for</span> <span class="p">(</span>
+        <span class="n">part_vert</span><span class="p">,</span>
+        <span class="n">part_center</span><span class="p">,</span>
+        <span class="n">body_bbox</span><span class="p">,</span>
+        <span class="n">body_center</span><span class="p">,</span>
+        <span class="n">int_area_scalar</span><span class="p">,</span>
+        <span class="n">part_body_distance</span><span class="p">,</span>
+        <span class="n">part_body_centroid_dist</span><span class="p">,</span>
+        <span class="n">body_to_part_x</span><span class="p">,</span>
+        <span class="n">body_to_part_y</span><span class="p">,</span>
+        <span class="n">int_over_union</span><span class="p">,</span>
+        <span class="n">int_over_part</span><span class="p">,</span>
+        <span class="n">int_over_body</span><span class="p">,</span>
+        <span class="n">part_over_body</span><span class="p">,</span>
+        <span class="n">part_lrudfb_vect</span><span class="p">,</span>
+        <span class="n">body_lrudfb_vect</span><span class="p">,</span>
+    <span class="p">)</span> <span class="ow">in</span> <span class="n">result_list</span><span class="p">:</span>
+        <span class="n">ans</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">part_vert</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+            <span class="n">part_vert</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
+            <span class="n">part_vert</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+            <span class="n">part_vert</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
+            <span class="n">part_vert</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+            <span class="n">part_vert</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
+            <span class="n">part_vert</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+            <span class="n">part_vert</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
+            <span class="n">part_center</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
+            <span class="n">part_center</span><span class="o">.</span><span class="n">y</span><span class="p">,</span>
+            <span class="n">body_bbox</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="n">body_bbox</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+            <span class="n">body_bbox</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+            <span class="n">body_bbox</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
+            <span class="n">body_center</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
+            <span class="n">body_center</span><span class="o">.</span><span class="n">y</span><span class="p">,</span>
+            <span class="n">int_area_scalar</span><span class="p">,</span>
+            <span class="n">part_body_distance</span><span class="p">,</span>
+            <span class="n">part_body_centroid_dist</span><span class="p">,</span>
+            <span class="n">body_to_part_x</span><span class="p">,</span>
+            <span class="n">body_to_part_y</span><span class="p">,</span>
+            <span class="n">int_over_union</span><span class="p">,</span>
+            <span class="n">int_over_part</span><span class="p">,</span>
+            <span class="n">int_over_body</span><span class="p">,</span>
+            <span class="n">part_over_body</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">ans</span> <span class="o">+=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">part_lrudfb_vect</span><span class="p">)</span>
+        <span class="n">ans</span> <span class="o">+=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">body_lrudfb_vect</span><span class="p">)</span>
+        <span class="k">yield</span> <span class="n">ans</span></div>
+
+
+<span class="c1"># left, right, up, down, front, back booleans, useful for assigner classification and other cases where we might want viewpoint as an input for an ML model</span>
+<div class="viewcode-block" id="get_annot_lrudfb_bools"><a class="viewcode-back" href="../../api.html#wbia.core_annots.get_annot_lrudfb_bools">[docs]</a><span class="k">def</span> <span class="nf">get_annot_lrudfb_bools</span><span class="p">(</span><span class="n">ibs</span><span class="p">,</span> <span class="n">aid_list</span><span class="p">):</span>
+    <span class="n">views</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_annot_viewpoints</span><span class="p">(</span><span class="n">aid_list</span><span class="p">)</span>
+    <span class="n">bool_arrays</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">[</span>
+            <span class="s1">&#39;left&#39;</span> <span class="ow">in</span> <span class="n">view</span><span class="p">,</span>
+            <span class="s1">&#39;right&#39;</span> <span class="ow">in</span> <span class="n">view</span><span class="p">,</span>
+            <span class="s1">&#39;up&#39;</span> <span class="ow">in</span> <span class="n">view</span><span class="p">,</span>
+            <span class="s1">&#39;down&#39;</span> <span class="ow">in</span> <span class="n">view</span><span class="p">,</span>
+            <span class="s1">&#39;front&#39;</span> <span class="ow">in</span> <span class="n">view</span><span class="p">,</span>
+            <span class="s1">&#39;back&#39;</span> <span class="ow">in</span> <span class="n">view</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="k">if</span> <span class="n">view</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="k">else</span> <span class="p">[</span><span class="kc">False</span><span class="p">]</span> <span class="o">*</span> <span class="mi">6</span>
+        <span class="k">for</span> <span class="n">view</span> <span class="ow">in</span> <span class="n">views</span>
+    <span class="p">]</span>
+    <span class="k">return</span> <span class="n">bool_arrays</span></div>
+
+
+<div class="viewcode-block" id="get_annot_lrudfb_unit_vector"><a class="viewcode-back" href="../../api.html#wbia.core_annots.get_annot_lrudfb_unit_vector">[docs]</a><span class="k">def</span> <span class="nf">get_annot_lrudfb_unit_vector</span><span class="p">(</span><span class="n">ibs</span><span class="p">,</span> <span class="n">aid_list</span><span class="p">):</span>
+
+    <span class="n">bool_arrays</span> <span class="o">=</span> <span class="n">get_annot_lrudfb_bools</span><span class="p">(</span><span class="n">ibs</span><span class="p">,</span> <span class="n">aid_list</span><span class="p">)</span>
+    <span class="n">float_arrays</span> <span class="o">=</span> <span class="p">[[</span><span class="nb">float</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">lrudfb</span><span class="p">]</span> <span class="k">for</span> <span class="n">lrudfb</span> <span class="ow">in</span> <span class="n">bool_arrays</span><span class="p">]</span>
+    <span class="n">lrudfb_lengths</span> <span class="o">=</span> <span class="p">[</span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">lrudfb</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="kc">True</span><span class="p">))</span> <span class="k">for</span> <span class="n">lrudfb</span> <span class="ow">in</span> <span class="n">bool_arrays</span><span class="p">]</span>
+    <span class="c1"># lying just to avoid division by zero errors</span>
+    <span class="n">lrudfb_lengths</span> <span class="o">=</span> <span class="p">[</span><span class="n">length</span> <span class="k">if</span> <span class="n">length</span> <span class="o">!=</span> <span class="mi">0</span> <span class="k">else</span> <span class="o">-</span><span class="mi">1</span> <span class="k">for</span> <span class="n">length</span> <span class="ow">in</span> <span class="n">lrudfb_lengths</span><span class="p">]</span>
+    <span class="n">unit_float_array</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">[</span><span class="n">f</span> <span class="o">/</span> <span class="n">length</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">lrudfb</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">lrudfb</span><span class="p">,</span> <span class="n">length</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">float_arrays</span><span class="p">,</span> <span class="n">lrudfb_lengths</span><span class="p">)</span>
+    <span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">unit_float_array</span></div>
+
+
+<span class="k">def</span> <span class="nf">_norm_bboxes</span><span class="p">(</span><span class="n">bbox_list</span><span class="p">,</span> <span class="n">width_list</span><span class="p">,</span> <span class="n">height_list</span><span class="p">):</span>
+    <span class="n">normed_boxes</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span><span class="n">bbox</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">w</span><span class="p">,</span> <span class="n">bbox</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">h</span><span class="p">,</span> <span class="n">bbox</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">/</span> <span class="n">w</span><span class="p">,</span> <span class="n">bbox</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">/</span> <span class="n">h</span><span class="p">)</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">bbox</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">bbox_list</span><span class="p">,</span> <span class="n">width_list</span><span class="p">,</span> <span class="n">height_list</span><span class="p">)</span>
+    <span class="p">]</span>
+    <span class="k">return</span> <span class="n">normed_boxes</span>
+
+
+<span class="k">def</span> <span class="nf">_norm_vertices</span><span class="p">(</span><span class="n">verts_list</span><span class="p">,</span> <span class="n">width_list</span><span class="p">,</span> <span class="n">height_list</span><span class="p">):</span>
+    <span class="n">normed_verts</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">[[</span><span class="n">x</span> <span class="o">/</span> <span class="n">w</span><span class="p">,</span> <span class="n">y</span> <span class="o">/</span> <span class="n">h</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">vert</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">vert</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">verts_list</span><span class="p">,</span> <span class="n">width_list</span><span class="p">,</span> <span class="n">height_list</span><span class="p">)</span>
+    <span class="p">]</span>
+    <span class="k">return</span> <span class="n">normed_verts</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">xdoctest</span> <span class="k">as</span> <span class="nn">xdoc</span>
+
+    <span class="n">xdoc</span><span class="o">.</span><span class="n">doctest_module</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span>
 </pre></div>
 
           </div>
@@ -2367,7 +3083,7 @@
       &copy;2020, Wild Me.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.3</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

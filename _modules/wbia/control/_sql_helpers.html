@@ -12,7 +12,6 @@
     <script src="../../../_static/jquery.js"></script>
     <script src="../../../_static/underscore.js"></script>
     <script src="../../../_static/doctools.js"></script>
-    <script src="../../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
    
@@ -81,8 +80,8 @@
     <span class="nb">sorted</span><span class="p">(</span><span class="n">ut</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">join</span><span class="p">(</span><span class="n">dbdir</span><span class="p">,</span> <span class="s1">&#39;_wbia_backups&#39;</span><span class="p">),</span> <span class="s1">&#39;*staging_back*.sqlite3&#39;</span><span class="p">))</span>
     <span class="n">fpaths</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">ut</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">join</span><span class="p">(</span><span class="n">dbdir</span><span class="p">,</span> <span class="s1">&#39;_wbia_backups&#39;</span><span class="p">),</span> <span class="s1">&#39;*database_back*.sqlite3&#39;</span><span class="p">))</span>
     <span class="k">for</span> <span class="n">fpath</span> <span class="ow">in</span> <span class="n">fpaths</span><span class="p">:</span>
-        <span class="n">db_uri</span> <span class="o">=</span> <span class="s1">&#39;file://</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">realpath</span><span class="p">(</span><span class="n">fpath</span><span class="p">))</span>
-        <span class="n">db</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">SQLDatabaseController</span><span class="o">.</span><span class="n">from_uri</span><span class="p">(</span><span class="n">db_uri</span><span class="p">)</span>
+        <span class="n">db_uri</span> <span class="o">=</span> <span class="s1">&#39;sqlite:///</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">realpath</span><span class="p">(</span><span class="n">fpath</span><span class="p">))</span>
+        <span class="n">db</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">SQLDatabaseController</span><span class="p">(</span><span class="n">db_uri</span><span class="p">,</span> <span class="s1">&#39;PZ_Master1&#39;</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;fpath = </span><span class="si">%r</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">fpath</span><span class="p">,))</span>
         <span class="n">num_edges</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">executeone</span><span class="p">(</span><span class="s1">&#39;SELECT rowid from annotmatch&#39;</span><span class="p">))</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;num_edges = </span><span class="si">%r</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">num_edges</span><span class="p">,))</span>
@@ -219,8 +218,8 @@
     <span class="c1"># blocked lock for all processes potentially writing to the database</span>
     <span class="n">timeout</span> <span class="o">=</span> <span class="mi">12</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span>  <span class="c1"># Allow a lock of up to 12 hours for a database backup routine</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">src_fpath</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;file:&#39;</span><span class="p">):</span>
-        <span class="n">src_fpath</span> <span class="o">=</span> <span class="s1">&#39;file://</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">realpath</span><span class="p">(</span><span class="n">src_fpath</span><span class="p">))</span>
-    <span class="n">db</span> <span class="o">=</span> <span class="n">dtool</span><span class="o">.</span><span class="n">SQLDatabaseController</span><span class="o">.</span><span class="n">from_uri</span><span class="p">(</span><span class="n">src_fpath</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
+        <span class="n">src_fpath</span> <span class="o">=</span> <span class="s1">&#39;sqlite:///</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">realpath</span><span class="p">(</span><span class="n">src_fpath</span><span class="p">))</span>
+    <span class="n">db</span> <span class="o">=</span> <span class="n">dtool</span><span class="o">.</span><span class="n">SQLDatabaseController</span><span class="p">(</span><span class="n">src_fpath</span><span class="p">,</span> <span class="s1">&#39;copy&#39;</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
     <span class="n">db</span><span class="o">.</span><span class="n">backup</span><span class="p">(</span><span class="n">dst_fpath</span><span class="p">)</span></div>
 
 
@@ -393,6 +392,10 @@
 <span class="sd">    clearbackup = False</span>
 <span class="sd">    FIXME: AN SQL HELPER FUNCTION SHOULD BE AGNOSTIC TO CONTROLER OBJECTS</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">db</span><span class="o">.</span><span class="n">_engine</span><span class="o">.</span><span class="n">dialect</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="s1">&#39;sqlite&#39;</span><span class="p">:</span>
+        <span class="c1"># Backup is based on copying files so if we&#39;re not using sqlite, skip</span>
+        <span class="c1"># backup</span>
+        <span class="n">dobackup</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="k">def</span> <span class="nf">_check_superkeys</span><span class="p">():</span>
         <span class="n">all_tablename_list</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">get_table_names</span><span class="p">()</span>
@@ -413,7 +416,7 @@
             <span class="p">),</span> <span class="s1">&#39;ERROR UPDATING DATABASE, SUPERKEYS of </span><span class="si">%s</span><span class="s1"> DROPPED!&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">tablename</span><span class="p">,)</span>
 
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[_SQL] update_schema_version&#39;</span><span class="p">)</span>
-    <span class="n">db_fpath</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">uri</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;file://&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">db_fpath</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">uri</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;sqlite://&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">dobackup</span><span class="p">:</span>
         <span class="n">db_dpath</span><span class="p">,</span> <span class="n">db_fname</span> <span class="o">=</span> <span class="n">split</span><span class="p">(</span><span class="n">db_fpath</span><span class="p">)</span>
         <span class="n">db_fname_noext</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">splitext</span><span class="p">(</span><span class="n">db_fname</span><span class="p">)</span>
@@ -460,10 +463,13 @@
             <span class="n">pre</span><span class="p">,</span> <span class="n">update</span><span class="p">,</span> <span class="n">post</span> <span class="o">=</span> <span class="n">db_versions</span><span class="p">[</span><span class="n">next_version</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">pre</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">pre</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">ibs</span><span class="o">=</span><span class="n">ibs</span><span class="p">)</span>
+                <span class="n">db</span><span class="o">.</span><span class="n">invalidate_tables_cache</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">update</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">update</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">ibs</span><span class="o">=</span><span class="n">ibs</span><span class="p">)</span>
+                <span class="n">db</span><span class="o">.</span><span class="n">invalidate_tables_cache</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">post</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">post</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">ibs</span><span class="o">=</span><span class="n">ibs</span><span class="p">)</span>
+                <span class="n">db</span><span class="o">.</span><span class="n">invalidate_tables_cache</span><span class="p">()</span>
             <span class="n">_check_superkeys</span><span class="p">()</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">dobackup</span><span class="p">:</span>
@@ -574,8 +580,8 @@
     <span class="n">cachedir</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">ensure_app_resource_dir</span><span class="p">(</span><span class="s1">&#39;wbia_test&#39;</span><span class="p">)</span>
     <span class="n">db_fname</span> <span class="o">=</span> <span class="s1">&#39;test_</span><span class="si">%s</span><span class="s1">.sqlite3&#39;</span> <span class="o">%</span> <span class="n">dbname</span>
     <span class="n">ut</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">join</span><span class="p">(</span><span class="n">cachedir</span><span class="p">,</span> <span class="n">db_fname</span><span class="p">))</span>
-    <span class="n">db_uri</span> <span class="o">=</span> <span class="s1">&#39;file://</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">realpath</span><span class="p">(</span><span class="n">join</span><span class="p">(</span><span class="n">cachedir</span><span class="p">,</span> <span class="n">db_fname</span><span class="p">)))</span>
-    <span class="n">db</span> <span class="o">=</span> <span class="n">SQLDatabaseController</span><span class="o">.</span><span class="n">from_uri</span><span class="p">(</span><span class="n">db_uri</span><span class="p">)</span>
+    <span class="n">db_uri</span> <span class="o">=</span> <span class="s1">&#39;sqlite:///</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">realpath</span><span class="p">(</span><span class="n">join</span><span class="p">(</span><span class="n">cachedir</span><span class="p">,</span> <span class="n">db_fname</span><span class="p">)))</span>
+    <span class="n">db</span> <span class="o">=</span> <span class="n">SQLDatabaseController</span><span class="p">(</span><span class="n">db_uri</span><span class="p">,</span> <span class="n">dbname</span><span class="p">)</span>
     <span class="n">ensure_correct_version</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">version_expected</span><span class="p">,</span> <span class="n">schema_spec</span><span class="p">,</span> <span class="n">dobackup</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">db</span></div>
 </pre></div>
@@ -640,7 +646,7 @@
       &copy;2020, Wild Me.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.3</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

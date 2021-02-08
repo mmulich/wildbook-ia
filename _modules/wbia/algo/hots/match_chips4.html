@@ -12,7 +12,6 @@
     <script src="../../../../_static/jquery.js"></script>
     <script src="../../../../_static/underscore.js"></script>
     <script src="../../../../_static/doctools.js"></script>
-    <script src="../../../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
    
@@ -56,15 +55,8 @@
     <span class="p">)</span>
     <span class="ow">and</span> <span class="n">ut</span><span class="o">.</span><span class="n">USE_CACHE</span>
 <span class="p">)</span>
-<span class="n">USE_SUPERCACHE</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="ow">not</span> <span class="n">ut</span><span class="o">.</span><span class="n">get_argflag</span><span class="p">(</span>
-        <span class="p">(</span><span class="s1">&#39;--nocache-super&#39;</span><span class="p">,</span> <span class="s1">&#39;--no-supercache-query&#39;</span><span class="p">,</span> <span class="s1">&#39;--noqcache&#39;</span><span class="p">,</span> <span class="s1">&#39;--nosupercache&#39;</span><span class="p">)</span>
-    <span class="p">)</span>
-    <span class="ow">and</span> <span class="n">ut</span><span class="o">.</span><span class="n">USE_CACHE</span>
-<span class="p">)</span>
+<span class="n">USE_SUPERCACHE</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">USE_CACHE</span> <span class="ow">and</span> <span class="n">ut</span><span class="o">.</span><span class="n">get_argflag</span><span class="p">(</span><span class="s1">&#39;--supercache&#39;</span><span class="p">)</span>
 <span class="n">SAVE_CACHE</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">ut</span><span class="o">.</span><span class="n">get_argflag</span><span class="p">(</span><span class="s1">&#39;--nocache-save&#39;</span><span class="p">)</span>
-<span class="c1"># MIN_BIGCACHE_BUNDLE = 20</span>
-<span class="c1"># MIN_BIGCACHE_BUNDLE = 150</span>
 <span class="n">MIN_BIGCACHE_BUNDLE</span> <span class="o">=</span> <span class="mi">64</span>
 <span class="n">HOTS_BATCH_SIZE</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">get_argval</span><span class="p">(</span><span class="s1">&#39;--hots-batch-size&#39;</span><span class="p">,</span> <span class="n">type_</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 
@@ -494,7 +486,7 @@
       &copy;2020, Wild Me.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.3</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

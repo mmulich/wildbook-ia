@@ -12,7 +12,6 @@
     <script src="../../../_static/jquery.js"></script>
     <script src="../../../_static/underscore.js"></script>
     <script src="../../../_static/doctools.js"></script>
-    <script src="../../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
    
@@ -934,13 +933,12 @@
 <span class="sd">        URL:    /api/metadata/value/</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">params_iter</span> <span class="o">=</span> <span class="p">((</span><span class="n">metadata_key</span><span class="p">,)</span> <span class="k">for</span> <span class="n">metadata_key</span> <span class="ow">in</span> <span class="n">metadata_key_list</span><span class="p">)</span>
-    <span class="n">where_clause</span> <span class="o">=</span> <span class="s1">&#39;metadata_key=?&#39;</span>
     <span class="c1"># list of relationships for each image</span>
-    <span class="n">metadata_value_list</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">get_where</span><span class="p">(</span>
+    <span class="n">metadata_value_list</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">get_where_eq</span><span class="p">(</span>
         <span class="n">const</span><span class="o">.</span><span class="n">METADATA_TABLE</span><span class="p">,</span>
         <span class="p">(</span><span class="s1">&#39;metadata_value&#39;</span><span class="p">,),</span>
         <span class="n">params_iter</span><span class="p">,</span>
-        <span class="n">where_clause</span><span class="p">,</span>
+        <span class="p">(</span><span class="s1">&#39;metadata_key&#39;</span><span class="p">,),</span>
         <span class="n">unpack_scalars</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">return</span> <span class="n">metadata_value_list</span></div>
@@ -958,13 +956,12 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">db</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># Unwrap tuple, required by @accessor_decors.getter_1to1 decorator</span>
     <span class="n">params_iter</span> <span class="o">=</span> <span class="p">((</span><span class="n">metadata_key</span><span class="p">,)</span> <span class="k">for</span> <span class="n">metadata_key</span> <span class="ow">in</span> <span class="n">metadata_key_list</span><span class="p">)</span>
-    <span class="n">where_clause</span> <span class="o">=</span> <span class="s1">&#39;metadata_key=?&#39;</span>
     <span class="c1"># list of relationships for each image</span>
-    <span class="n">metadata_rowid_list</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">get_where</span><span class="p">(</span>
+    <span class="n">metadata_rowid_list</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">get_where_eq</span><span class="p">(</span>
         <span class="n">const</span><span class="o">.</span><span class="n">METADATA_TABLE</span><span class="p">,</span>
         <span class="p">(</span><span class="s1">&#39;metadata_rowid&#39;</span><span class="p">,),</span>
         <span class="n">params_iter</span><span class="p">,</span>
-        <span class="n">where_clause</span><span class="p">,</span>
+        <span class="p">(</span><span class="s1">&#39;metadata_key&#39;</span><span class="p">,),</span>
         <span class="n">unpack_scalars</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">return</span> <span class="n">metadata_rowid_list</span></div>
@@ -1045,22 +1042,19 @@
     <span class="k">try</span><span class="p">:</span>
         <span class="n">general_config</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">load_cPkl</span><span class="p">(</span><span class="n">config_fpath</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">ut</span><span class="o">.</span><span class="n">VERBOSE</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">IOError</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">ut</span><span class="o">.</span><span class="n">VERBOSE</span><span class="p">:</span>
-            <span class="n">ut</span><span class="o">.</span><span class="n">printex</span><span class="p">(</span><span class="n">ex</span><span class="p">,</span> <span class="s1">&#39;failed to genral load config&#39;</span><span class="p">,</span> <span class="n">iswarning</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;*** failed to load general config&#39;</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="n">ex</span><span class="p">)</span>
         <span class="n">general_config</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">ut</span><span class="o">.</span><span class="n">save_cPkl</span><span class="p">(</span><span class="n">config_fpath</span><span class="p">,</span> <span class="n">general_config</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">ut</span><span class="o">.</span><span class="n">VERBOSE</span><span class="p">)</span>
     <span class="n">current_species</span> <span class="o">=</span> <span class="n">general_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;current_species&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">ut</span><span class="o">.</span><span class="n">VERBOSE</span> <span class="ow">and</span> <span class="n">ut</span><span class="o">.</span><span class="n">NOT_QUIET</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-            <span class="s1">&#39;[_init_config] general_config.current_species = </span><span class="si">%r</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">current_species</span><span class="p">,)</span>
-        <span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[_init_config] general_config.current_species = </span><span class="si">%r</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">current_species</span><span class="p">,))</span>
     <span class="c1"># &lt;/GENERAL CONFIG&gt;</span>
     <span class="c1">#####</span>
     <span class="c1"># species_list = ibs.get_database_species()</span>
-    <span class="k">if</span> <span class="n">current_species</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="c1"># species_list = ibs.get_database_species()</span>
-        <span class="c1"># species_list[0] if len(species_list) == 1 else None</span>
-        <span class="n">primary_species</span> <span class="o">=</span> <span class="n">ibs</span><span class="o">.</span><span class="n">get_primary_database_species</span><span class="p">()</span>
-        <span class="n">current_species</span> <span class="o">=</span> <span class="n">primary_species</span>
+    <span class="c1"># if current_species is None:</span>
+    <span class="c1">#     # species_list = ibs.get_database_species()</span>
+    <span class="c1">#     # species_list[0] if len(species_list) == 1 else None</span>
+    <span class="c1">#     primary_species = ibs.get_primary_database_species()</span>
+    <span class="c1">#     current_species = primary_species</span>
     <span class="n">cfgname</span> <span class="o">=</span> <span class="s1">&#39;cfg&#39;</span> <span class="k">if</span> <span class="n">current_species</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">current_species</span>
     <span class="k">if</span> <span class="n">ut</span><span class="o">.</span><span class="n">VERBOSE</span> <span class="ow">and</span> <span class="n">ut</span><span class="o">.</span><span class="n">NOT_QUIET</span><span class="p">:</span>
         <span class="c1"># logger.info(&#39;[_init_config] Loading database with species_list = %r &#39; % (species_list,))</span>
@@ -1230,7 +1224,7 @@
       &copy;2020, Wild Me.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.3</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>
